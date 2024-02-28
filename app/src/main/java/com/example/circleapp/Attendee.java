@@ -7,6 +7,7 @@ public class Attendee {
     private String email;
     // private profilePic
     private Array events;
+    private boolean isGeoEnabled;
 
     public Attendee(String name, String email) {
         this.name = name;
@@ -35,5 +36,13 @@ public class Attendee {
 
     public void setEvents(Array events) {
         this.events = events;
+    }
+
+    public boolean isGeoEnabled() {
+        return isGeoEnabled;
+    }
+
+    public void setGeoEnabled(boolean geoEnabled) {
+        isGeoEnabled = geoEnabled;
     }
 }
