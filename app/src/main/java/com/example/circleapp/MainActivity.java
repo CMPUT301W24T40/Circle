@@ -22,20 +22,22 @@ public class MainActivity extends AppCompatActivity {
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
 
-            switch (item.getItemId()) {
-
-                case 1000000: // number represents the ID number of your_events_item
-                    replaceFragment(new YourEventsFragment());
-                    break;
-                case 1000004: // number represents the ID number of browse_events_item
-                    replaceFragment(new BrowseEventsFragment());
-                    break;
-                case 1000003: // number represents the ID number of profile_item
-                    replaceFragment(new ProfileFragment());
-                    break;
+            if (item.getItemId() == R.id.your_events_item) {
+                replaceFragment(new YourEventsFragment());
+                return true;
             }
 
-            return true;
+            if (item.getItemId() == R.id.browse_events_item) {
+                replaceFragment(new BrowseEventsFragment());
+                return true;
+            }
+
+            if (item.getItemId() == R.id.profile_item) {
+                replaceFragment(new ProfileFragment());
+                return true;
+            }
+
+            return false;
         });
     }
 
