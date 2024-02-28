@@ -12,7 +12,20 @@
           "package_name": "com.example.circleapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "718608794413-t7jg68dtaf8vf7h7kgq5019m15fvspea.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.circleapp",
+            "certificate_hash": "814665d781e4864c83dbbc0c9951ea36a5c1f1be"
+          }
+        },
+        {
+          "client_id": "718608794413-brslkhgg1nvngd05060bneafa0kjdp1q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBc0XMJwtZGltuJ4jxXksNBhPfTS15IVZs"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718608794413-7ie11rho9pmuiub3dni40k5ko015opbe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
