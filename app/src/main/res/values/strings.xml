@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">CircleApp</string>
+    <string name="first_name">First Name</string>
+    <string name="your_profile">Your Profile</string>
+    <string name="enable_geolocation">Enable Geolocation?</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="last_name">Last Name</string>
 
 </resources>
