@@ -1,13 +1,13 @@
 package com.example.circleapp;
 
-import java.lang.reflect.Array;
+import java.util.List;
 
 public class Attendee {
     private String name;
     private String email;
-    // private profilePic
-    private Array events;
+    private List<Event> events;
     private boolean isGeoEnabled;
+    // private profilePic
 
     public Attendee(String name, String email) {
         this.name = name;
@@ -30,19 +30,9 @@ public class Attendee {
         this.email = email;
     }
 
-    public Array getEvents() {
-        return events;
-    }
+    public List<Event> getEvents() { return events; }
 
-    public void setEvents(Array events) {
-        this.events = events;
-    }
+    public boolean isGeoEnabled() { return isGeoEnabled; }
 
-    public boolean isGeoEnabled() {
-        return isGeoEnabled;
-    }
-
-    public void setGeoEnabled(boolean geoEnabled) {
-        isGeoEnabled = geoEnabled;
-    }
+    public void setGeoEnabled(boolean geoEnabled) { isGeoEnabled = geoEnabled; }
 }
