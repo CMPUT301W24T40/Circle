@@ -17,6 +17,7 @@
         android:ems="10"
         android:hint="@string/first_name"
         android:inputType="text"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/lastName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileText"
@@ -30,6 +31,7 @@
         android:ems="10"
         android:hint="@string/last_name"
         android:inputType="text"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/phoneNumber"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -41,6 +43,7 @@
         android:ems="10"
         android:hint="@string/phone_number"
         android:inputType="phone"
+        android:backgroundTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -53,6 +56,7 @@
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
+        android:backgroundTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +97,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/enable_geolocation"
         android:textSize="18sp"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.081"
