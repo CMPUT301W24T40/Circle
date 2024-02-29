@@ -6,6 +6,7 @@ package com.example.circleapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Event event = events.get(position);
         holder.eventTitle.setText(event.getEventName());
         holder.eventDescription.setText(event.getDescription());
+        holder.eventPoster.setImageDrawable(holder.itemView.getContext().getDrawable(event.getEventPoster()));
     }
 
     @Override
@@ -40,11 +42,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         public TextView eventTitle, eventDescription;
+        public ImageView eventPoster;
 
         public EventViewHolder(@NonNull View itemView) {
             super(itemView);
             eventTitle = itemView.findViewById(R.id.event_title);
             eventDescription = itemView.findViewById(R.id.event_description);
+            eventPoster = itemView.findViewById(R.id.event_poster);
         }
     }
 }

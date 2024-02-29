@@ -1,22 +1,25 @@
 package com.example.circleapp;
 
+import android.graphics.drawable.Drawable;
+
 public class Event {
     private String eventName;
     private String location;
     private String date;
     private String time;
     private String description;
-    // private eventPoster;
+    private int eventPoster;
     // private detailsQRCode;
     // private registerQRCode;
 
     //Constructor
-    public Event(String eventName, String location, String date, String time, String description) {
+    public Event(String eventName, String location, String date, String time, String description, int eventPoster) {
         this.eventName = eventName;
         this.location = location;
         this.date = date;
         this.time = time;
         this.description = description;
+        this.eventPoster = eventPoster;
     }
 
     public String getEventName() {
@@ -57,5 +60,12 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getEventPoster() {
+        return eventPoster;
+    }
+    public void setEventPoster(int eventPoster) {
+        this.eventPoster = eventPoster;
     }
 }
