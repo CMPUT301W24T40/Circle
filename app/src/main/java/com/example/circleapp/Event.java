@@ -10,6 +10,15 @@ public class Event {
     // private detailsQRCode;
     // private registerQRCode;
 
+    //Constructor
+    public Event(String eventName, String location, String date, String time, String description) {
+        this.eventName = eventName;
+        this.location = location;
+        this.date = date;
+        this.time = time;
+        this.description = description;
+    }
+
     public String getEventName() {
         return eventName;
     }
