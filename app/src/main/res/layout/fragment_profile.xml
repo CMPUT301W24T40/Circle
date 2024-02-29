@@ -9,7 +9,7 @@
     tools:context=".ProfileFragment">
 
     <EditText
-        android:id="@+id/firstName"
+        android:id="@+id/first_name"
         android:layout_width="216dp"
         android:layout_height="51dp"
         android:layout_marginTop="29dp"
@@ -18,13 +18,13 @@
         android:hint="@string/first_name"
         android:inputType="text"
         android:backgroundTint="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/lastName"
+        app:layout_constraintBottom_toTopOf="@+id/last_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileText"
+        app:layout_constraintTop_toBottomOf="@+id/profile_text"
         app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/lastName"
+        android:id="@+id/last_name"
         android:layout_width="216dp"
         android:layout_height="51dp"
         android:layout_marginBottom="44dp"
@@ -32,11 +32,11 @@
         android:hint="@string/last_name"
         android:inputType="text"
         android:backgroundTint="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/phoneNumber"
+        app:layout_constraintBottom_toTopOf="@+id/phone_number"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/phoneNumber"
+        android:id="@+id/phone_number"
         android:layout_width="349dp"
         android:layout_height="52dp"
         android:layout_marginTop="31dp"
@@ -46,7 +46,7 @@
         android:backgroundTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_pic" />
 
     <EditText
         android:id="@+id/email"
@@ -60,10 +60,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_number" />
 
     <TextView
-        android:id="@+id/profileText"
+        android:id="@+id/profile_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/your_profile"
@@ -78,7 +78,7 @@
         app:layout_constraintVertical_bias="0.036" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/profile_pic"
         android:layout_width="141dp"
         android:layout_height="151dp"
         android:layout_marginTop="16dp"
@@ -88,10 +88,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileText" />
+        app:layout_constraintTop_toBottomOf="@+id/profile_text" />
 
     <CheckBox
-        android:id="@+id/isGeolocation"
+        android:id="@+id/geolocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
