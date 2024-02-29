@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="16dp">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -17,15 +19,37 @@
             android:id="@+id/event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:layout_toRightOf="@id/event_poster"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
+            android:text="Event"/>
 
+        <ImageView
+            android:id="@+id/event_poster"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/event_description"
-            android:layout_width="match_parent"
-            android:textSize="18sp"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_title"
+            android:layout_marginLeft="65dp"
+            android:layout_toRightOf="@id/event_poster"
+            android:text="Event details"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/details_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_title"
+            android:layout_marginLeft="2dp"
+            android:layout_toRightOf="@id/event_poster"
+            android:text="Details:"
+            android:textSize="18sp" />
+
+
+    </RelativeLayout>
 </LinearLayout>
