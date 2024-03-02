@@ -53,4 +53,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("com.google.firebase:firebase-inappmessaging-ktx:20.4.0")
+    //QR CODE
+    implementation ("com.journeyapps:zxing-android-embedded:4.2.0");
 }
