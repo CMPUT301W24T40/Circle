@@ -8,46 +8,72 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
 public class ProfileFragment extends Fragment {
 
-    EditText firstNameEditText;
-    EditText lastNameEditText;
-    EditText emailEditText;
-    EditText phoneNumberEditText;
-    CheckBox geolocationEditText;
+    TextView firstName;
+    TextView lastName;
+    TextView email;
+    TextView phoneNumber;
+    CheckBox geolocation;
     Button scanButton;
+    Button makeProfile;
+    Button editProfile;
+    RelativeLayout makeProfileLayout;
+    RelativeLayout userProfileLayout;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        firstNameEditText = (EditText) getView().findViewById(R.id.first_name);
-//        lastNameEditText = (EditText) getView().findViewById(R.id.last_name);
-//        emailEditText = (EditText) getView().findViewById(R.id.email);
-//        phoneNumberEditText = (EditText) getView().findViewById(R.id.phone_number);
-//        geolocationEditText = (CheckBox) getView().findViewById(R.id.geolocation);
-////
-//        String firstName = firstNameEditText.getText().toString();
-//        String lastName = lastNameEditText.getText().toString();
-//        String name = firstName + lastName;
-//        String email = emailEditText.getText().toString();
-//        Integer phoneNumber = Integer.valueOf(phoneNumberEditText.getText().toString());
-//        boolean isGeoEnabled = geolocationEditText.isEnabled();
-//
-//        Attendee user = new Attendee(name, email);
-//        user.setGeoEnabled(isGeoEnabled);
-
         // Inflate the layout for this fragment
-            View view = inflater.inflate(R.layout.fragment_profile, container, false);
-            scanButton = view.findViewById(R.id.scan_button);
-            scanButton.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), ScanQRActivity.class);
-                startActivity(intent);
-            });
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        Bundle users = this.getArguments();
+
+        if (users != null) {
+            Attendee ourUser = users.getParcelable("user");
+
+            firstName = view.findViewById(R.id.first_name);
+            email = view.findViewById(R.id.email);
+
+            if (ourUser != null) {
+                makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
+                makeProfileLayout.setVisibility(View.INVISIBLE);
+                userProfileLayout = view.findViewById(R.id.user_profile_layout);
+                userProfileLayout.setVisibility(View.VISIBLE);
+                firstName.setText(ourUser.getName());
+                email.setText(ourUser.getEmail());
+
+                editProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
+        }
             return view;
         }
+        scanButton = view.findViewById(R.id.scan_button);
+        makeProfile = view.findViewById(R.id.add_profile_details);
+
+        makeProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        scanButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ScanQRActivity.class);
+            startActivity(intent);
+        });
+        return view;
+    }
 }
