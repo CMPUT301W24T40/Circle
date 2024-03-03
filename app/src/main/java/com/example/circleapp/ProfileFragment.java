@@ -11,12 +11,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 public class ProfileFragment extends Fragment {
 
@@ -28,6 +32,7 @@ public class ProfileFragment extends Fragment {
     Button scanButton;
     Button makeProfile;
     Button editProfile;
+    ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
 
@@ -42,9 +47,12 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         firstName = view.findViewById(R.id.first_name);
         email = view.findViewById(R.id.email);
+        phoneNumber = view.findViewById(R.id.phone_number);
+        geolocation = view.findViewById(R.id.edit_geolocation);
         scanButton = view.findViewById(R.id.scan_button);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
+        profilePic = view.findViewById(R.id.edit_pfp);
 
         /*
         this is what receives the new Attendee (made by user inputs) from the MakeProfileActivity.
@@ -72,6 +80,22 @@ public class ProfileFragment extends Fragment {
                         // the attendee
                         firstName.setText(ourUser.getName());
                         email.setText(ourUser.getEmail());
+
+                        // makes user only able to edit the geo in edit mode
+                        String checked = "Geolocation: ENABLED";
+                        String unchecked = "Geolocation: DISABLED";
+                        geolocation.setClickable(false);
+                        if (ourUser.isGeoEnabled()) {
+                            geolocation.setText(checked);
+                            geolocation.setChecked(true);
+                        }
+                        else {
+                            geolocation.setText(unchecked);
+                            geolocation.setChecked(false);
+                        }
+
+                        // puts profile pic onto layout
+                        Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);;
                     }
                 }
         );
