@@ -1,5 +1,6 @@
 package com.example.circleapp;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,7 +13,7 @@ public class Attendee implements Parcelable {
     private String email;
     private List<Event> events;
     private boolean isGeoEnabled;
-    // private profilePic
+    private Uri profilePic;
 
     public Attendee(String name, String email) {
         this.name = name;
@@ -59,6 +60,14 @@ public class Attendee implements Parcelable {
     public boolean isGeoEnabled() { return isGeoEnabled; }
 
     public void setGeoEnabled(boolean geoEnabled) { isGeoEnabled = geoEnabled; }
+
+    public Uri getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(Uri profilePic) {
+        this.profilePic = profilePic;
+    }
 
     // for Parcelable
     @Override
