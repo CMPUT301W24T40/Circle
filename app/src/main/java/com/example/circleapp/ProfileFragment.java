@@ -49,7 +49,6 @@ public class ProfileFragment extends Fragment {
         email = view.findViewById(R.id.email);
         phoneNumber = view.findViewById(R.id.phone_number);
         geolocation = view.findViewById(R.id.edit_geolocation);
-        scanButton = view.findViewById(R.id.scan_button);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
         profilePic = view.findViewById(R.id.edit_pfp);
@@ -115,17 +114,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        /*
-        IM SORRY :((( for whatever reason the ScanButton does not work with this new code
-        ;-; it does not crash the app but it ends up just taking you the startup layout
-        maybe this is now more incentive to move it out of Profile :')
-        from the logcat, it was expecting something from a binder? but i didn't understand so will
-        have to try and find this out later
-         */
-        scanButton.setOnClickListener(v -> {
-            Intent intent = new Intent(view.getContext(), ScanQRActivity.class);
-            startActivity(intent);
-        });
         return view;
     }
 }

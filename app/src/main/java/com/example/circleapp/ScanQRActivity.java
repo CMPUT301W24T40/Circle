@@ -21,10 +21,9 @@ public class ScanQRActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_profile);
+        setContentView(R.layout.fragment_your_events);
 
-        Button scanButton = findViewById(R.id.scan_button);
-        scanButton.setOnClickListener(v -> initiateScan());
+        initiateScan();
     }
 
     private void initiateScan() {
