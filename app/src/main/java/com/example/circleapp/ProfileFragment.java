@@ -35,6 +35,7 @@ public class ProfileFragment extends Fragment {
     ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
+    static boolean profileMade;
 
     private ActivityResultLauncher<Intent> launcher;
 
@@ -53,51 +54,61 @@ public class ProfileFragment extends Fragment {
         editProfile = view.findViewById(R.id.edit_profile_button);
         profilePic = view.findViewById(R.id.edit_pfp);
 
-        /*
+        if (profileMade) {
+            makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
+            makeProfileLayout.setVisibility(View.INVISIBLE);
+            userProfileLayout = view.findViewById(R.id.user_profile_layout);
+            userProfileLayout.setVisibility(View.VISIBLE);
+        }
+
+        else {
+            /*
         this is what receives the new Attendee (made by user inputs) from the MakeProfileActivity.
         If it got results (always will in this case because the confirm button from MakeProfileActivity
         will always have the result code as RESULT_OK), it will change the ProfileLayout from that
         startup "Make a Profile" layout to their actual profile information!
         Problem for now -> it does NOT stay the same after you switch tabs on the bottom nav bar
         */
-        launcher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    // checks to see if it got any results from MakeProfileFragment
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        Bundle bundle = data.getExtras();
-                        // Extracts our Attendee object from the Bundle
-                        Attendee ourUser = bundle.getParcelable("user");
+            launcher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        // checks to see if it got any results from MakeProfileFragment
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent data = result.getData();
+                            Bundle bundle = data.getExtras();
+                            // Extracts our Attendee object from the Bundle
+                            Attendee ourUser = bundle.getParcelable("user");
 
-                        // Switches the layouts, I just turn the startup layout invisible
-                        makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
-                        makeProfileLayout.setVisibility(View.INVISIBLE);
-                        userProfileLayout = view.findViewById(R.id.user_profile_layout);
-                        userProfileLayout.setVisibility(View.VISIBLE);
-                        // sets the text for the Profile layout to the attributes of
-                        // the attendee
-                        firstName.setText(ourUser.getName());
-                        email.setText(ourUser.getEmail());
+                            // Switches the layouts, I just turn the startup layout invisible
+                            makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
+                            makeProfileLayout.setVisibility(View.INVISIBLE);
+                            userProfileLayout = view.findViewById(R.id.user_profile_layout);
+                            userProfileLayout.setVisibility(View.VISIBLE);
+                            // sets the text for the Profile layout to the attributes of
+                            // the attendee
+                            firstName.setText(ourUser.getName());
+                            email.setText(ourUser.getEmail());
 
-                        // makes user only able to edit the geo in edit mode
-                        String checked = "Geolocation: ENABLED";
-                        String unchecked = "Geolocation: DISABLED";
-                        geolocation.setClickable(false);
-                        if (ourUser.isGeoEnabled()) {
-                            geolocation.setText(checked);
-                            geolocation.setChecked(true);
+                            // makes user only able to edit the geo in edit mode
+                            String checked = "Geolocation: ENABLED";
+                            String unchecked = "Geolocation: DISABLED";
+                            geolocation.setClickable(false);
+                            if (ourUser.isGeoEnabled()) {
+                                geolocation.setText(checked);
+                                geolocation.setChecked(true);
+                            }
+                            else {
+                                geolocation.setText(unchecked);
+                                geolocation.setChecked(false);
+                            }
+
+                            // puts profile pic onto layout
+                            Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);;
                         }
-                        else {
-                            geolocation.setText(unchecked);
-                            geolocation.setChecked(false);
-                        }
-
-                        // puts profile pic onto layout
-                        Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);;
                     }
-                }
-        );
+            );
+        }
+
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
