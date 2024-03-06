@@ -10,21 +10,23 @@ import java.util.List;
 
 public class Attendee implements Parcelable {
     private String ID;
-    private String name;
+    private String firstName;
+    private String lastName = null;
     private String email;
+    private int phoneNumber = 0;
     private List<Event> events;
     private boolean isGeoEnabled;
     private Uri profilePic;
 
     public Attendee(String ID, String name, String email) {
         this.ID = ID;
-        this.name = name;
+        this.firstName = name;
         this.email = email;
     }
 
     // for Parcelable
     protected Attendee(Parcel in) {
-        name = in.readString();
+        firstName = in.readString();
         email = in.readString();
         isGeoEnabled = in.readByte() != 0;
     }
@@ -43,12 +45,12 @@ public class Attendee implements Parcelable {
 
     public String getID() { return ID; }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
 
     public String getEmail() {
@@ -64,6 +66,22 @@ public class Attendee implements Parcelable {
     public boolean isGeoEnabled() { return isGeoEnabled; }
 
     public void setGeoEnabled(boolean geoEnabled) { isGeoEnabled = geoEnabled; }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(int phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
     public Uri getProfilePic() {
         return profilePic;
@@ -81,7 +99,7 @@ public class Attendee implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(name);
+        dest.writeString(firstName);
         dest.writeString(email);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
     }

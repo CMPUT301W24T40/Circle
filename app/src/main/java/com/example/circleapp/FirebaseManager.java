@@ -60,7 +60,7 @@ public class FirebaseManager {
     public void addNewUser(Attendee user) {
         // Add the user to the Firestore collection
         HashMap<String, String> data = new HashMap<>();
-        data.put("Name", user.getName());
+        data.put("Name", user.getFirstName());
         data.put("Email", user.getEmail());
         data.put("ID", user.getID());
         data.put("Location Enabled", String.valueOf(user.isGeoEnabled()));
