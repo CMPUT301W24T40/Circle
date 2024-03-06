@@ -6,6 +6,7 @@ package com.example.circleapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,8 +18,14 @@ import java.util.List;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
     private List<Event> events;
-    public EventAdapter(List<Event> events){
+    private OnItemClickListener listener;
+    public interface OnItemClickListener {
+        void onItemClick(Event event);
+    }
+    public EventAdapter(List<Event> events, OnItemClickListener listener){
+
         this.events = events;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,6 +40,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         holder.eventTitle.setText(event.getEventName());
         holder.eventDescription.setText(event.getDescription());
         holder.eventPoster.setImageDrawable(holder.itemView.getContext().getDrawable(event.getEventPoster()));
+
+        holder.itemView.setOnClickListener(view -> {
+            if (listener != null) {
+                listener.onItemClick(event);
+            }
+        });
     }
 
     @Override
