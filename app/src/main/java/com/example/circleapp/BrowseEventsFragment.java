@@ -24,7 +24,8 @@ public class BrowseEventsFragment extends Fragment {
 
         List<Event> events = getEvents();
 
-        EventAdapter adapter = new EventAdapter(events);
+        //null value disables the clickListener for the Browse page
+        EventAdapter adapter = new EventAdapter(events, null);
         recyclerView.setAdapter(adapter);
 
         return rootView;
