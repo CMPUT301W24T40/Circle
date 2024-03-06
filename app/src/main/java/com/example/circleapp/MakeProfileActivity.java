@@ -87,8 +87,8 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setProfilePic(selectedImageUri);
 
             firebaseManager.addNewUser(user);
-            //PreferenceUtils.setCurrentUserID(this, ID);
-            //PreferenceUtils.setProfileCreated(this, true);
+            PreferenceUtils.setCurrentUserID(this, ID);
+            PreferenceUtils.setProfileCreated(this, true);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment
