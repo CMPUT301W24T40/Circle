@@ -1,8 +1,6 @@
 package com.example.circleapp;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,14 +27,5 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDateTimeTextView.setText(event.getDate() + " " + event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
         eventPosterImageView.setImageResource(event.getEventPoster());
-
-        //Button to generate QR code for the event
-        Button generateQRButton = findViewById(R.id.generate_qr_button);
-
-        generateQRButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, GenerateQRActivity.class);
-            intent.putExtra("event", event);
-            startActivity(intent);
-        });
     }
 }
