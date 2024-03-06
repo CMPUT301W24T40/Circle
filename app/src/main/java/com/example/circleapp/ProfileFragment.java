@@ -2,7 +2,9 @@ package com.example.circleapp;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,24 +31,27 @@ public class ProfileFragment extends Fragment {
     TextView email;
     TextView phoneNumber;
     CheckBox geolocation;
-    Button scanButton;
     Button makeProfile;
     Button editProfile;
     ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
     static boolean profileMade;
-
-    private ActivityResultLauncher<Intent> launcher;
-
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    ActivityResultLauncher<Intent> launcher;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        sharedPreferences = requireActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         firstName = view.findViewById(R.id.first_name);
+        lastName = view.findViewById(R.id.last_name);
         email = view.findViewById(R.id.email);
         phoneNumber = view.findViewById(R.id.phone_number);
         geolocation = view.findViewById(R.id.edit_geolocation);
@@ -59,6 +64,11 @@ public class ProfileFragment extends Fragment {
             makeProfileLayout.setVisibility(View.INVISIBLE);
             userProfileLayout = view.findViewById(R.id.user_profile_layout);
             userProfileLayout.setVisibility(View.VISIBLE);
+
+            firstName.setText(sharedPreferences.getString("user_first_name", null));
+//            lastName.setText(sharedPreferences.getString("user_last_name", ""));
+//            phoneNumber.setText(sharedPreferences.getInt("user_phone_number", 0));
+            email.setText(sharedPreferences.getString("user_email", null));
         }
 
         else {
@@ -84,9 +94,21 @@ public class ProfileFragment extends Fragment {
                             makeProfileLayout.setVisibility(View.INVISIBLE);
                             userProfileLayout = view.findViewById(R.id.user_profile_layout);
                             userProfileLayout.setVisibility(View.VISIBLE);
+
+                            editor.putString("user_first_name", ourUser.getFirstName());
+                            if (ourUser.getLastName() != null) {
+                                editor.putString("user_last_name", ourUser.getLastName());
+                            }
+                            if (ourUser.getPhoneNumber() != 0) {
+                                editor.putInt("user_phone_number", ourUser.getPhoneNumber());
+                            }
+                            if (ourUser.getEmail() != null) {
+                                editor.putString("user_email", ourUser.getEmail());
+                            }
+                            editor.apply();
                             // sets the text for the Profile layout to the attributes of
                             // the attendee
-                            firstName.setText(ourUser.getName());
+                            firstName.setText(ourUser.getFirstName());
                             email.setText(ourUser.getEmail());
 
                             // makes user only able to edit the geo in edit mode

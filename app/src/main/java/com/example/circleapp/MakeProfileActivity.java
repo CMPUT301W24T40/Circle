@@ -68,6 +68,8 @@ public class MakeProfileActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(v -> {
             // after clicking confirm, gets all the user inputs from EditTexts etc.
             String firstName = firstNameEditText.getText().toString();
+//            String lastName = lastNameEditText.getText().toString();
+//            int phoneNumber = Integer.parseInt(phoneNumberEditText.getText().toString());
             String email = emailEditText.getText().toString();
             String ID = firebaseManager.generateRandomUserId();
             boolean isGeoEnabled = geolocationEditText.isChecked();
@@ -75,6 +77,12 @@ public class MakeProfileActivity extends AppCompatActivity {
             // Creates a new user! But need to figure out how we'll be able to edit
             // an existing user because this makes an entirely new Attendee object each time
             Attendee user = new Attendee(ID, firstName, email);
+//            if (!lastName.isEmpty()) {
+//                user.setLastName(lastName);
+//            }
+//            if (phoneNumber != 0) {
+//                user.setPhoneNumber(phoneNumber);
+//            }
             user.setGeoEnabled(isGeoEnabled);
             user.setProfilePic(selectedImageUri);
 
