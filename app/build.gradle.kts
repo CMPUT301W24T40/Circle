@@ -55,7 +55,6 @@ dependencies {
     implementation("com.google.firebase:firebase-inappmessaging-ktx:20.4.0")
     //QR CODE
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
-    implementation ("com.google.zxing:core:3.4.1")
     // Image Uploads
     implementation ("com.github.dhaval2404:imagepicker:2.1")
     implementation ("com.github.bumptech.glide:glide:4.16.0")

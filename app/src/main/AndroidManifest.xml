@@ -40,7 +40,6 @@
             android:name=".EventDetailsActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
-        <activity android:name=".GenerateQRActivity"/>
     </application>
 
 </manifest>
