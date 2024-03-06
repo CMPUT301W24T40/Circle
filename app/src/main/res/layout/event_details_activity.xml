@@ -49,4 +49,13 @@
         android:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/avatars" />
 
+    <Button
+        android:id="@+id/generate_qr_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/event_details_poster"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="310dp"
+        android:text="@string/generate_qr_code" />
+
 </RelativeLayout>
