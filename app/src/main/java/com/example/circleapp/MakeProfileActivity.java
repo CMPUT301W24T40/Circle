@@ -36,7 +36,6 @@ public class MakeProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_profile);
 
-
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
         emailEditText = findViewById(R.id.edit_email);
@@ -56,7 +55,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                         }
                     }
                 }
-                );
+        );
 
         // let's user select an image
         profilePic.setOnClickListener(v -> ImagePicker.with(MakeProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
@@ -68,21 +67,15 @@ public class MakeProfileActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(v -> {
             // after clicking confirm, gets all the user inputs from EditTexts etc.
             String firstName = firstNameEditText.getText().toString();
-//            String lastName = lastNameEditText.getText().toString();
-//            int phoneNumber = Integer.parseInt(phoneNumberEditText.getText().toString());
+            String lastName = lastNameEditText.getText().toString();
+            String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
             String ID = firebaseManager.generateRandomUserId();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             // Creates a new user! But need to figure out how we'll be able to edit
             // an existing user because this makes an entirely new Attendee object each time
-            Attendee user = new Attendee(ID, firstName, email);
-//            if (!lastName.isEmpty()) {
-//                user.setLastName(lastName);
-//            }
-//            if (phoneNumber != 0) {
-//                user.setPhoneNumber(phoneNumber);
-//            }
+            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber);
             user.setGeoEnabled(isGeoEnabled);
             user.setProfilePic(selectedImageUri);
 

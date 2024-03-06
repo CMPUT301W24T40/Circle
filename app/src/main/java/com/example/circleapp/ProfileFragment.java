@@ -6,13 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 public class ProfileFragment extends Fragment {
-
     TextView firstName;
     TextView lastName;
     TextView email;
@@ -42,8 +39,7 @@ public class ProfileFragment extends Fragment {
     ActivityResultLauncher<Intent> launcher;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         sharedPreferences = requireActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
@@ -66,27 +62,22 @@ public class ProfileFragment extends Fragment {
             userProfileLayout.setVisibility(View.VISIBLE);
 
             firstName.setText(sharedPreferences.getString("user_first_name", null));
-//            lastName.setText(sharedPreferences.getString("user_last_name", ""));
-//            phoneNumber.setText(sharedPreferences.getInt("user_phone_number", 0));
+            lastName.setText(sharedPreferences.getString("user_last_name", null));
+            phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
             email.setText(sharedPreferences.getString("user_email", null));
         }
 
         else {
-            /*
-        this is what receives the new Attendee (made by user inputs) from the MakeProfileActivity.
-        If it got results (always will in this case because the confirm button from MakeProfileActivity
-        will always have the result code as RESULT_OK), it will change the ProfileLayout from that
-        startup "Make a Profile" layout to their actual profile information!
-        Problem for now -> it does NOT stay the same after you switch tabs on the bottom nav bar
-        */
             launcher = registerForActivityResult(
                     new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         // checks to see if it got any results from MakeProfileFragment
                         if (result.getResultCode() == RESULT_OK) {
                             Intent data = result.getData();
+                            assert data != null;
                             Bundle bundle = data.getExtras();
                             // Extracts our Attendee object from the Bundle
+                            assert bundle != null;
                             Attendee ourUser = bundle.getParcelable("user");
 
                             // Switches the layouts, I just turn the startup layout invisible
@@ -95,21 +86,18 @@ public class ProfileFragment extends Fragment {
                             userProfileLayout = view.findViewById(R.id.user_profile_layout);
                             userProfileLayout.setVisibility(View.VISIBLE);
 
+                            assert ourUser != null;
                             editor.putString("user_first_name", ourUser.getFirstName());
-                            if (ourUser.getLastName() != null) {
-                                editor.putString("user_last_name", ourUser.getLastName());
-                            }
-                            if (ourUser.getPhoneNumber() != 0) {
-                                editor.putInt("user_phone_number", ourUser.getPhoneNumber());
-                            }
-                            if (ourUser.getEmail() != null) {
-                                editor.putString("user_email", ourUser.getEmail());
-                            }
+                            editor.putString("user_last_name", ourUser.getLastName());
+                            editor.putString("user_phone_number", ourUser.getPhoneNumber());
+                            editor.putString("user_email", ourUser.getEmail());
                             editor.apply();
-                            // sets the text for the Profile layout to the attributes of
-                            // the attendee
+
+                            // sets the text for the Profile layout to the attributes of the attendee
                             firstName.setText(ourUser.getFirstName());
+                            lastName.setText(ourUser.getLastName());
                             email.setText(ourUser.getEmail());
+                            phoneNumber.setText(ourUser.getPhoneNumber());
 
                             // makes user only able to edit the geo in edit mode
                             String checked = "Geolocation: ENABLED";
@@ -125,26 +113,20 @@ public class ProfileFragment extends Fragment {
                             }
 
                             // puts profile pic onto layout
-                            Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);;
+                            Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
                         }
                     }
             );
         }
 
-        editProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
-                launcher.launch(intent);
-            }
+        editProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
+            launcher.launch(intent);
         });
 
-        makeProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
-                launcher.launch(intent);
-            }
+        makeProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
+            launcher.launch(intent);
         });
 
         return view;

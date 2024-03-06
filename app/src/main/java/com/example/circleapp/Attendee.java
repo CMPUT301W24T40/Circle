@@ -1,3 +1,4 @@
+
 package com.example.circleapp;
 
 import android.net.Uri;
@@ -11,23 +12,27 @@ import java.util.List;
 public class Attendee implements Parcelable {
     private String ID;
     private String firstName;
-    private String lastName = null;
+    private String lastName;
     private String email;
-    private int phoneNumber = 0;
+    private String phoneNumber;
     private List<Event> events;
     private boolean isGeoEnabled;
     private Uri profilePic;
 
-    public Attendee(String ID, String name, String email) {
+    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber) {
         this.ID = ID;
-        this.firstName = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     // for Parcelable
     protected Attendee(Parcel in) {
         firstName = in.readString();
+        lastName = in.readString();
         email = in.readString();
+        phoneNumber = in.readString();
         isGeoEnabled = in.readByte() != 0;
     }
 
@@ -49,43 +54,43 @@ public class Attendee implements Parcelable {
         return firstName;
     }
 
-    public void setFirstName(String name) {
-        this.firstName = name;
+    public String getLastName() {
+        return lastName;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
     public List<Event> getEvents() { return events; }
 
     public boolean isGeoEnabled() { return isGeoEnabled; }
 
-    public void setGeoEnabled(boolean geoEnabled) { isGeoEnabled = geoEnabled; }
+    public Uri getProfilePic() {
+        return profilePic;
+    }
 
-    public String getLastName() {
-        return lastName;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public int getPhoneNumber() {
-        return phoneNumber;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
-    public Uri getProfilePic() {
-        return profilePic;
-    }
+    public void setGeoEnabled(boolean geoEnabled) { isGeoEnabled = geoEnabled; }
 
     public void setProfilePic(Uri profilePic) {
         this.profilePic = profilePic;
@@ -100,7 +105,9 @@ public class Attendee implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(firstName);
+        dest.writeString(lastName);
         dest.writeString(email);
+        dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
     }
 }
