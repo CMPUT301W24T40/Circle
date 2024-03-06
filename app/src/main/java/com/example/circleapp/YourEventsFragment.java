@@ -11,8 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 public class YourEventsFragment extends Fragment {
 
     @Override
@@ -23,16 +21,6 @@ public class YourEventsFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Get current attendee and their signed-up events
-        Attendee currentAttendee = getCurrentAttendee();
-
-        // Display signed-up events
-        if (currentAttendee.getEvents() != null) {
-            List<Event> signedUpEvents = currentAttendee.getEvents();
-            EventAdapter adapter = new EventAdapter(signedUpEvents);
-            recyclerView.setAdapter(adapter);
-        }
-
         Button scanButton = rootView.findViewById(R.id.scan_button);
 
         scanButton.setOnClickListener(v -> {
@@ -41,11 +29,5 @@ public class YourEventsFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    // Method to retrieve the current attendee
-    private Attendee getCurrentAttendee() {
-        // implement Firebase authentication and database access here
-        return new Attendee("John Doe", "john@example.com"); // dummy return
     }
 }
