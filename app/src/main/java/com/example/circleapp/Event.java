@@ -2,7 +2,9 @@ package com.example.circleapp;
 
 import android.graphics.drawable.Drawable;
 
-public class Event {
+import java.io.Serializable;
+
+public class Event implements Serializable { //May need to switch to Parcelable later
     private String eventName;
     private String location;
     private String date;

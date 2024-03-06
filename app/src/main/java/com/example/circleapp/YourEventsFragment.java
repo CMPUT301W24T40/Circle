@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class YourEventsFragment extends Fragment {
 
     @Override
@@ -28,6 +31,30 @@ public class YourEventsFragment extends Fragment {
             startActivity(intent);
         });
 
+        List<Event> events = getEvents();
+
+        // Set up the click listener
+        EventAdapter.OnItemClickListener listener = event -> eventClicked(event);
+
+        // Pass the click listener to the adapter
+        EventAdapter adapter = new EventAdapter(events, listener);
+        recyclerView.setAdapter(adapter);
+
         return rootView;
     }
+
+    // handle item clicks
+    private void eventClicked(Event event) {
+        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+        intent.putExtra("event", event);
+        startActivity(intent);
+    }
+
+    private List<Event> getEvents() {
+        // Use dummy data for now
+        List<Event> events = new ArrayList<>();
+        events.add(new Event("Event 1", "Location 1", "Date 1", "Time 1", "Description 1", R.drawable.event_image_dummy ));
+        return events;
+    }
+
 }
