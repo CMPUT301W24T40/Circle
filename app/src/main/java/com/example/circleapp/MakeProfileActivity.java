@@ -123,6 +123,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK, intent);
 
                 // Closes the activity
+                ProfileFragment.profileMade = true;
                 finish();
             }
         });
