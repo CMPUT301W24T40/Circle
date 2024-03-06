@@ -9,13 +9,15 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 public class Attendee implements Parcelable {
+    private String ID;
     private String name;
     private String email;
     private List<Event> events;
     private boolean isGeoEnabled;
     private Uri profilePic;
 
-    public Attendee(String name, String email) {
+    public Attendee(String ID, String name, String email) {
+        this.ID = ID;
         this.name = name;
         this.email = email;
     }
@@ -38,6 +40,8 @@ public class Attendee implements Parcelable {
             return new Attendee[size];
         }
     };
+
+    public String getID() { return ID; }
 
     public String getName() {
         return name;
