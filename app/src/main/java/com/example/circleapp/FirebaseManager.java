@@ -15,35 +15,12 @@ public class FirebaseManager {
     private CollectionReference usersRef;
     private CollectionReference eventsRef;
 
-    public interface ProfileInfoCallback {
-        void onProfileInfoReceived(Attendee profile);
-    }
-
     private FirebaseManager() {
         // Initialize Firebase Firestore
         db = FirebaseFirestore.getInstance();
         // Initialize CollectionReference for users
         usersRef = db.collection("users");
         eventsRef = db.collection("events");
-    }
-
-    public void getProfileInfo(String ID, ProfileInfoCallback callback) {
-        // Retrieve profile information from Firestore
-        usersRef.document(ID).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Attendee profile = documentSnapshot.toObject(Attendee.class);
-                        callback.onProfileInfoReceived(profile);
-                    } else {
-                        // Profile not found
-                        callback.onProfileInfoReceived(null);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Error occurred while retrieving profile information
-                    Log.e("FirebaseManager", "Error getting profile information", e);
-                    callback.onProfileInfoReceived(null);
-                });
     }
 
     public static synchronized FirebaseManager getInstance() {
@@ -60,9 +37,11 @@ public class FirebaseManager {
     public void addNewUser(Attendee user) {
         // Add the user to the Firestore collection
         HashMap<String, String> data = new HashMap<>();
-        data.put("Name", user.getFirstName());
+        data.put("User ID", user.getID());
+        data.put("First Name", user.getFirstName());
+        data.put("Last Name", user.getLastName());
         data.put("Email", user.getEmail());
-        data.put("ID", user.getID());
+        data.put("Phone Number", user.getPhoneNumber());
         data.put("Location Enabled", String.valueOf(user.isGeoEnabled()));
         //data.put("Profile Picture", user.getProfilePic().toString());
 
