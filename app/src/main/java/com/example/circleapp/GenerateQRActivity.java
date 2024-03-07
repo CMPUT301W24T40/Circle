@@ -1,7 +1,10 @@
 package com.example.circleapp;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
@@ -10,6 +13,10 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class GenerateQRActivity extends AppCompatActivity{
 
@@ -22,6 +29,13 @@ public class GenerateQRActivity extends AppCompatActivity{
         String eventDetails = "If you can read this the QR code works";
         Bitmap qrBitmap = generateQRCode(eventDetails);
         qrImage.setImageBitmap(qrBitmap);
+
+        Button shareQRbutton = findViewById(R.id.share_QR_button);
+
+        shareQRbutton.setOnClickListener(v -> {
+            shareQRImage(qrBitmap);
+        });
+
     }
 
     private Bitmap generateQRCode(String data){
@@ -40,6 +54,34 @@ public class GenerateQRActivity extends AppCompatActivity{
         } catch (WriterException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    //Saves and shares image. Saved image gets overwritten.
+    private void shareQRImage(Bitmap bitmap){
+        try {
+            File cachePath = new File(getCacheDir(), "images");
+            cachePath.mkdirs();
+            File file = new File(cachePath, "QR_Image.png");
+            FileOutputStream stream = new FileOutputStream(file); // Overwrites this image every time
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.close();
+
+            // Get the file's content URI from the FileProvider
+            Uri contentUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", file);
+
+            if (contentUri != null) {
+                // Grant temporary read permission to the content URI
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Temporarily grant read permission
+                shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
+                shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
+                startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

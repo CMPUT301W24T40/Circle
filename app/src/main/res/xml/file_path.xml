@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Provides path for saving images
+    Used for sharing QR Code-->
+<paths>
+    <cache-path name="QR_Image.png" path="images/"/>
+</paths>
