@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -16,11 +17,9 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.Firebase.FirebaseManager;
-import com.example.circleapp.Firebase.PreferenceUtils;
+import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-
 
 public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
@@ -33,7 +32,6 @@ public class EditProfileActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
-
     Attendee user;
 
     @Override
@@ -41,6 +39,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_profile);
         user = getIntent().getExtras().getParcelable("user");
+
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
         emailEditText = findViewById(R.id.edit_email);
@@ -80,7 +79,6 @@ public class EditProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
-            String ID = firebaseManager.generateRandomID();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             // Creates a new user! But need to figure out how we'll be able to edit
@@ -92,9 +90,7 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setGeoEnabled(isGeoEnabled);
             user.setProfilePic(selectedImageUri);
 
-            firebaseManager.addNewUser(user);
-            PreferenceUtils.setCurrentUserID(this, ID);
-            PreferenceUtils.setProfileCreated(this, true);
+            firebaseManager.editUser(user);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment
