@@ -36,9 +36,7 @@ public class GenerateQRActivity extends AppCompatActivity{
 
         Button shareQRbutton = findViewById(R.id.share_QR_button);
 
-        shareQRbutton.setOnClickListener(v -> {
-            shareQRImage(qrBitmap);
-        });
+        shareQRbutton.setOnClickListener(v -> shareQRImage(qrBitmap));
 
     }
 

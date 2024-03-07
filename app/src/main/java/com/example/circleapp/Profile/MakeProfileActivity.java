@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.Firebase.FirebaseManager;
-import com.example.circleapp.Firebase.PreferenceUtils;
+import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
@@ -84,8 +83,6 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setProfilePic(selectedImageUri);
 
             firebaseManager.addNewUser(user);
-            PreferenceUtils.setCurrentUserID(this, ID);
-            PreferenceUtils.setProfileCreated(this, true);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment

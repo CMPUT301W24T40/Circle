@@ -38,7 +38,7 @@ public class YourEventsFragment extends Fragment {
         List<Event> events = getEvents();
 
         // Set up the click listener
-        EventAdapter.OnItemClickListener listener = event -> eventClicked(event);
+        EventAdapter.OnItemClickListener listener = this::eventClicked;
 
         // Pass the click listener to the adapter
         EventAdapter adapter = new EventAdapter(events, listener);
