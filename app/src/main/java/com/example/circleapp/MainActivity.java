@@ -13,7 +13,6 @@ import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-
     ActivityMainBinding binding;
 
     @Override

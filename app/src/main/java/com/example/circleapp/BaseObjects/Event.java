@@ -29,12 +29,12 @@ public class Event implements Parcelable {
 
     // for Parcelable
     protected Event(Parcel in) {
+        ID = in.readString();
         eventName = in.readString();
         location = in.readString();
         date = in.readString();
         time = in.readString();
         description = in.readString();
-        ID = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -109,11 +109,11 @@ public class Event implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(ID);
         dest.writeString(eventName);
         dest.writeString(location);
         dest.writeString(date);
         dest.writeString(time);
         dest.writeString(description);
-        dest.writeString(ID);
     }
 }

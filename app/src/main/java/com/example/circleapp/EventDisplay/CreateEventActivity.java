@@ -59,11 +59,11 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventName = eventNameEditText.getText().toString();
             String location = locationEditText.getText().toString();
             String date = dateEditText.getText().toString();
-            String time = timeEditText.getText().toString();
+            //String time = timeEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             String ID = firebaseManager.generateRandomID();
 
-            Event event = new Event(ID, eventName, location, date, time, description);
+            Event event = new Event(ID, eventName, location, date, "7:30", description);
 
             firebaseManager.addNewEvent(event);
 
