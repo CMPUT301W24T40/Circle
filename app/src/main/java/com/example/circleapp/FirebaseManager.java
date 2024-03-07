@@ -30,12 +30,11 @@ public class FirebaseManager {
         return instance;
     }
 
-    public String generateRandomUserId() {
+    public String generateRandomID() {
         return UUID.randomUUID().toString();
     }
 
     public void addNewUser(Attendee user) {
-        // Add the user to the Firestore collection
         HashMap<String, String> data = new HashMap<>();
         data.put("User ID", user.getID());
         data.put("First Name", user.getFirstName());
@@ -50,4 +49,20 @@ public class FirebaseManager {
                 .addOnSuccessListener(documentReference -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
                 .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
     }
+
+    public void addNewEvent(Event event) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Event ID", event.getID());
+        data.put("Event Name", event.getEventName());
+        data.put("Location", event.getLocation());
+        data.put("Date", event.getDate());
+        data.put("Time", event.getTime());
+        data.put("Description", event.getDescription());
+
+        eventsRef
+                .add(data)
+                .addOnSuccessListener(documentReference -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
+                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+    }
+
 }
