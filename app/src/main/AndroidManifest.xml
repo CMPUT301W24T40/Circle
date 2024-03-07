@@ -18,10 +18,10 @@
         android:theme="@style/Theme.CircleApp"
         tools:targetApi="31">
         <activity
-            android:name=".EditProfileActivity"
+            android:name=".Profile.EditProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".MakeProfileActivity"
+            android:name=".Profile.MakeProfileActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -34,16 +34,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScanQRActivity"
+            android:name=".QRCode.ScanQRActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
         <activity
-            android:name=".EventDetailsActivity"
+            android:name=".EventDisplay.EventDetailsActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
-        <activity android:name=".GenerateQRActivity" />
+        <activity android:name=".QRCode.GenerateQRActivity" />
         <activity
-            android:name=".CreateEventActivity"
+            android:name=".EventDisplay.CreateEventActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
 

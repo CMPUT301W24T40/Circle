@@ -1,13 +1,11 @@
-package com.example.circleapp;
+package com.example.circleapp.Profile;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +21,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.BaseObjects.Attendee;
+import com.example.circleapp.R;
 import com.google.gson.Gson;
 
 public class ProfileFragment extends Fragment {

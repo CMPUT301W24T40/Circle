@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/your_events_fragment"
-        android:name="com.example.circleapp.YourEventsFragment"
+        android:name="com.example.circleapp.EventDisplay.YourEventsFragment"
         tools:layout="@layout/fragment_your_events" />
 
     <fragment
         android:id="@+id/browse_events_fragment"
-        android:name="com.example.circleapp.BrowseEventsFragment"
+        android:name="com.example.circleapp.EventDisplay.BrowseEventsFragment"
         tools:layout="@layout/fragment_browse_events" />
 
     <fragment
         android:id="@+id/profile_fragment"
-        android:name="com.example.circleapp.ProfileFragment"
+        android:name="com.example.circleapp.Profile.ProfileFragment"
         tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -1,5 +1,5 @@
 
-package com.example.circleapp;
+package com.example.circleapp.BaseObjects;
 
 import android.net.Uri;
 import android.os.Parcel;

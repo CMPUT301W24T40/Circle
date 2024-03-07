@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.EventDisplay;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.R;
 
 public class CreateEventActivity extends AppCompatActivity {
     EditText eventNameEditText;

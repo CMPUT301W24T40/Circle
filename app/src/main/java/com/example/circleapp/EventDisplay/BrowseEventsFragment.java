@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.EventDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.R;
 
 import java.util.ArrayList;
 import java.util.List;

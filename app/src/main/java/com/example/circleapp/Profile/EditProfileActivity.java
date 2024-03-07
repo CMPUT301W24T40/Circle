@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.Profile;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,6 +15,10 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.BaseObjects.Attendee;
+import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.Firebase.PreferenceUtils;
+import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
 
@@ -64,7 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
         );
 
         // let's user select an image
-        profilePic.setOnClickListener(v -> ImagePicker.with(com.example.circleapp.EditProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
+        profilePic.setOnClickListener(v -> ImagePicker.with(EditProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
                 .createIntent(intent -> {
                     imagePickLauncher.launch(intent);
                     return null;
