@@ -34,6 +34,7 @@ public class Event implements Parcelable {
         date = in.readString();
         time = in.readString();
         description = in.readString();
+        ID = in.readString();
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
@@ -113,5 +114,6 @@ public class Event implements Parcelable {
         dest.writeString(date);
         dest.writeString(time);
         dest.writeString(description);
+        dest.writeString(ID);
     }
 }
