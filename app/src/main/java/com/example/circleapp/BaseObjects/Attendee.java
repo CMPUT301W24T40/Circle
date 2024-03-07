@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attendee implements Parcelable {
@@ -15,7 +16,7 @@ public class Attendee implements Parcelable {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private List<Event> events;
+    private ArrayList<Event> events;
     private boolean isGeoEnabled;
     private Uri profilePic;
 
@@ -68,7 +69,7 @@ public class Attendee implements Parcelable {
         return phoneNumber;
     }
 
-    public List<Event> getEvents() { return events; }
+    public ArrayList<Event> getEvents() { return events; }
 
     public boolean isGeoEnabled() { return isGeoEnabled; }
 

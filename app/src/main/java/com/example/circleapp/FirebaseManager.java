@@ -9,12 +9,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class FirebaseManager {
-
     private static FirebaseManager instance;
     private FirebaseFirestore db;
     private CollectionReference usersRef;
@@ -50,18 +50,7 @@ public class FirebaseManager {
         //data.put("Profile Picture", user.getProfilePic().toString());
 
         usersRef.document(user.getID()).set(data);
-    }
-
-    public void addNewEvent(Event event) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("Event ID", event.getID());
-        data.put("Event Name", event.getEventName());
-        data.put("Location", event.getLocation());
-        data.put("Date", event.getDate());
-        data.put("Time", event.getTime());
-        data.put("Description", event.getDescription());
-
-        eventsRef.document(event.getID()).set(data);
+        usersRef.document(user.getID()).collection("registeredEvents");
     }
 
     public void editUser(Attendee user) {
@@ -82,6 +71,53 @@ public class FirebaseManager {
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
                 }
             }
+        });
+    }
+
+    private Event documentToEvent(DocumentSnapshot document) {
+        String id = document.getId();
+        String eventName = document.getString("Event Name");
+        String location = document.getString("Location");
+        String date = document.getString("Date");
+        String time = document.getString("Time");
+        String description = document.getString("Description");
+
+        Log.d("PleaseWork", "Event Name: " + eventName);
+        return new Event(id, eventName, location, date, time, description);
+    }
+
+    public ArrayList<Event> getAllEvents() {
+        ArrayList<Event> eventsList = new ArrayList<>();
+
+        eventsRef.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Event event = documentToEvent(document);
+                eventsList.add(event);
+            }
+        });
+
+        Log.d("EventListLength", "Length of eventsList: " + eventsList.size());
+        return eventsList;
+    }
+
+    public void addNewEvent(Event event) {
+        HashMap<String, String> data = new HashMap<>();
+        data.put("Event ID", event.getID());
+        data.put("Event Name", event.getEventName());
+        data.put("Location", event.getLocation());
+        data.put("Date", event.getDate());
+        data.put("Time", event.getTime());
+        data.put("Description", event.getDescription());
+
+        eventsRef.document(event.getID()).set(data);
+    }
+
+    public void registerEvent(Attendee user, Event event) {
+        DocumentReference eventDocRef = eventsRef.document(event.getID());
+        CollectionReference userEventsRef = usersRef.document(user.getID()).collection("registeredEvents");
+
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            userEventsRef.add(documentSnapshot.getData());
         });
     }
 }

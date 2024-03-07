@@ -20,20 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseEventsFragment extends Fragment {
-    Button addEvent;
+    RecyclerView recyclerView;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    Button addEvent;
+    ArrayList<Event> events;
+    EventAdapter adapter;
+    EventAdapter.OnItemClickListener listener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse_events, container, false);
-        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        List<Event> events = getEvents();
+        events = firebaseManager.getAllEvents();
 
-        //null value disables the clickListener for the Browse page
-        EventAdapter adapter = new EventAdapter(events, null);
+        // null value disables the clickListener for the Browse page
+        adapter = new EventAdapter(events, null);
         recyclerView.setAdapter(adapter);
 
         addEvent = rootView.findViewById(R.id.add_event_button);
@@ -43,15 +47,20 @@ public class BrowseEventsFragment extends Fragment {
             startActivity(intent);
         });
 
+        // Set up the click listener
+        listener = this::eventClicked;
+
+        // Pass the click listener to the adapter
+        adapter = new EventAdapter(events, listener);
+        recyclerView.setAdapter(adapter);
+
         return rootView;
     }
 
-    private List<Event> getEvents() {
-        // Use dummy data for now
-        List<Event> events = new ArrayList<>();
-        events.add(new Event("123", "Event 1", "Location 1", "Date 1", "Time 1", "Description 1"));
-        events.add(new Event("456", "Event 2", "Location 2", "Date 2", "Time 2", "Description 2"));
-        events.add(new Event("789", "Event 3", "Location 3", "Date 3", "Time 3", "Description 3"));
-        return events;
+    // handle item clicks
+    private void eventClicked(Event event) {
+        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+        intent.putExtra("event", event);
+        startActivity(intent);
     }
 }

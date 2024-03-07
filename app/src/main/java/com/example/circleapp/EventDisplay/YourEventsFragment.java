@@ -19,29 +19,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class YourEventsFragment extends Fragment {
+    RecyclerView recyclerView;
+    Button scanButton;
+    ArrayList<Event> events;
+    EventAdapter adapter;
+    EventAdapter.OnItemClickListener listener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_your_events, container, false);
 
-        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        Button scanButton = rootView.findViewById(R.id.scan_button);
+        scanButton = rootView.findViewById(R.id.scan_button);
 
         scanButton.setOnClickListener(v -> {
             Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
             startActivity(intent);
         });
 
-        List<Event> events = getEvents();
+        events = getEvents();
 
         // Set up the click listener
-        EventAdapter.OnItemClickListener listener = this::eventClicked;
+        listener = this::eventClicked;
 
         // Pass the click listener to the adapter
-        EventAdapter adapter = new EventAdapter(events, listener);
+        adapter = new EventAdapter(events, listener);
         recyclerView.setAdapter(adapter);
 
         return rootView;
@@ -54,9 +58,9 @@ public class YourEventsFragment extends Fragment {
         startActivity(intent);
     }
 
-    private List<Event> getEvents() {
+    private ArrayList<Event> getEvents() {
         // Use dummy data for now
-        List<Event> events = new ArrayList<>();
+        ArrayList<Event> events = new ArrayList<>();
         events.add(new Event("321", "Event 1", "Location 1", "Date 1", "Time 1", "Description 1"));
         return events;
     }
