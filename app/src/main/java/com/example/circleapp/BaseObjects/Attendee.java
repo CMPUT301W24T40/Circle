@@ -30,6 +30,7 @@ public class Attendee implements Parcelable {
 
     // for Parcelable
     protected Attendee(Parcel in) {
+        ID = in.readString();
         firstName = in.readString();
         lastName = in.readString();
         email = in.readString();
@@ -105,6 +106,7 @@ public class Attendee implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(ID);
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(email);

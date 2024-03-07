@@ -61,10 +61,7 @@ public class FirebaseManager {
         data.put("Time", event.getTime());
         data.put("Description", event.getDescription());
 
-        eventsRef
-                .add(data)
-                .addOnSuccessListener(documentReference -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+        eventsRef.document(event.getID()).set(data);
     }
 
     public void editUser(Attendee user) {
