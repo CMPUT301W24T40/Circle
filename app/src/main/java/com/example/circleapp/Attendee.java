@@ -19,12 +19,13 @@ public class Attendee implements Parcelable {
     private boolean isGeoEnabled;
     private Uri profilePic;
 
-    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber) {
+    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber, Uri profilePic) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.profilePic = profilePic;
     }
 
     // for Parcelable
