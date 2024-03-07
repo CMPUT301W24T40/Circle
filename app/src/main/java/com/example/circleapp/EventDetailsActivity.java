@@ -16,7 +16,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_details_activity);
 
-        Event event = (Event) getIntent().getSerializableExtra("event");
+        Event event = (Event) getIntent().getParcelableExtra("event");
 
         TextView eventNameTextView = findViewById(R.id.event_details_name);
         TextView eventLocationTextView = findViewById(R.id.event_details_location);
