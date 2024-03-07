@@ -70,7 +70,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
-            String ID = firebaseManager.generateRandomUserId();
+            String ID = firebaseManager.generateRandomID();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             // Creates a new user! But need to figure out how we'll be able to edit

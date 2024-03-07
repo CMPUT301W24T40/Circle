@@ -53,7 +53,7 @@ public class YourEventsFragment extends Fragment {
     private List<Event> getEvents() {
         // Use dummy data for now
         List<Event> events = new ArrayList<>();
-        events.add(new Event("Event 1", "Location 1", "Date 1", "Time 1", "Description 1", R.drawable.event_image_dummy ));
+        events.add(new Event("321", "Event 1", "Location 1", "Date 1", "Time 1", "Description 1"));
         return events;
     }
 
