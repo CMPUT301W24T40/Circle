@@ -1,13 +1,16 @@
-package com.example.circleapp.Firebase;
+package com.example.circleapp;
 
 import android.util.Log;
 
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class FirebaseManager {
@@ -38,18 +41,15 @@ public class FirebaseManager {
 
     public void addNewUser(Attendee user) {
         HashMap<String, String> data = new HashMap<>();
-        data.put("User ID", user.getID());
-        data.put("First Name", user.getFirstName());
-        data.put("Last Name", user.getLastName());
+        data.put("UserID", user.getID());
+        data.put("FirstName", user.getFirstName());
+        data.put("LastName", user.getLastName());
         data.put("Email", user.getEmail());
-        data.put("Phone Number", user.getPhoneNumber());
-        data.put("Location Enabled", String.valueOf(user.isGeoEnabled()));
+        data.put("Phone", user.getPhoneNumber());
+        data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
         //data.put("Profile Picture", user.getProfilePic().toString());
 
-        usersRef
-                .add(data)
-                .addOnSuccessListener(documentReference -> Log.d("Firestore", "DocumentSnapshot successfully written!"))
-                .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
+        usersRef.document(user.getID()).set(data);
     }
 
     public void addNewEvent(Event event) {
@@ -67,4 +67,24 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> Log.w("Firestore", "Error writing document", e));
     }
 
+    public void editUser(Attendee user) {
+        DocumentReference userDocRef = usersRef.document(user.getID());
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("FirstName", user.getFirstName());
+                    updates.put("LastName", user.getLastName());
+                    updates.put("Email", user.getEmail());
+                    updates.put("Phone", user.getPhoneNumber());
+                    updates.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
+
+                    userDocRef.update(updates)
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
+                }
+            }
+        });
+    }
 }
