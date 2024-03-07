@@ -25,9 +25,11 @@ public class GenerateQRActivity extends AppCompatActivity{
         setContentView(R.layout.activity_generate_qr);
 
         ImageView qrImage = findViewById(R.id.qrImage);
-        //TODO: Replace with event details
-        String eventDetails = "If you can read this the QR code works";
-        Bitmap qrBitmap = generateQRCode(eventDetails);
+
+        Event event = getIntent().getParcelableExtra("event");
+
+        String eventID = event.getID();
+        Bitmap qrBitmap = generateQRCode(eventID);
         qrImage.setImageBitmap(qrBitmap);
 
         Button shareQRbutton = findViewById(R.id.share_QR_button);
