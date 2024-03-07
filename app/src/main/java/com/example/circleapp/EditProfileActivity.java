@@ -17,9 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-// Activity that starts when User wants to make a profile
-public class MakeProfileActivity extends AppCompatActivity {
 
+public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
     EditText emailEditText;
@@ -31,11 +30,13 @@ public class MakeProfileActivity extends AppCompatActivity {
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
+    Attendee user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_profile);
-
+        user = getIntent().getExtras().getParcelable("user");
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
         emailEditText = findViewById(R.id.edit_email);
@@ -44,21 +45,26 @@ public class MakeProfileActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
 
+        firstNameEditText.setText(user.getFirstName());
+        lastNameEditText.setText(user.getLastName());
+        emailEditText.setText(user.getEmail());
+        phoneNumberEditText.setText(user.getPhoneNumber());
+
         // initializes image pick launcher and loads image
         imagePickLauncher  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if(result.getResultCode() == Activity.RESULT_OK){
-                        Intent data = result.getData();
-                        if(data!=null && data.getData()!=null) {
-                            selectedImageUri = data.getData();
-                            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                        }
-                    }
+            if(result.getResultCode() == Activity.RESULT_OK){
+                Intent data = result.getData();
+                if(data!=null && data.getData()!=null) {
+                    selectedImageUri = data.getData();
+                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
                 }
+            }
+        }
         );
 
         // let's user select an image
-        profilePic.setOnClickListener(v -> ImagePicker.with(MakeProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
+        profilePic.setOnClickListener(v -> ImagePicker.with(com.example.circleapp.EditProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
                 .createIntent(intent -> {
                     imagePickLauncher.launch(intent);
                     return null;
@@ -75,7 +81,10 @@ public class MakeProfileActivity extends AppCompatActivity {
 
             // Creates a new user! But need to figure out how we'll be able to edit
             // an existing user because this makes an entirely new Attendee object each time
-            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPhoneNumber(phoneNumber);
+            user.setEmail(email);
             user.setGeoEnabled(isGeoEnabled);
             user.setProfilePic(selectedImageUri);
 

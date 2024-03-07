@@ -17,11 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CircleApp"
         tools:targetApi="31">
-
+        <activity
+            android:name=".EditProfileActivity"
+            android:exported="false" />
         <activity
             android:name=".MakeProfileActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -32,20 +33,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ScanQRActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
-
         <activity
             android:name=".EventDetailsActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
-
-        <activity android:name=".GenerateQRActivity"/>
-
-        <activity android:name=".CreateEventActivity"
+        <activity android:name=".GenerateQRActivity" />
+        <activity
+            android:name=".CreateEventActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
 
@@ -58,7 +56,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
-      
     </application>
 
 </manifest>
