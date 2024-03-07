@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.Firebase;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -7,6 +7,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.circleapp.EventDisplay.BrowseEventsFragment;
+import com.example.circleapp.EventDisplay.YourEventsFragment;
+import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {

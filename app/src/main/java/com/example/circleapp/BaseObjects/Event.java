@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.BaseObjects;
 
 import android.os.Parcel;
 import android.os.Parcelable;

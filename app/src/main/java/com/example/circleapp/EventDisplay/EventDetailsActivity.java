@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.EventDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.QRCode.GenerateQRActivity;
+import com.example.circleapp.R;
 
 //PAGE FOR VIEWING DETAILS OF AN EVENT, NOT YET IMPLEMENTED
 public class EventDetailsActivity extends AppCompatActivity {

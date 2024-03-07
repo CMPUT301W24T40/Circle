@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.EventDisplay;
 
 //REFERENCES: https://stackoverflow.com/questions/45546739/handle-click-events-in-adapter-viewholder
 //            https://stackoverflow.com/questions/40584424/simple-android-recyclerview-example
@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.R;
 
 import java.util.List;
 

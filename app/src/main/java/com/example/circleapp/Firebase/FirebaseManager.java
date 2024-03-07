@@ -1,7 +1,9 @@
-package com.example.circleapp;
+package com.example.circleapp.Firebase;
 
 import android.util.Log;
 
+import com.example.circleapp.BaseObjects.Attendee;
+import com.example.circleapp.BaseObjects.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 

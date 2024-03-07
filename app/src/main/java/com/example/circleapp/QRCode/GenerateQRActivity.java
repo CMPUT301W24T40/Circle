@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.QRCode;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.R;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
