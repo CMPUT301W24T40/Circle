@@ -37,6 +37,10 @@ public class Event implements Parcelable {
         description = in.readString();
     }
 
+    // No-argument constructor
+    public Event() {
+    }
+
     public static final Creator<Event> CREATOR = new Creator<Event>() {
         @Override
         public Event createFromParcel(Parcel in) {

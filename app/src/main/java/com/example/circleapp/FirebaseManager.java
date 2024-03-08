@@ -74,22 +74,17 @@ public class FirebaseManager {
         });
     }
 
-    public ArrayList<Event> getAllEvents() {
+    public void getAllEvents(FirestoreCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         eventsRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
                 Event event = document.toObject(Event.class);
-
                 eventsList.add(event);
             }
-//            Log.d("EventListLength", "Length of eventsList: " + eventsList.size());
-
+            callback.onCallback(eventsList);
         });
-
-        return eventsList;
     }
-
     public void addNewEvent(Event event) {
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", event.getID());
@@ -107,5 +102,9 @@ public class FirebaseManager {
         CollectionReference userEventsRef = usersRef.document(user.getID()).collection("registeredEvents");
 
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.add(documentSnapshot.getData()));
+    }
+
+    public interface FirestoreCallback {
+        void onCallback(ArrayList<Event> eventsList);
     }
 }
