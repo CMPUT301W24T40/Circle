@@ -31,4 +31,5 @@ public class EventUnitTest {
         assertEquals("Sample Description", event.getDescription());
         assertEquals(12345, event.getEventPoster());
     }
+
 }
