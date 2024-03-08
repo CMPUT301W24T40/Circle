@@ -42,26 +42,13 @@
             </AndroidTestResultsTableState>
           </value>
         </entry>
-        <entry key="-361451569">
+        <entry key="-1476074636">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
-                  <entry key="Pixel_7_API_UpsideDownCakePrivacySandbox" value="120" />
-                  <entry key="Tests" value="360" />
-                </map>
-              </option>
-            </AndroidTestResultsTableState>
-          </value>
-        </entry>
-        <entry key="1442771270">
-          <value>
-            <AndroidTestResultsTableState>
-              <option name="preferredColumnWidths">
-                <map>
-                  <entry key="Duration" value="90" />
-                  <entry key="Pixel_7_API_UpsideDownCakePrivacySandbox" value="120" />
+                  <entry key="Pixel_6_API_34" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
               </option>
