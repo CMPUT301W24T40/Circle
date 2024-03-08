@@ -27,7 +27,9 @@ import java.io.FileOutputStream;
 public class GenerateQRActivity extends AppCompatActivity{
 
     /**
-     * Upon the creation of this Activity
+     * Upon the creation of this Activity, a QRCode is generated for the event and displayed.
+     * The eventID is encoded into the QR code. The user can share the QR code by clicking the share
+     * button. The QR code is saved as a .png file and shared using the file provider.
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -54,7 +56,7 @@ public class GenerateQRActivity extends AppCompatActivity{
     /**
      * This generates a QRCode for an event, using an eventID (the data)
      * encoded into it
-     * @param data
+     * @param data The eventID
      * @return
      *         Return the bitmap QRCode
      */
@@ -78,8 +80,10 @@ public class GenerateQRActivity extends AppCompatActivity{
     }
 
     /**
-     * This saves and shares QRCode image. Saved image gets overwritten.
-     * @param bitmap
+     * This saves and shares QRCode image. It saves the QRCode as a .png file and shares it using the file provider.
+     * Sharing is done through the android share intent. The save location is the cache directory and
+     * gets deleted when the app is uninstalled. the saved imaf\ge is overwritten every time.
+     * @param bitmap The QRCode bitmap to be shared
      */
     private void shareQRImage(Bitmap bitmap){
         try {
