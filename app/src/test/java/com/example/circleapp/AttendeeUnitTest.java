@@ -9,7 +9,7 @@ import com.example.circleapp.BaseObjects.Attendee;
 
 //PROFILE PIC COMPONENT IS EXCLUDED AT THE MOMENT
 
-public class AttendeeTest {
+public class AttendeeUnitTest {
 
     @Test
     public void testAttendeeConstructor() {
