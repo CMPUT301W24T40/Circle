@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+/**
+ * This is a class that defines an Event
+ */
 public class Event implements Parcelable {
     private String ID;
     private String eventName;
@@ -35,6 +38,10 @@ public class Event implements Parcelable {
         date = in.readString();
         time = in.readString();
         description = in.readString();
+    }
+
+    // No-argument constructor
+    public Event() {
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {

@@ -5,41 +5,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.Button;
+import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BrowseEventsFragment extends Fragment {
-    RecyclerView recyclerView;
+    ListView listView;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Button addEvent;
-    ArrayList<Event> events;
     EventAdapter adapter;
-    EventAdapter.OnItemClickListener listener;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse_events, container, false);
-        recyclerView = rootView.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        events = firebaseManager.getAllEvents();
-
-        // null value disables the clickListener for the Browse page
-        adapter = new EventAdapter(events, null);
-        recyclerView.setAdapter(adapter);
-
+        listView = rootView.findViewById(R.id.list_view);
         addEvent = rootView.findViewById(R.id.add_event_button);
 
         addEvent.setOnClickListener(v -> {
@@ -47,19 +33,30 @@ public class BrowseEventsFragment extends Fragment {
             startActivity(intent);
         });
 
-        // Set up the click listener
-        listener = this::eventClicked;
+        adapter = new EventAdapter(getContext(), new ArrayList<>());
+        listView.setAdapter(adapter);
 
-        // Pass the click listener to the adapter
-        adapter = new EventAdapter(events, listener);
-        recyclerView.setAdapter(adapter);
+        loadEvents();
+
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            Event event = (Event) parent.getItemAtPosition(position);
+            eventClicked(event);
+        });
 
         return rootView;
+    }
+
+    private void loadEvents() {
+        firebaseManager.getAllEvents(events -> {
+            adapter.clear();
+            adapter.addAll(events);
+        });
     }
 
     // handle item clicks
     private void eventClicked(Event event) {
         Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+        intent.putExtra("source", "BrowseEventsFragment");
         intent.putExtra("event", event);
         startActivity(intent);
     }
