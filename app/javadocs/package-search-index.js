@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.circleapp"},{"l":"com.example.circleapp.BaseObjects"},{"l":"com.example.circleapp.EventDisplay"},{"l":"com.example.circleapp.Profile"},{"l":"com.example.circleapp.QRCode"}];updateSearchResults();
