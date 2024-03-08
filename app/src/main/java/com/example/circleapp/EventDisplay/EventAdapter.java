@@ -16,8 +16,19 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for displaying events in a ListView.
+ */
 public class EventAdapter extends ArrayAdapter<Event> {
 
+    /**
+     * Constructor for EventAdapter.
+     *
+     * @param context The context
+     * @param events  The list of events
+     * @see BrowseEventsFragment
+     * @see YourEventsFragment
+     */
     public EventAdapter(Context context, ArrayList<Event> events) {
         super(context, 0, events);
     }
@@ -36,10 +47,11 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView eventDetails = convertView.findViewById(R.id.details_title);
         ImageView eventPoster = convertView.findViewById(R.id.event_poster);
 
-        assert event != null;
-        eventName.setText(event.getEventName());
-        eventDescription.setText(event.getDescription());
-
+        if (event != null) {
+            eventName.setText(event.getEventName());
+            eventDescription.setText(event.getDescription());
+            // Set other event details if needed
+        }
 
         return convertView;
     }

@@ -1,24 +1,26 @@
 package com.example.circleapp.Profile;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.ImageAdapter;
 import com.example.circleapp.R;
-import com.github.dhaval2404.imagepicker.ImagePicker;
 
 /**
  * This class is used for when a user wants to make profile
@@ -32,7 +34,6 @@ public class MakeProfileActivity extends AppCompatActivity {
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
-    ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
@@ -42,6 +43,7 @@ public class MakeProfileActivity extends AppCompatActivity {
      * geolocation, and profile pic. After confirmation, user profile is created
      * and added to Firestore database to keep track of the user. The user is put into
      * a Bundle and sent back to the fragment (ProfileFragment) that started the activity.
+     *
      * @param savedInstanceState If the activity is being re-initialized after
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
@@ -60,25 +62,22 @@ public class MakeProfileActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
 
-        // initializes image pick launcher and loads image
-        imagePickLauncher  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if(result.getResultCode() == Activity.RESULT_OK){
-                        Intent data = result.getData();
-                        if(data!=null && data.getData()!=null) {
-                            selectedImageUri = data.getData();
-                            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                        }
-                    }
+        selectedImageUri = null;
+        profilePic.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MakeProfileActivity.this);
+            builder.setTitle("Profile Picture Options");
+            String[] options = {"Select Image", "Cancel"};
+            builder.setItems(options, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        selectImage(builder);
+                        break;
+                    case 1:
+                        break;
                 }
-        );
-
-        // let's user select an image
-        profilePic.setOnClickListener(v -> ImagePicker.with(MakeProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
-                .createIntent(intent -> {
-                    imagePickLauncher.launch(intent);
-                    return null;
-                }));
+            });
+            builder.show();
+        });
 
         confirmButton.setOnClickListener(v -> {
             // after clicking confirm, gets all the user inputs from EditTexts etc.
@@ -89,24 +88,19 @@ public class MakeProfileActivity extends AppCompatActivity {
             String ID = firebaseManager.generateRandomID();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
-            // Creates a new user! But need to figure out how we'll be able to edit
-            // an existing user because this makes an entirely new Attendee object each time
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
             user.setGeoEnabled(isGeoEnabled);
-            user.setProfilePic(selectedImageUri);
 
             firebaseManager.addNewUser(user);
             firebaseManager.setCurrentUserID(ID);
 
-            // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
-            // sent back to the fragment
+            // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             Intent intent = new Intent();
             intent.putExtras(bundle);
 
-            // Letting the fragment know it has results or not
-            // in this case it ALWAYS will, for now just to test
+            // Letting the fragment know it has results or not in this case it ALWAYS will, for now just to test
             setResult(Activity.RESULT_OK, intent);
 
             // Closes the activity
@@ -114,5 +108,28 @@ public class MakeProfileActivity extends AppCompatActivity {
             finish();
         });
 
+    }
+
+    public void selectImage(AlertDialog.Builder builder) {
+        // Inflate a custom layout containing a grid view
+        View view = LayoutInflater.from(MakeProfileActivity.this).inflate(R.layout.image_selection, null);
+        GridView gridView = view.findViewById(R.id.grid_view);
+        ImageAdapter adapter = new ImageAdapter(MakeProfileActivity.this);
+        int[] imageResources = adapter.getImageResources();
+        gridView.setAdapter(adapter);
+
+        builder.setView(view);
+
+        final AlertDialog dialog = builder.create();
+
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            int resourceID = imageResources[position];
+            selectedImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + resourceID); // Set the selected image URI
+
+            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            dialog.dismiss();
+        });
+
+        dialog.show(); // Show the dialog after setting the custom view
     }
 }

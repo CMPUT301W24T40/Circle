@@ -15,12 +15,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Manages interactions with Firebase Firestore.
+ */
 public class FirebaseManager {
     private static FirebaseManager instance;
-    private final CollectionReference usersRef;
-    private final CollectionReference eventsRef;
-    private String currentUserID;
+    private final CollectionReference usersRef; // A reference to the "users" collection in Firestore
+    private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
+    private String currentUserID; // A reference to the user ID of the user currently using the app
 
+    /**
+     * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
+     * retrieve data from the Firestore database.
+     */
     private FirebaseManager() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -28,6 +35,11 @@ public class FirebaseManager {
         eventsRef = db.collection("events");
     }
 
+    /**
+     * Gets the singleton instance of FirebaseManager.
+     *
+     * @return The FirebaseManager instance
+     */
     public static synchronized FirebaseManager getInstance() {
         if (instance == null) {
             instance = new FirebaseManager();
@@ -35,12 +47,29 @@ public class FirebaseManager {
         return instance;
     }
 
-    public void setCurrentUserID(String ID) { this.currentUserID = ID; }
+    /**
+     * Sets the current user ID.
+     *
+     * @param ID The ID of the current user
+     */
+    public void setCurrentUserID(String ID) {
+        this.currentUserID = ID;
+    }
 
+    /**
+     * Generates a random UUID.
+     *
+     * @return The generated UUID
+     */
     public String generateRandomID() {
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Adds a new user to Firestore.
+     *
+     * @param user The user to add
+     */
     public void addNewUser(Attendee user) {
         HashMap<String, String> data = new HashMap<>();
         data.put("UserID", user.getID());
@@ -49,12 +78,16 @@ public class FirebaseManager {
         data.put("Email", user.getEmail());
         data.put("Phone", user.getPhoneNumber());
         data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
-        //data.put("Profile Picture", user.getProfilePic().toString());
 
         usersRef.document(user.getID()).set(data);
         usersRef.document(user.getID()).collection("registeredEvents");
     }
 
+    /**
+     * Edits an existing user in Firestore.
+     *
+     * @param user The user to edit
+     */
     public void editUser(Attendee user) {
         DocumentReference userDocRef = usersRef.document(user.getID());
 
@@ -76,6 +109,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Retrieves all events from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     */
     public void getAllEvents(FirestoreCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
@@ -88,6 +126,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Retrieves registered events for the current user from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     */
     public void getRegisteredEvents(FirestoreCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
@@ -100,6 +143,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Adds a new event to Firestore.
+     *
+     * @param event The event to add
+     */
     public void addNewEvent(Event event) {
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", event.getID());
@@ -112,6 +160,11 @@ public class FirebaseManager {
         eventsRef.document(event.getID()).set(data);
     }
 
+    /**
+     * Registers an event for the current user in Firestore.
+     *
+     * @param event The event to register
+     */
     public void registerEvent(Event event) {
         DocumentReference eventDocRef = eventsRef.document(event.getID());
         CollectionReference userEventsRef = usersRef.document(currentUserID).collection("registeredEvents");
@@ -119,7 +172,15 @@ public class FirebaseManager {
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.add(Objects.requireNonNull(documentSnapshot.getData())));
     }
 
+    /**
+     * Callback interface for Firestore operations.
+     */
     public interface FirestoreCallback {
+        /**
+         * Callback method to execute with the events list.
+         *
+         * @param eventsList The list of events retrieved from Firestore
+         */
         void onCallback(ArrayList<Event> eventsList);
     }
 }
