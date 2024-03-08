@@ -20,8 +20,19 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.FileOutputStream;
 
+/**
+ * This class is used to generate QR codes for a particular
+ * event using a unique eventID
+ */
 public class GenerateQRActivity extends AppCompatActivity{
 
+    /**
+     * Upon the creation of this Activity
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_generate_qr);
@@ -40,6 +51,13 @@ public class GenerateQRActivity extends AppCompatActivity{
 
     }
 
+    /**
+     * This generates a QRCode for an event, using an eventID (the data)
+     * encoded into it
+     * @param data
+     * @return
+     *         Return the bitmap QRCode
+     */
     private Bitmap generateQRCode(String data){
         QRCodeWriter writer = new QRCodeWriter();
         try {
@@ -59,7 +77,10 @@ public class GenerateQRActivity extends AppCompatActivity{
         }
     }
 
-    //Saves and shares image. Saved image gets overwritten.
+    /**
+     * This saves and shares QRCode image. Saved image gets overwritten.
+     * @param bitmap
+     */
     private void shareQRImage(Bitmap bitmap){
         try {
             File cachePath = new File(getCacheDir(), "images");

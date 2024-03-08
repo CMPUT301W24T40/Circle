@@ -25,6 +25,9 @@ import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.R;
 import com.google.gson.Gson;
 
+/**
+ * This class is used to display the profile of a user.
+ */
 public class ProfileFragment extends Fragment {
     TextView firstName;
     TextView lastName;
@@ -42,6 +45,24 @@ public class ProfileFragment extends Fragment {
     ActivityResultLauncher<Intent> launcher;
     static Attendee ourUser;
 
+    /**
+     * View prompts the user to make a profile with details. When user chooses to make
+     * a profile, MakeProfileActivity is called. The profile details from the activity
+     * are displayed here on the view. Choosing to edit the existing profile
+     * starts the EditProfileActivity class. Any updates to the details will be
+     * displayed on the view.
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     * @see MakeProfileActivity
+     * @see EditProfileActivity
+     * @return
+     *         Returns the View shown to the user.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
