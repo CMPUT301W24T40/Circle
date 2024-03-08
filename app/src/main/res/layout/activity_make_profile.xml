@@ -21,14 +21,14 @@
         app:layout_constraintBottom_toTopOf="@+id/lname_edit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_profile_text"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/lname_edit"
         android:layout_width="216dp"
         android:layout_height="51dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="144dp"
         android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="@string/last_name"
@@ -40,11 +40,11 @@
         android:id="@+id/edit_number"
         android:layout_width="349dp"
         android:layout_height="52dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="68dp"
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="@string/phone_number"
         android:inputType="phone"
-        android:backgroundTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_pfp" />
@@ -53,13 +53,13 @@
         android:id="@+id/edit_email"
         android:layout_width="347dp"
         android:layout_height="55dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="28dp"
+        android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
-        android:backgroundTint="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintHorizontal_bias="0.546"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_number" />
 
@@ -97,15 +97,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@color/black"
         android:text="@string/enable_geolocation"
         android:textSize="18sp"
-        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.081"
+        app:layout_constraintHorizontal_bias="0.143"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_email"
-        app:layout_constraintVertical_bias="0.017" />
+        app:layout_constraintVertical_bias="0.013" />
 
     <Button
         android:id="@+id/confirm_edit_button"
@@ -118,6 +118,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/delete_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Image"
+        tools:layout_editor_absoluteX="38dp"
+        tools:layout_editor_absoluteY="235dp"
+        tools:ignore="MissingConstraints" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
