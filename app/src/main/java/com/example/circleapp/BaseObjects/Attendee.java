@@ -10,6 +10,9 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a class that defines an Attendee
+ */
 public class Attendee implements Parcelable {
     private String ID;
     private String firstName;
