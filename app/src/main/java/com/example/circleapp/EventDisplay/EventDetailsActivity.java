@@ -1,25 +1,24 @@
 package com.example.circleapp.EventDisplay;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
 import com.example.circleapp.R;
 
 public class EventDetailsActivity extends AppCompatActivity {
-    Attendee user;
     Event event;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    Button backButton;
     Button generateQRButton;
     Button registerButton;
     TextView eventNameTextView;
@@ -32,7 +31,6 @@ public class EventDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_details_activity);
-        user = getIntent().getExtras().getParcelable("user");
         event = getIntent().getParcelableExtra("event");
 
         eventNameTextView = findViewById(R.id.event_details_name);
@@ -47,8 +45,17 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDescriptionTextView.setText(event.getDescription());
         eventPosterImageView.setImageResource(event.getEventPoster());
 
+        backButton = findViewById(R.id.back_button);
         generateQRButton = findViewById(R.id.generate_qr_button);
         registerButton = findViewById(R.id.register_button);
+
+        registerButton.setVisibility(View.GONE);
+        String source = getIntent().getStringExtra("source");
+        if ("BrowseEventsFragment".equals(source)) {
+            registerButton.setVisibility(View.VISIBLE);
+        }
+
+        backButton.setOnClickListener(v -> finish());
 
         generateQRButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GenerateQRActivity.class);
@@ -60,18 +67,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
             builder.setTitle("Confirmation");
             builder.setMessage("Are you sure you want to register?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    firebaseManager.registerEvent(user, event);
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss(); // Dismiss the dialog
-                }
-            });
+            builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event));
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
         });

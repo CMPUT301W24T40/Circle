@@ -25,7 +25,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
  * a.k.a. add their details
  */
 public class MakeProfileActivity extends AppCompatActivity {
-
     EditText firstNameEditText;
     EditText lastNameEditText;
     EditText emailEditText;
@@ -97,6 +96,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setProfilePic(selectedImageUri);
 
             firebaseManager.addNewUser(user);
+            firebaseManager.setCurrentUserID(ID);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment
