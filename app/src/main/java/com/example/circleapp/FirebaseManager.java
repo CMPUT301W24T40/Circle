@@ -12,18 +12,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class FirebaseManager {
     private static FirebaseManager instance;
-    private FirebaseFirestore db;
-    private CollectionReference usersRef;
-    private CollectionReference eventsRef;
+    private final CollectionReference usersRef;
+    private final CollectionReference eventsRef;
+    private String currentUserID;
 
     private FirebaseManager() {
-        // Initialize Firebase Firestore
-        db = FirebaseFirestore.getInstance();
-        // Initialize CollectionReference for users
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         usersRef = db.collection("users");
         eventsRef = db.collection("events");
     }
@@ -34,6 +34,8 @@ public class FirebaseManager {
         }
         return instance;
     }
+
+    public void setCurrentUserID(String ID) { this.currentUserID = ID; }
 
     public String generateRandomID() {
         return UUID.randomUUID().toString();
@@ -85,6 +87,19 @@ public class FirebaseManager {
             callback.onCallback(eventsList);
         });
     }
+
+    public void getRegisteredEvents(FirestoreCallback callback) {
+        ArrayList<Event> eventsList = new ArrayList<>();
+
+        usersRef.document(currentUserID).collection("registeredEvents").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Event event = document.toObject(Event.class);
+                eventsList.add(event);
+            }
+            callback.onCallback(eventsList);
+        });
+    }
+
     public void addNewEvent(Event event) {
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", event.getID());
@@ -97,11 +112,11 @@ public class FirebaseManager {
         eventsRef.document(event.getID()).set(data);
     }
 
-    public void registerEvent(Attendee user, Event event) {
+    public void registerEvent(Event event) {
         DocumentReference eventDocRef = eventsRef.document(event.getID());
-        CollectionReference userEventsRef = usersRef.document(user.getID()).collection("registeredEvents");
+        CollectionReference userEventsRef = usersRef.document(currentUserID).collection("registeredEvents");
 
-        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.add(documentSnapshot.getData()));
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.add(Objects.requireNonNull(documentSnapshot.getData())));
     }
 
     public interface FirestoreCallback {

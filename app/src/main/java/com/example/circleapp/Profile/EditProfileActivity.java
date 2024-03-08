@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -20,6 +19,8 @@ import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+
+import java.util.Objects;
 
 public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
@@ -38,7 +39,7 @@ public class EditProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_profile);
-        user = getIntent().getExtras().getParcelable("user");
+        user = Objects.requireNonNull(getIntent().getExtras()).getParcelable("user");
 
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);

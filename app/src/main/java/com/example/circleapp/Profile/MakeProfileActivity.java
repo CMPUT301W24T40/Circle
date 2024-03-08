@@ -22,7 +22,6 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 
 // Activity that starts when User wants to make a profile
 public class MakeProfileActivity extends AppCompatActivity {
-
     EditText firstNameEditText;
     EditText lastNameEditText;
     EditText emailEditText;
@@ -83,6 +82,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setProfilePic(selectedImageUri);
 
             firebaseManager.addNewUser(user);
+            firebaseManager.setCurrentUserID(ID);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment
