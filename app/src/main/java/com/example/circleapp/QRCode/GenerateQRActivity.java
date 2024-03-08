@@ -43,7 +43,12 @@ public class GenerateQRActivity extends AppCompatActivity{
 
         Event event = getIntent().getParcelableExtra("event");
 
-        String eventID = event.getID();
+        String eventID;
+        if (event != null) {
+            eventID = event.getID();
+        } else {
+            eventID = "No event ID";
+        }
         Bitmap qrBitmap = generateQRCode(eventID);
         qrImage.setImageBitmap(qrBitmap);
 
