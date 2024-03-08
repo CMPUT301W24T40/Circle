@@ -1,30 +1,35 @@
-package com.example.circleapp.Profile;
+package com.example.circleapp;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.FirebaseManager;
-import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-/**
- * This class is used for when a user wants to make profile
- * a.k.a. add their details
- */
+// Activity that starts when User wants to make a profile
 public class MakeProfileActivity extends AppCompatActivity {
+
+    Button deleteButton;
     EditText firstNameEditText;
     EditText lastNameEditText;
     EditText emailEditText;
@@ -32,21 +37,13 @@ public class MakeProfileActivity extends AppCompatActivity {
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
+    Uri mImageUri;
     ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    DatabaseReference mDatabaseRef;
 
-    /**
-     * When this Activity is created, a user can add their details to make
-     * a profile on the app. Details include name, email, phone number, option for
-     * geolocation, and profile pic. After confirmation, user profile is created
-     * and added to Firestore database to keep track of the user. The user is put into
-     * a Bundle and sent back to the fragment (ProfileFragment) that started the activity.
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * @see ProfileFragment
-     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +56,7 @@ public class MakeProfileActivity extends AppCompatActivity {
         geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
 
         // initializes image pick launcher and loads image
         imagePickLauncher  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -76,9 +74,19 @@ public class MakeProfileActivity extends AppCompatActivity {
         // let's user select an image
         profilePic.setOnClickListener(v -> ImagePicker.with(MakeProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
                 .createIntent(intent -> {
-                    imagePickLauncher.launch(intent);
+                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
                     return null;
                 }));
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ;deleteProfilePicture();
+            }
+        });
+
+
+
 
         confirmButton.setOnClickListener(v -> {
             // after clicking confirm, gets all the user inputs from EditTexts etc.
@@ -86,17 +94,30 @@ public class MakeProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
-            String ID = firebaseManager.generateRandomID();
+            String ID = firebaseManager.generateRandomUserId();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             // Creates a new user! But need to figure out how we'll be able to edit
             // an existing user because this makes an entirely new Attendee object each time
-            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
+            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber);
             user.setGeoEnabled(isGeoEnabled);
-            user.setProfilePic(selectedImageUri);
 
+            if(selectedImageUri == null){
+                if(((int)firstName.charAt(0)>=65 && (int)firstName.charAt(0)<=90) || ((int)firstName.charAt(0)>=97 && (int)firstName.charAt(0)<=122)){
+                    // Construct the resource ID of the drawable
+                    int drawableResourceId = getResources().getIdentifier(firstName.charAt(0) + "", "drawable", getPackageName());
+
+                    // Check if the drawable exists
+                    if (drawableResourceId != 0) {
+                        // Load the drawable into the ImageView using Glide
+                        Glide.with(this).load(drawableResourceId).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                    }
+                }
+            }
+            user.setProfilePic(selectedImageUri);
             firebaseManager.addNewUser(user);
-            firebaseManager.setCurrentUserID(ID);
+            PreferenceUtils.setCurrentUserID(this, ID);
+            PreferenceUtils.setProfileCreated(this, true);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
             // sent back to the fragment
@@ -114,5 +135,32 @@ public class MakeProfileActivity extends AppCompatActivity {
             finish();
         });
 
+
+    }
+    private void deleteProfilePicture() {
+        if (selectedImageUri != null) {
+            // Delete the image from storage
+            StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedImageUri.toString());
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    // Deletion successful
+                    // Update UI (e.g., set a default image)
+                    profilePic.setImageResource(R.drawable.ic_profile_icon);
+                    selectedImageUri = null;
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // Deletion failed
+                    // Handle the failure (e.g., show an error message)
+                    Toast.makeText(MakeProfileActivity.this, "Failed to delete profile picture", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // No image selected
+            // Handle accordingly (e.g., show a message)
+            Toast.makeText(MakeProfileActivity.this, "No profile picture to delete", Toast.LENGTH_SHORT).show();
+        }
     }
 }
