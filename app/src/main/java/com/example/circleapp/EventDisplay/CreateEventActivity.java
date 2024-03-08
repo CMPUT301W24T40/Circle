@@ -2,64 +2,59 @@ package com.example.circleapp.EventDisplay;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 
+/**
+ * This class is used for when a user wants to create an event.
+ */
 public class CreateEventActivity extends AppCompatActivity {
     EditText eventNameEditText;
     EditText locationEditText;
     EditText dateEditText;
-    EditText timeEditText;
     EditText descriptionEditText;
     ImageView eventPoster;
     Button confirmButton;
-    ActivityResultLauncher<Intent> imagePickLauncher;
-    Uri selectedImageUri;
-    FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
 
+    /**
+     * When this Activity is created, a user can input details to create an Event. Details include
+     * event name, location, date, and description. After confirmation, Event is created and added to
+     * Firestore database in the "events" collection. The event is put into a bundle and sent back to
+     * the fragment (BrowseEventsFragment) that started the activity
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut
+     *                           down then this Bundle contains the data it most recently supplied
+     *                           in onSaveInstanceState(Bundle)
+     * @see BrowseEventsFragment
+     * @see FirebaseManager
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+        // Initialize views
         eventNameEditText = findViewById(R.id.eventName_edit);
         locationEditText = findViewById(R.id.location_edit);
         dateEditText = findViewById(R.id.date_edit);
-        //timeEditText = findViewById(R.id.time_edit);
         descriptionEditText = findViewById(R.id.description_edit);
-        eventPoster = findViewById((R.id.eventPoster_edit));
+        eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
 
-        imagePickLauncher  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if(result.getResultCode() == Activity.RESULT_OK){
-                        Intent data = result.getData();
-                        if(data!=null && data.getData()!=null) {
-                            selectedImageUri = data.getData();
-                            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(eventPoster);
-                        }
-                    }
-                }
-        );
-
+        // Confirm button click listener
         confirmButton.setOnClickListener(v -> {
             String eventName = eventNameEditText.getText().toString();
             String location = locationEditText.getText().toString();
             String date = dateEditText.getText().toString();
-            //String time = timeEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             String ID = firebaseManager.generateRandomID();
 
@@ -67,6 +62,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
             firebaseManager.addNewEvent(event);
 
+            // Send result back to the caller activity
             Bundle bundle = new Bundle();
             bundle.putParcelable("event", event);
             Intent intent = new Intent();

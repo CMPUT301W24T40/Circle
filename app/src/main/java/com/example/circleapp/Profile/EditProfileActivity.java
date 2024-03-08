@@ -1,31 +1,31 @@
 package com.example.circleapp.Profile;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.ImageAdapter;
 import com.example.circleapp.R;
-import com.github.dhaval2404.imagepicker.ImagePicker;
-
-import java.util.Objects;
 
 /**
  * This class is used to edit an already existing user's profile.
  */
-  
+
 public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -34,7 +34,6 @@ public class EditProfileActivity extends AppCompatActivity {
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
-    ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Attendee user;
@@ -49,12 +48,17 @@ public class EditProfileActivity extends AppCompatActivity {
      *     previously being shut down then this Bundle contains the data it most
      *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see ProfileFragment
+     *
+     * Current issues: Custom profile picture does not show up in editing screen; still allows selection
+     * of profile picture, but when Activity is initially created, profilePicture imageView is set to a
+     * predefined default drawable resource
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_profile);
-        user = Objects.requireNonNull(getIntent().getExtras()).getParcelable("user");
+
+        user = getIntent().getParcelableExtra("user");
 
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
@@ -69,36 +73,34 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText.setText(user.getEmail());
         phoneNumberEditText.setText(user.getPhoneNumber());
 
-        // initializes image pick launcher and loads image
-        imagePickLauncher  = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-            if(result.getResultCode() == Activity.RESULT_OK){
-                Intent data = result.getData();
-                if(data!=null && data.getData()!=null) {
-                    selectedImageUri = data.getData();
-                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+        profilePic.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
+            builder.setTitle("Profile Picture Options");
+            String[] options = {"Select Image", "Delete Image", "Cancel"};
+            builder.setItems(options, (dialog, which) -> {
+                switch (which) {
+                    case 0:
+                        selectImage(builder);
+                        break;
+                    case 1:
+                        selectedImageUri = null;
+                        char firstLetter = user.getFirstName().toLowerCase().charAt(0);
+                        int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
+                        profilePic.setImageResource(defaultImageResource);
+                    case 2:
+                        break;
                 }
-            }
-        }
-        );
-
-        // let's user select an image
-        profilePic.setOnClickListener(v -> ImagePicker.with(EditProfileActivity.this).cropSquare().compress(512).maxResultSize(512,512)
-                .createIntent(intent -> {
-                    imagePickLauncher.launch(intent);
-                    return null;
-                }));
+            });
+            builder.show();
+        });
 
         confirmButton.setOnClickListener(v -> {
-            // after clicking confirm, gets all the user inputs from EditTexts etc.
             String firstName = firstNameEditText.getText().toString();
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
-            // Creates a new user! But need to figure out how we'll be able to edit
-            // an existing user because this makes an entirely new Attendee object each time
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setPhoneNumber(phoneNumber);
@@ -108,21 +110,41 @@ public class EditProfileActivity extends AppCompatActivity {
 
             firebaseManager.editUser(user);
 
-            // Stuffs the Attendee (user) object into a Bundle and then an Intent to be
-            // sent back to the fragment
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             Intent intent = new Intent();
             intent.putExtras(bundle);
 
-            // Letting the fragment know it has results or not
-            // in this case it ALWAYS will, for now just to test
             setResult(Activity.RESULT_OK, intent);
-
-            // Closes the activity
             ProfileFragment.profileMade = true;
             finish();
         });
+    }
 
+    /**
+     * Displays an AlertDialog to allow the user to select a profile picture.
+     * The AlertDialog contains a GridView displaying a grid of selectable images.
+     *
+     * @param builder The AlertDialog.Builder used to construct the AlertDialog.
+     */
+    public void selectImage(AlertDialog.Builder builder) {
+        View view = LayoutInflater.from(EditProfileActivity.this).inflate(R.layout.image_selection, null);
+        GridView gridView = view.findViewById(R.id.grid_view);
+        ImageAdapter adapter = new ImageAdapter(EditProfileActivity.this);
+        int[] imageResources = adapter.getImageResources();
+        gridView.setAdapter(adapter);
+
+        builder.setView(view);
+
+        final AlertDialog dialog = builder.create();
+
+        gridView.setOnItemClickListener((parent, view1, position, id) -> {
+            int resourceID = imageResources[position];
+            selectedImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + resourceID);
+            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 }

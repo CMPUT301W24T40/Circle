@@ -16,28 +16,52 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to display all existing events (based on data in Firestore).
+ */
 public class BrowseEventsFragment extends Fragment {
     ListView listView;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Button addEvent;
     EventAdapter adapter;
 
+    /**
+     * Called to have the fragment instantiate its user interface view. The fragment uses a ListView
+     * in combination with an instance of the EventAdapter class to display all events retrieved from
+     * the Firestore database. When user clicks on an event item, it will launch the
+     * EventDetailsActivity for that event. The user can also click on the "Create Event" button to
+     * launch the CreateEventActivity. The UI/adapter will then be updated with the new event.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views
+     *                           in the fragment
+     * @param container          If non-null, this is the parent view that the fragment's UI should
+     *                           be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here
+     * @return                   The View for the fragment's UI, or null
+     * @see EventDetailsActivity
+     * @see CreateEventActivity
+     * @see EventAdapter
+     * @see FirebaseManager
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_browse_events, container, false);
         listView = rootView.findViewById(R.id.list_view);
         addEvent = rootView.findViewById(R.id.add_event_button);
 
+        // Add event button click listener
         addEvent.setOnClickListener(v -> {
             Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
             startActivity(intent);
         });
 
-        adapter = new EventAdapter(getContext(), new ArrayList<>());
+        adapter = new EventAdapter(getContext(), new ArrayList<>()); // Initialize adapter
         listView.setAdapter(adapter);
 
-        loadEvents();
+        loadEvents(); // Load events from Firebase
 
+        // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = (Event) parent.getItemAtPosition(position);
             eventClicked(event);
@@ -46,6 +70,9 @@ public class BrowseEventsFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Loads events from Firebase and updates the ListView.
+     */
     private void loadEvents() {
         firebaseManager.getAllEvents(events -> {
             adapter.clear();
@@ -53,7 +80,11 @@ public class BrowseEventsFragment extends Fragment {
         });
     }
 
-    // handle item clicks
+    /**
+     * Handles clicks on event items.
+     *
+     * @param event The clicked event
+     */
     private void eventClicked(Event event) {
         Intent intent = new Intent(getContext(), EventDetailsActivity.class);
         intent.putExtra("source", "BrowseEventsFragment");

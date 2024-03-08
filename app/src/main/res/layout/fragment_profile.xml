@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/pastel_purple"
     android:padding="@dimen/activity_horizontal_margin"
-    tools:context=".ProfileFragment">
+    tools:context=".Profile.ProfileFragment">
 
     <RelativeLayout
         android:id="@+id/user_profile_layout"

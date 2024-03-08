@@ -23,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.R;
-import com.google.gson.Gson;
 
 /**
  * This class is used to display the profile of a user.
@@ -51,25 +50,26 @@ public class ProfileFragment extends Fragment {
      * are displayed here on the view. Choosing to edit the existing profile
      * starts the EditProfileActivity class. Any updates to the details will be
      * displayed on the view.
-     * @param inflater The LayoutInflater object that can be used to inflate
-     * any views in the fragment,
-     * @param container If non-null, this is the parent view that the fragment's
-     * UI should be attached to.  The fragment should not add the view itself,
-     * but this can be used to generate the LayoutParams of the view.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     * from a previous saved state as given here.
+     *
+     * @param inflater          The LayoutInflater object that can be used to inflate
+     *                          any views in the fragment,
+     * @param container         If non-null, this is the parent view that the fragment's
+     *                          UI should be attached to.  The fragment should not add the view itself,
+     *                          but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return                  Returns the View shown to the user.
      * @see MakeProfileActivity
      * @see EditProfileActivity
-     * @return
-     *         Returns the View shown to the user.
+     *
+     * Current issues:          Profile picture disappears after navigating away and returning to
+     *                          fragment.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         sharedPreferences = requireActivity().getSharedPreferences("UserData", Context.MODE_PRIVATE);
         editor = sharedPreferences.edit();
 
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         firstName = view.findViewById(R.id.first_name);
         lastName = view.findViewById(R.id.last_name);
@@ -92,60 +92,52 @@ public class ProfileFragment extends Fragment {
             email.setText(sharedPreferences.getString("user_email", null));
         }
 
-            launcher = registerForActivityResult(
-                    new ActivityResultContracts.StartActivityForResult(),
-                    result -> {
-                        // checks to see if it got any results from MakeProfileFragment
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent data = result.getData();
-                            assert data != null;
-                            Bundle bundle = data.getExtras();
-                            // Extracts our Attendee object from the Bundle
-                            assert bundle != null;
-                            ourUser = bundle.getParcelable("user");
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        Bundle bundle = data.getExtras();
+                        ourUser = bundle.getParcelable("user");
 
-                            // Switches the layouts, I just turn the startup layout invisible
-                            makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
-                            makeProfileLayout.setVisibility(View.INVISIBLE);
-                            userProfileLayout = view.findViewById(R.id.user_profile_layout);
-                            userProfileLayout.setVisibility(View.VISIBLE);
+                        makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
+                        makeProfileLayout.setVisibility(View.INVISIBLE);
+                        userProfileLayout = view.findViewById(R.id.user_profile_layout);
+                        userProfileLayout.setVisibility(View.VISIBLE);
 
-                            assert ourUser != null;
-                            editor.putString("user_first_name", ourUser.getFirstName());
-                            editor.putString("user_last_name", ourUser.getLastName());
-                            editor.putString("user_phone_number", ourUser.getPhoneNumber());
-                            editor.putString("user_email", ourUser.getEmail());
-                            editor.apply();
+                        editor.putString("user_first_name", ourUser.getFirstName());
+                        editor.putString("user_last_name", ourUser.getLastName());
+                        editor.putString("user_phone_number", ourUser.getPhoneNumber());
+                        editor.putString("user_email", ourUser.getEmail());
+                        editor.apply();
 
-                            Gson gson = new Gson();
-                            String json = gson.toJson(ourUser);
-                            editor.putString("ourUser", json);
-                            editor.apply();
+                        firstName.setText(ourUser.getFirstName());
+                        lastName.setText(ourUser.getLastName());
+                        email.setText(ourUser.getEmail());
+                        phoneNumber.setText(ourUser.getPhoneNumber());
 
-                            // sets the text for the Profile layout to the attributes of the attendee
-                            firstName.setText(ourUser.getFirstName());
-                            lastName.setText(ourUser.getLastName());
-                            email.setText(ourUser.getEmail());
-                            phoneNumber.setText(ourUser.getPhoneNumber());
+                        String checked = "Geolocation: ENABLED";
+                        String unchecked = "Geolocation: DISABLED";
+                        geolocation.setClickable(false);
+                        if (ourUser.isGeoEnabled()) {
+                            geolocation.setText(checked);
+                            geolocation.setChecked(true);
+                        } else {
+                            geolocation.setText(unchecked);
+                            geolocation.setChecked(false);
+                        }
 
-                            // makes user only able to edit the geo in edit mode
-                            String checked = "Geolocation: ENABLED";
-                            String unchecked = "Geolocation: DISABLED";
-                            geolocation.setClickable(false);
-                            if (ourUser.isGeoEnabled()) {
-                                geolocation.setText(checked);
-                                geolocation.setChecked(true);
-                            }
-                            else {
-                                geolocation.setText(unchecked);
-                                geolocation.setChecked(false);
-                            }
-
-                            // puts profile pic onto layout
+                        if (ourUser.getProfilePic() != null) {
                             Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
                         }
+                        else {
+                            char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
+                            int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
+                            profilePic.setImageResource(defaultImageResource);
+                        }
                     }
-            );
+                }
+        );
 
         makeProfile.setOnClickListener(v -> {
             Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
@@ -153,13 +145,8 @@ public class ProfileFragment extends Fragment {
         });
 
         editProfile.setOnClickListener(v -> {
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString("ourUser", "");
-            ourUser = gson.fromJson(json, ourUser.getClass());
             Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
-            Bundle userToEdit = new Bundle();
-            userToEdit.putParcelable("user", ourUser);
-            intent.putExtras(userToEdit);
+            intent.putExtra("user", ourUser);
             launcher.launch(intent);
         });
 
