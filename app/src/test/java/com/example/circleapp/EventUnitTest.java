@@ -18,7 +18,7 @@ public class EventUnitTest {
         event.setEventName("Event1");
         event.setLocation("Location1");
         event.setDate("2024-03-01");
-        event.setTime("10:00 AM");
+        event.setTime("11:00 AM");
         event.setDescription("Description1");
         event.setEventPoster(12345);
 
@@ -27,7 +27,7 @@ public class EventUnitTest {
         assertEquals("Event1", event.getEventName());
         assertEquals("Location1", event.getLocation());
         assertEquals("2024-03-01", event.getDate());
-        assertEquals("10:00 AM", event.getTime());
+        assertEquals("11:00 AM", event.getTime());
         assertEquals("Description1", event.getDescription());
         assertEquals(12345, event.getEventPoster());
     }
