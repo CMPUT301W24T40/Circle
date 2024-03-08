@@ -22,6 +22,10 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.util.Objects;
 
+/**
+ * This class is used to edit an already existing user's profile.
+ */
+  
 public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -35,6 +39,17 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Attendee user;
 
+    /**
+     * User can input changes to their profile details upon this Activity being created.
+     * Any confirmed changes to their profile will be applied to the user and profile details
+     * will be updated accordingly. User's data will be updated on the Firestore database.
+     * Updated user will be sent back to the fragment (ProfileFragment)
+     * that called the activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @see ProfileFragment
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

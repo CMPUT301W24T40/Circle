@@ -10,8 +10,18 @@ import com.example.circleapp.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+/**
+ * This is a class used for scanning QR codes.
+ */
 public class ScanQRActivity extends AppCompatActivity {
-
+    /**
+     * When the Activity is created, the ability to scan QR codes is initiated,
+     * opening up a camera for scanning QR codes.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +30,9 @@ public class ScanQRActivity extends AppCompatActivity {
         initiateScan();
     }
 
+    /**
+     * This starts up the camera for scanning a QR code
+     */
     private void initiateScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE);
@@ -31,7 +44,18 @@ public class ScanQRActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * This is used to check in a Guest to the proper Event via
+     * it's eventID from scanning the provided QR code
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);

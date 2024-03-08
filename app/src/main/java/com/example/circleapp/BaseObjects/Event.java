@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+/**
+ * This is a class that defines an Event
+ */
 public class Event implements Parcelable {
     private String ID;
     private String eventName;

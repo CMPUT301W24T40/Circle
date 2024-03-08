@@ -20,7 +20,10 @@ import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-// Activity that starts when User wants to make a profile
+/**
+ * This class is used for when a user wants to make profile
+ * a.k.a. add their details
+ */
 public class MakeProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -33,6 +36,17 @@ public class MakeProfileActivity extends AppCompatActivity {
     Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
+    /**
+     * When this Activity is created, a user can add their details to make
+     * a profile on the app. Details include name, email, phone number, option for
+     * geolocation, and profile pic. After confirmation, user profile is created
+     * and added to Firestore database to keep track of the user. The user is put into
+     * a Bundle and sent back to the fragment (ProfileFragment) that started the activity.
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @see ProfileFragment
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
