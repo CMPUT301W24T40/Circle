@@ -34,12 +34,6 @@ public class BrowseEventsFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        events = firebaseManager.getAllEvents();
-
-        // null value disables the clickListener for the Browse page
-        adapter = new EventAdapter(events, null);
-        recyclerView.setAdapter(adapter);
-
         addEvent = rootView.findViewById(R.id.add_event_button);
 
         addEvent.setOnClickListener(v -> {
@@ -50,9 +44,14 @@ public class BrowseEventsFragment extends Fragment {
         // Set up the click listener
         listener = this::eventClicked;
 
-        // Pass the click listener to the adapter
-        adapter = new EventAdapter(events, listener);
-        recyclerView.setAdapter(adapter);
+        firebaseManager.getAllEvents(new FirebaseManager.FirestoreCallback() {
+            @Override
+            public void onCallback(ArrayList<Event> events) {
+                // Pass the click listener to the adapter
+                adapter = new EventAdapter(events, listener);
+                recyclerView.setAdapter(adapter);
+            }
+        });
 
         return rootView;
     }
