@@ -6,18 +6,15 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-
 /**
  * This class represents an attendee of an event.
  */
 public class Attendee implements Parcelable {
-    private String ID; // Unique identifier for the attendee
+    private final String ID; // Unique identifier for the attendee
     private String firstName; // First name of the attendee
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
     private String phoneNumber; // Phone number of the attendee
-    private ArrayList<Event> events; // List of events the attendee is associated with
     private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
 
@@ -113,15 +110,6 @@ public class Attendee implements Parcelable {
      */
     public String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    /**
-     * Gets the list of events associated with the attendee.
-     *
-     * @return The list of events
-     */
-    public ArrayList<Event> getEvents() {
-        return events;
     }
 
     /**

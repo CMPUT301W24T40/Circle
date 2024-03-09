@@ -36,10 +36,20 @@
         android:layout_marginBottom="16dp"/>
 
     <EditText
-        android:id="@+id/description_edit"
+        android:id="@+id/time_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/date_edit"
+        android:hint="Time"
+        android:inputType="text"
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/description_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time_edit"
         android:hint="Description"
         android:inputType="text"
         android:textSize="18sp"

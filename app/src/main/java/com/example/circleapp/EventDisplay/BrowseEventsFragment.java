@@ -1,5 +1,7 @@
 package com.example.circleapp.EventDisplay;
 
+import androidx.appcompat.app.AlertDialog;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -52,8 +54,17 @@ public class BrowseEventsFragment extends Fragment {
 
         // Add event button click listener
         addEvent.setOnClickListener(v -> {
-            Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
-            startActivity(intent);
+            if (firebaseManager.getCurrentUserID() != null) {
+                Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
+                startActivity(intent);
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
+                builder.setMessage("You need to make a profile to create an event.")
+                        .setPositiveButton("Dismiss", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         });
 
         adapter = new EventAdapter(getContext(), new ArrayList<>()); // Initialize adapter

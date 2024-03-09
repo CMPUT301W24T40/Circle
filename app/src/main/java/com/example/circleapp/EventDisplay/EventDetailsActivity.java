@@ -26,7 +26,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     Button registerButton;
     TextView eventNameTextView;
     TextView eventLocationTextView;
-    TextView eventDateTimeTextView;
+    TextView eventDateTextView;
+    TextView eventTimeTextView;
     TextView eventDescriptionTextView;
     ImageView eventPosterImageView;
 
@@ -56,14 +57,16 @@ public class EventDetailsActivity extends AppCompatActivity {
         // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
         eventLocationTextView = findViewById(R.id.event_details_location);
-        eventDateTimeTextView = findViewById(R.id.event_details_date_time);
+        eventDateTextView = findViewById(R.id.event_details_date);
+        eventTimeTextView = findViewById(R.id.event_details_time);
         eventDescriptionTextView = findViewById(R.id.event_details_description);
         eventPosterImageView = findViewById(R.id.event_details_poster);
 
         // Set event details
         eventNameTextView.setText(event.getEventName());
         eventLocationTextView.setText(event.getLocation());
-        eventDateTimeTextView.setText(event.getDate() + " " + event.getTime());
+        eventDateTextView.setText(event.getDate());
+        eventTimeTextView.setText(event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
         // Set event poster image if needed (not provided in the Event class)
 
