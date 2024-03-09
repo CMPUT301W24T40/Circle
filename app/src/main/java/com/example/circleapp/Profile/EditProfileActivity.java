@@ -103,6 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                         int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
                         profilePic.setImageResource(defaultImageResource);
+                        user.setProfilePic(null);
                     case 2:
                         break;
                 }
