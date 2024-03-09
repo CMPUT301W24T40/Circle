@@ -73,6 +73,22 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText.setText(user.getEmail());
         phoneNumberEditText.setText(user.getPhoneNumber());
 
+        if (user.isGeoEnabled()) {
+            geolocationEditText.setChecked(true);
+        }
+        else {
+            geolocationEditText.setChecked(false);
+        }
+
+        if (user.getProfilePic() == null) {
+            char firstLetter = user.getFirstName().toLowerCase().charAt(0);
+            int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
+            profilePic.setImageResource(defaultImageResource);
+        }
+        else {
+            Glide.with(this).load(user.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
+        }
+
         profilePic.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
             builder.setTitle("Profile Picture Options");
@@ -106,7 +122,6 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setPhoneNumber(phoneNumber);
             user.setEmail(email);
             user.setGeoEnabled(isGeoEnabled);
-            user.setProfilePic(selectedImageUri);
 
             firebaseManager.editUser(user);
 
@@ -142,6 +157,7 @@ public class EditProfileActivity extends AppCompatActivity {
             int resourceID = imageResources[position];
             selectedImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + resourceID);
             Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            user.setProfilePic(selectedImageUri);
             dialog.dismiss();
         });
 
