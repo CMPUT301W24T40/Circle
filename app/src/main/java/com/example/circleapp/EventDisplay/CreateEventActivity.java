@@ -20,6 +20,7 @@ public class CreateEventActivity extends AppCompatActivity {
     EditText eventNameEditText;
     EditText locationEditText;
     EditText dateEditText;
+    EditText timeEditText;
     EditText descriptionEditText;
     ImageView eventPoster;
     Button confirmButton;
@@ -46,6 +47,7 @@ public class CreateEventActivity extends AppCompatActivity {
         eventNameEditText = findViewById(R.id.eventName_edit);
         locationEditText = findViewById(R.id.location_edit);
         dateEditText = findViewById(R.id.date_edit);
+        timeEditText = findViewById(R.id.time_edit);
         descriptionEditText = findViewById(R.id.description_edit);
         eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
@@ -55,12 +57,13 @@ public class CreateEventActivity extends AppCompatActivity {
             String eventName = eventNameEditText.getText().toString();
             String location = locationEditText.getText().toString();
             String date = dateEditText.getText().toString();
+            String time = timeEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
             String ID = firebaseManager.generateRandomID();
 
-            Event event = new Event(ID, eventName, location, date, "7:30", description);
+            Event event = new Event(ID, eventName, location, date, time, description);
 
-            firebaseManager.addNewEvent(event);
+            firebaseManager.createEvent(event);
 
             // Send result back to the caller activity
             Bundle bundle = new Bundle();

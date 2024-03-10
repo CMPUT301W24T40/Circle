@@ -9,16 +9,15 @@ import androidx.annotation.NonNull;
  * This class represents an event.
  */
 public class Event implements Parcelable {
-    private String ID; // Unique identifier for the event
-    private String eventName; // Name of the event
-    private String location; // Location of the event
-    private String date; // Date of the event
-    private String time; // Time of the event
-    private String description; // Description of the event
+    private String ID;
+    private String eventName;
+    private String location;
+    private String date;
+    private String time;
+    private String description;
     private int eventPoster; // Resource ID for the event poster
 
     // Constructors
-
     /**
      * Constructs an Event object with specified parameters.
      *
@@ -38,6 +37,9 @@ public class Event implements Parcelable {
         this.description = description;
     }
 
+    // No-argument constructor
+    public Event() {}
+
     // Parcelable constructor
     protected Event(Parcel in) {
         ID = in.readString();
@@ -46,10 +48,6 @@ public class Event implements Parcelable {
         date = in.readString();
         time = in.readString();
         description = in.readString();
-    }
-
-    // No-argument constructor
-    public Event() {
     }
 
     // Parcelable creator
@@ -194,7 +192,6 @@ public class Event implements Parcelable {
     }
 
     // Parcelable methods
-
     @Override
     public int describeContents() {
         return 0;

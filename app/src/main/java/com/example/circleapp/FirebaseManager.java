@@ -57,9 +57,16 @@ public class FirebaseManager {
     }
 
     /**
-     * Generates a random UUID.
+     * Retrieves the current user ID.
      *
-     * @return The generated UUID
+     * @return The ID of the current user
+     */
+    public String getCurrentUserID() { return currentUserID; }
+
+    /**
+     * Generates a random ID.
+     *
+     * @return The generated ID converted to a String
      */
     public String generateRandomID() {
         return UUID.randomUUID().toString();
@@ -81,6 +88,7 @@ public class FirebaseManager {
 
         usersRef.document(user.getID()).set(data);
         usersRef.document(user.getID()).collection("registeredEvents");
+        usersRef.document(user.getID()).collection("createdEvents");
     }
 
     /**
@@ -144,11 +152,28 @@ public class FirebaseManager {
     }
 
     /**
+     * Retrieves created events for the current user from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     */
+    public void getCreatedEvents (FirestoreCallback callback) {
+        ArrayList<Event> eventsList = new ArrayList<>();
+
+        usersRef.document(currentUserID).collection("createdEvents").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Event event = document.toObject(Event.class);
+                eventsList.add(event);
+            }
+            callback.onCallback(eventsList);
+        });
+    }
+
+    /**
      * Adds a new event to Firestore.
      *
      * @param event The event to add
      */
-    public void addNewEvent(Event event) {
+    public void createEvent(Event event) {
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", event.getID());
         data.put("eventName", event.getEventName());
@@ -158,6 +183,10 @@ public class FirebaseManager {
         data.put("description", event.getDescription());
 
         eventsRef.document(event.getID()).set(data);
+        eventsRef.document(event.getID()).collection("registeredUsers");
+
+        CollectionReference userEventsRef = usersRef.document(currentUserID).collection("createdEvents");
+        eventsRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(data)));
     }
 
     /**
@@ -167,9 +196,12 @@ public class FirebaseManager {
      */
     public void registerEvent(Event event) {
         DocumentReference eventDocRef = eventsRef.document(event.getID());
+        DocumentReference userDocRef = usersRef.document(currentUserID);
+        CollectionReference eventsCollectionRef = eventDocRef.collection("registeredUsers");
         CollectionReference userEventsRef = usersRef.document(currentUserID).collection("registeredEvents");
 
-        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.add(Objects.requireNonNull(documentSnapshot.getData())));
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(documentSnapshot.getData())));
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> eventsCollectionRef.document(currentUserID).set(Objects.requireNonNull(documentSnapshot.getData())));
     }
 
     /**

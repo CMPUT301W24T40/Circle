@@ -73,12 +73,7 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText.setText(user.getEmail());
         phoneNumberEditText.setText(user.getPhoneNumber());
 
-        if (user.isGeoEnabled()) {
-            geolocationEditText.setChecked(true);
-        }
-        else {
-            geolocationEditText.setChecked(false);
-        }
+        geolocationEditText.setChecked(user.isGeoEnabled());
 
         if (user.getProfilePic() == null) {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
