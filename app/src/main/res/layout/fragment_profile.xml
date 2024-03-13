@@ -5,7 +5,7 @@
     android:id="@+id/my_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pastel_purple"
+    android:background="@color/white"
     android:padding="@dimen/activity_horizontal_margin"
     tools:context=".Profile.ProfileFragment">
 

@@ -1,5 +1,7 @@
 package com.example.circleapp.Profile;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -75,6 +79,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         geolocationEditText.setChecked(user.isGeoEnabled());
 
+
         if (user.getProfilePic() == null) {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
             int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
@@ -91,7 +96,7 @@ public class EditProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        selectImage(builder);
+                        selectImage();
                         break;
                     case 1:
                         selectedImageUri = null;
@@ -136,27 +141,25 @@ public class EditProfileActivity extends AppCompatActivity {
      * Displays an AlertDialog to allow the user to select a profile picture.
      * The AlertDialog contains a GridView displaying a grid of selectable images.
      *
-     * @param builder The AlertDialog.Builder used to construct the AlertDialog.
+     *
      */
-    public void selectImage(AlertDialog.Builder builder) {
-        View view = LayoutInflater.from(EditProfileActivity.this).inflate(R.layout.image_selection, null);
-        GridView gridView = view.findViewById(R.id.grid_view);
-        ImageAdapter adapter = new ImageAdapter(EditProfileActivity.this);
-        int[] imageResources = adapter.getImageResources();
-        gridView.setAdapter(adapter);
-
-        builder.setView(view);
-
-        final AlertDialog dialog = builder.create();
-
-        gridView.setOnItemClickListener((parent, view1, position, id) -> {
-            int resourceID = imageResources[position];
-            selectedImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + resourceID);
-            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-            user.setProfilePic(selectedImageUri);
-            dialog.dismiss();
-        });
-
-        dialog.show();
+    public void selectImage(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickResultLauncher.launch(intent);
     }
+
+    ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData().getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    user.setProfilePic(selectedImageUri);
+                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                } else {
+                    Toast.makeText(
+                            EditProfileActivity.this,
+                            "Image Not Selected",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
 }

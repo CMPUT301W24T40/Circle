@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +91,18 @@ public class ProfileFragment extends Fragment {
             lastName.setText(sharedPreferences.getString("user_last_name", null));
             phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
             email.setText(sharedPreferences.getString("user_email", null));
+
+            String pfpString = sharedPreferences.getString("user_profile_pic", null);
+
+            if (pfpString != null) {
+                Uri uri = Uri.parse(pfpString);
+                Glide.with(ProfileFragment.this).load(uri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            }
+            else {
+                char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);
+                int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
+                profilePic.setImageResource(defaultImageResource);
+            }
         }
 
         launcher = registerForActivityResult(
@@ -129,12 +142,15 @@ public class ProfileFragment extends Fragment {
 
                         if (ourUser.getProfilePic() != null) {
                             Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                            editor.putString("user_profile_pic", ourUser.getProfilePic().toString());
                         }
                         else {
                             char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
                             int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
                             profilePic.setImageResource(defaultImageResource);
+                            editor.putString("user_profile_pic", null);
                         }
+                        editor.apply();
                     }
                 }
         );
