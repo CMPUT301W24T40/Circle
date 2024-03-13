@@ -1,12 +1,22 @@
 package com.example.circleapp.Profile;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresExtension;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -70,7 +81,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        selectImage(builder);
+                        selectImage();
                         break;
                     case 1:
                         break;
@@ -110,26 +121,22 @@ public class MakeProfileActivity extends AppCompatActivity {
 
     }
 
-    public void selectImage(AlertDialog.Builder builder) {
-        // Inflate a custom layout containing a grid view
-        View view = LayoutInflater.from(MakeProfileActivity.this).inflate(R.layout.image_selection, null);
-        GridView gridView = view.findViewById(R.id.grid_view);
-        ImageAdapter adapter = new ImageAdapter(MakeProfileActivity.this);
-        int[] imageResources = adapter.getImageResources();
-        gridView.setAdapter(adapter);
-
-        builder.setView(view);
-
-        final AlertDialog dialog = builder.create();
-
-        gridView.setOnItemClickListener((parent, view1, position, id) -> {
-            int resourceID = imageResources[position];
-            selectedImageUri = Uri.parse("android.resource://" + getPackageName() + "/" + resourceID); // Set the selected image URI
-
-            Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-            dialog.dismiss();
-        });
-
-        dialog.show(); // Show the dialog after setting the custom view
+    public void selectImage(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickResultLauncher.launch(intent);
     }
+
+    ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData().getData() != null) {
+                    selectedImageUri = result.getData().getData();
+                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                } else {
+                    Toast.makeText(
+                            MakeProfileActivity.this,
+                            "Image Not Selected",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
 }
