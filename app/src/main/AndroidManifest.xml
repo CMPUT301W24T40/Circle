@@ -46,6 +46,11 @@
             android:name=".EventDisplay.CreateEventActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullSensor"
+            tools:replace="android:screenOrientation"
+            android:stateNotNeeded="true"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
