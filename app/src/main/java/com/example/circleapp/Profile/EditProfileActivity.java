@@ -4,9 +4,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,6 +38,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText lastNameEditText;
     EditText emailEditText;
     EditText phoneNumberEditText;
+    CardView circleBackground;
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
@@ -71,6 +75,7 @@ public class EditProfileActivity extends AppCompatActivity {
         geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
+        circleBackground = findViewById(R.id.circular_background);
 
         firstNameEditText.setText(user.getFirstName());
         lastNameEditText.setText(user.getLastName());
@@ -79,6 +84,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
         geolocationEditText.setChecked(user.isGeoEnabled());
 
+        circleBackground.setBackgroundTintList(ColorStateList.valueOf(ResourcesCompat.getColor(
+                getResources(), R.color.pastel_purple, null)));
 
         if (user.getProfilePic() == null) {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
