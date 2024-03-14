@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:padding="@dimen/activity_horizontal_margin"
+    android:visibility="visible"
     tools:context=".Profile.ProfileFragment">
 
     <RelativeLayout
@@ -135,7 +136,7 @@
             android:textSize="34sp"
             android:textStyle="bold" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/circular_background"
             android:layout_width="140dp"
             android:layout_height="140dp"
@@ -144,16 +145,18 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="63dp"
             android:backgroundTint="@color/pastel_purple"
-            android:visibility="visible"
+            app:strokeWidth="5dp"
+            app:strokeColor="@color/black"
             app:cardCornerRadius="70dp">
 
             <ImageView
                 android:id="@+id/edit_pfp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_profile_icon" />
-        </androidx.cardview.widget.CardView>
+                android:src="@drawable/default_profile_icon" />
+        </com.google.android.material.card.MaterialCardView>
 
         <CheckBox
             android:id="@+id/edit_geolocation"

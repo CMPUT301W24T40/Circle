@@ -58,11 +58,10 @@ dependencies {
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.zxing:core:3.4.1")
     // Image Uploads
-    implementation ("com.github.dhaval2404:imagepicker:2.1")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     // Shared preferences
     implementation("com.google.code.gson:gson:2.10.1")
 
-
+    implementation("com.google.android.material:material:1.11.0")
 }
