@@ -42,6 +42,7 @@ public class GenerateQRActivity extends AppCompatActivity{
         ImageView qrImage = findViewById(R.id.qrImage);
 
         Event event = getIntent().getParcelableExtra("event");
+        String qrType = getIntent().getStringExtra("qrType");
 
         String eventID;
         if (event != null) {
@@ -49,7 +50,7 @@ public class GenerateQRActivity extends AppCompatActivity{
         } else {
             eventID = "No event ID";
         }
-        Bitmap qrBitmap = generateQRCode(eventID);
+        Bitmap qrBitmap = generateQRCode(eventID, qrType);
         qrImage.setImageBitmap(qrBitmap);
 
         Button shareQRbutton = findViewById(R.id.share_QR_button);
@@ -62,13 +63,15 @@ public class GenerateQRActivity extends AppCompatActivity{
      * This generates a QRCode for an event, using an eventID (the data)
      * encoded into it
      * @param data The eventID
+     * @param qrType The type of QR code to be generated
      * @return
      *         Return the bitmap QRCode
      */
-    private Bitmap generateQRCode(String data){
+    private Bitmap generateQRCode(String data, String qrType){
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            BitMatrix bitMatrix = writer.encode(data, BarcodeFormat.QR_CODE, 512, 512);
+            String encodedData = qrType + ":" + data;
+            BitMatrix bitMatrix = writer.encode(encodedData, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
