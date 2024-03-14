@@ -79,16 +79,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.036" />
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/circular_background"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="96dp"
-        android:backgroundTint="@color/white"
-        android:visibility="visible"
+        android:backgroundTint="@color/pastel_purple"
         app:cardCornerRadius="70dp"
+        app:strokeWidth="5dp"
+        app:strokeColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.066"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,8 +100,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_profile_icon" />
-    </androidx.cardview.widget.CardView>
+            android:src="@drawable/default_profile_icon" />
+    </com.google.android.material.card.MaterialCardView>
 
     <CheckBox
         android:id="@+id/edit_geolocation"

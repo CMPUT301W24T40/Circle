@@ -13,12 +13,9 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,7 +23,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
-import com.example.circleapp.ImageAdapter;
 import com.example.circleapp.R;
 
 /**
@@ -75,7 +71,6 @@ public class EditProfileActivity extends AppCompatActivity {
         geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
-        circleBackground = findViewById(R.id.circular_background);
 
         firstNameEditText.setText(user.getFirstName());
         lastNameEditText.setText(user.getLastName());
@@ -83,9 +78,6 @@ public class EditProfileActivity extends AppCompatActivity {
         phoneNumberEditText.setText(user.getPhoneNumber());
 
         geolocationEditText.setChecked(user.isGeoEnabled());
-
-        circleBackground.setBackgroundTintList(ColorStateList.valueOf(ResourcesCompat.getColor(
-                getResources(), R.color.pastel_purple, null)));
 
         if (user.getProfilePic() == null) {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
