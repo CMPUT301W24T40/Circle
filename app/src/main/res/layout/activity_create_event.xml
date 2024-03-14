@@ -55,11 +55,21 @@
         android:textSize="18sp"
         android:layout_marginBottom="24dp"/>
 
+    <EditText
+        android:id="@+id/capacity_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description_edit"
+        android:hint="Guests allowed"
+        android:inputType="text"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp"/>
+
     <ImageView
         android:id="@+id/eventPoster_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/description_edit"
+        android:layout_below="@id/capacity_edit"
         android:scaleType="fitCenter"
         tools:srcCompat="@tools:sample/avatars" />
 

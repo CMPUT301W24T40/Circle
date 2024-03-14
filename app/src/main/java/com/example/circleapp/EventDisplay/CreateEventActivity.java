@@ -22,6 +22,7 @@ public class CreateEventActivity extends AppCompatActivity {
     EditText dateEditText;
     EditText timeEditText;
     EditText descriptionEditText;
+    EditText capacityEditText;
     ImageView eventPoster;
     Button confirmButton;
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
@@ -49,6 +50,7 @@ public class CreateEventActivity extends AppCompatActivity {
         dateEditText = findViewById(R.id.date_edit);
         timeEditText = findViewById(R.id.time_edit);
         descriptionEditText = findViewById(R.id.description_edit);
+        capacityEditText = findViewById(R.id.capacity_edit);
         eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
 
@@ -59,9 +61,12 @@ public class CreateEventActivity extends AppCompatActivity {
             String date = dateEditText.getText().toString();
             String time = timeEditText.getText().toString();
             String description = descriptionEditText.getText().toString();
+            String capacity = capacityEditText.getText().toString();
             String ID = firebaseManager.generateRandomID();
 
             Event event = new Event(ID, eventName, location, date, time, description);
+            if (capacity.isEmpty()) { event.setCapacity("-1"); }
+            else { event.setCapacity(capacity); }
 
             firebaseManager.createEvent(event);
 

@@ -1,6 +1,9 @@
 package com.example.circleapp;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
@@ -181,6 +184,7 @@ public class FirebaseManager {
         data.put("date", event.getDate());
         data.put("time", event.getTime());
         data.put("description", event.getDescription());
+        data.put("capacity", event.getCapacity());
 
         eventsRef.document(event.getID()).set(data);
         eventsRef.document(event.getID()).collection("registeredUsers");
@@ -194,14 +198,25 @@ public class FirebaseManager {
      *
      * @param event The event to register
      */
-    public void registerEvent(Event event) {
+    public void registerEvent(Event event, Context context) {
         DocumentReference eventDocRef = eventsRef.document(event.getID());
         DocumentReference userDocRef = usersRef.document(currentUserID);
         CollectionReference eventsCollectionRef = eventDocRef.collection("registeredUsers");
         CollectionReference userEventsRef = usersRef.document(currentUserID).collection("registeredEvents");
 
-        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(documentSnapshot.getData())));
-        userDocRef.get().addOnSuccessListener(documentSnapshot -> eventsCollectionRef.document(currentUserID).set(Objects.requireNonNull(documentSnapshot.getData())));
+        eventsCollectionRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            int count = queryDocumentSnapshots.size();
+            int capacity = Integer.parseInt(event.getCapacity());
+
+            if (count < capacity || capacity == -1) {
+                eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(documentSnapshot.getData())));
+                userDocRef.get().addOnSuccessListener(documentSnapshot -> eventsCollectionRef.document(currentUserID).set(Objects.requireNonNull(documentSnapshot.getData())));
+                Toast.makeText(context, "You've successfully registered for this event!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(context, "This event has reached its maximum attendance. Sorry!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**

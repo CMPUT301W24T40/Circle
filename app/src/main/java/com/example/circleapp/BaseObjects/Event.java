@@ -15,6 +15,7 @@ public class Event implements Parcelable {
     private String date;
     private String time;
     private String description;
+    private String capacity;
     private int eventPoster; // Resource ID for the event poster
 
     // Constructors
@@ -48,6 +49,7 @@ public class Event implements Parcelable {
         date = in.readString();
         time = in.readString();
         description = in.readString();
+        capacity = in.readString();
     }
 
     // Parcelable creator
@@ -120,6 +122,14 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Gets the maximum number of attendees allowed for the event,
+     * chosen by the organizer.
+     *
+     * @return The maximum capacity
+     */
+    public String getCapacity() { return capacity; }
+
+    /**
      * Gets the resource ID for the event poster.
      *
      * @return The resource ID
@@ -183,6 +193,13 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Sets the maximum capacity for the event.
+     *
+     * @param capacity The limit chosen by the organizer
+     */
+    public void setCapacity(String capacity) { this.capacity = capacity; }
+
+    /**
      * Sets the resource ID for the event poster.
      *
      * @param eventPoster The new resource ID
@@ -211,5 +228,6 @@ public class Event implements Parcelable {
         dest.writeString(date);
         dest.writeString(time);
         dest.writeString(description);
+        dest.writeString(capacity);
     }
 }
