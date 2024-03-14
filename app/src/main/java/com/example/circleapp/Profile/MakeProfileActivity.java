@@ -88,6 +88,15 @@ public class MakeProfileActivity extends AppCompatActivity {
             String ID = firebaseManager.generateRandomID();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
+            if (firstName.isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MakeProfileActivity.this);
+                builder.setMessage("Please input at least a first name")
+                        .setPositiveButton("Dismiss", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return;
+            }
+
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
             user.setGeoEnabled(isGeoEnabled);
 
