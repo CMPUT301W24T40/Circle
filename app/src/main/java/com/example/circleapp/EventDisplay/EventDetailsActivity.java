@@ -89,6 +89,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         generateQRButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GenerateQRActivity.class);
             intent.putExtra("event", event);
+            intent.putExtra("qrType", "details");
             startActivity(intent);
         });
 
