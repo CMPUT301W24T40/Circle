@@ -29,6 +29,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     TextView eventDateTextView;
     TextView eventTimeTextView;
     TextView eventDescriptionTextView;
+    TextView eventCapacityTextView;
     ImageView eventPosterImageView;
 
     /**
@@ -37,7 +38,7 @@ public class EventDetailsActivity extends AppCompatActivity {
      * will be a button to generate a QR code that the user can send to other users to share the event
      * details. If the user clicked on the event from the BrowseEventsFragment, there will also be a
      * button to register for the event. After confirmation of registration, this event will be added
-     * to the user's registeredEvents subcollection in Firestore (subcollection of user document), and
+     * to the user's registeredEvents sub-collection in Firestore (sub-collection of user document), and
      * will be displayed on the YourEventsFragment. There is also a back button that will send the user
      * back to the fragment this activity was launched from.
      *
@@ -60,6 +61,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDateTextView = findViewById(R.id.event_details_date);
         eventTimeTextView = findViewById(R.id.event_details_time);
         eventDescriptionTextView = findViewById(R.id.event_details_description);
+        eventCapacityTextView = findViewById(R.id.event_details_capacity);
         eventPosterImageView = findViewById(R.id.event_details_poster);
 
         // Set event details
@@ -68,6 +70,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDateTextView.setText(event.getDate());
         eventTimeTextView.setText(event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
+
+        if (event.getCapacity().equalsIgnoreCase("-1")) {
+            eventCapacityTextView.setText("Not specified");
+        }
+        else {
+            eventCapacityTextView.setText(event.getCapacity());
+        }
         // Set event poster image if needed (not provided in the Event class)
 
         // Initialize buttons
@@ -98,7 +107,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
             builder.setTitle("Confirmation");
             builder.setMessage("Are you sure you want to register?");
-            builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event));
+            builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event, this));
             builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
