@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -75,6 +74,8 @@ public class FirebaseManager {
         return UUID.randomUUID().toString();
     }
 
+    // Methods for managing and retrieving user data
+
     /**
      * Adds a new user to Firestore.
      *
@@ -120,12 +121,38 @@ public class FirebaseManager {
         });
     }
 
+    public void getRegisteredUsers(AttendeesCallback callback, String eventID) {
+        ArrayList<Attendee> attendeesList = new ArrayList<>();
+
+        eventsRef.document(eventID).collection("registeredUsers").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Attendee attendee = document.toObject(Attendee.class);
+                attendeesList.add(attendee);
+            }
+            callback.onCallback(attendeesList);
+        });
+    }
+
+    /**
+     * Callback interface for Firestore operations with attendees.
+     */
+    public interface AttendeesCallback {
+        /**
+         * Callback method to execute with the attendees list.
+         *
+         * @param attendeesList The list of attendees retrieved from Firestore
+         */
+        void onCallback(ArrayList<Attendee> attendeesList);
+    }
+
+    // Methods for managing and retrieving event data
+
     /**
      * Retrieves all events from Firestore.
      *
      * @param callback The callback to execute with the events list
      */
-    public void getAllEvents(FirestoreCallback callback) {
+    public void getAllEvents(EventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         eventsRef.get().addOnCompleteListener(task -> {
@@ -142,7 +169,7 @@ public class FirebaseManager {
      *
      * @param callback The callback to execute with the events list
      */
-    public void getRegisteredEvents(FirestoreCallback callback) {
+    public void getRegisteredEvents(EventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         usersRef.document(currentUserID).collection("registeredEvents").get().addOnCompleteListener(task -> {
@@ -159,7 +186,7 @@ public class FirebaseManager {
      *
      * @param callback The callback to execute with the events list
      */
-    public void getCreatedEvents (FirestoreCallback callback) {
+    public void getCreatedEvents (EventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         usersRef.document(currentUserID).collection("createdEvents").get().addOnCompleteListener(task -> {
@@ -220,9 +247,9 @@ public class FirebaseManager {
     }
 
     /**
-     * Callback interface for Firestore operations.
+     * Callback interface for Firestore operations with events.
      */
-    public interface FirestoreCallback {
+    public interface EventsCallback {
         /**
          * Callback method to execute with the events list.
          *

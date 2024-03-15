@@ -73,7 +73,7 @@ public class AttendingEventsFragment extends Fragment {
      */
     private void eventClicked(Event event) {
         Intent intent = new Intent(getContext(), EventDetailsActivity.class);
-        intent.putExtra("source", "YourEventsFragment");
+        intent.putExtra("source", "AttendingEventsFragment");
         intent.putExtra("event", event);
         startActivity(intent);
     }

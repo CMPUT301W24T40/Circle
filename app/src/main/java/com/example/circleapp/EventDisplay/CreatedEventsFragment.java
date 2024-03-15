@@ -78,7 +78,7 @@ public class CreatedEventsFragment extends Fragment {
      */
     private void eventClicked(Event event) {
         Intent intent = new Intent(getContext(), EventDetailsActivity.class);
-        intent.putExtra("source", "YourEventsFragment");
+        intent.putExtra("source", "CreatedEventsFragment");
         intent.putExtra("event", event);
         startActivity(intent);
     }
