@@ -3,6 +3,7 @@ package com.example.circleapp.EventDisplay;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,6 +15,7 @@ import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
 import com.example.circleapp.R;
+import com.example.circleapp.UserDisplay.GuestlistActivity;
 
 /**
  * This class is used to display event details.
@@ -24,6 +26,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     Button backButton;
     Button generateQRButton;
     Button registerButton;
+    Button guestlistButton;
     TextView eventNameTextView;
     TextView eventLocationTextView;
     TextView eventDateTextView;
@@ -52,7 +55,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.event_details_activity);
+        setContentView(R.layout.activity_event_details);
         event = getIntent().getParcelableExtra("event");
 
         // Initialize views
@@ -83,12 +86,20 @@ public class EventDetailsActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         generateQRButton = findViewById(R.id.generate_qr_button);
         registerButton = findViewById(R.id.register_button);
+        guestlistButton = findViewById(R.id.guestlist_button);
 
-        // Set visibility of register button based on source
-        registerButton.setVisibility(View.GONE);
+        // Set visibility of register and guest list buttons based on source
         String source = getIntent().getStringExtra("source");
+
+        registerButton.setVisibility(View.GONE);
         if ("BrowseEventsFragment".equals(source)) {
             registerButton.setVisibility(View.VISIBLE);
+        }
+
+        Log.d("WhatFragment", "Source: " + source);
+        guestlistButton.setVisibility(View.GONE);
+        if ("CreatedEventsFragment".equals(source)) {
+            guestlistButton.setVisibility(View.VISIBLE);
         }
 
         // Back button click listener
@@ -111,6 +122,13 @@ public class EventDetailsActivity extends AppCompatActivity {
             builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
             dialog.show();
+        });
+
+        guestlistButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GuestlistActivity.class);
+            intent.putExtra("source", "GuestlistActivity");
+            intent.putExtra("event", event);
+            startActivity(intent);
         });
     }
 }

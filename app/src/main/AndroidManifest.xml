@@ -51,6 +51,9 @@
             android:screenOrientation="fullSensor"
             tools:replace="android:screenOrientation"
             android:stateNotNeeded="true"/>
+        <activity
+            android:name=".UserDisplay.GuestlistActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
