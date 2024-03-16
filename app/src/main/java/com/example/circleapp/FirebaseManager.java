@@ -30,7 +30,7 @@ public class FirebaseManager {
      * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
      * retrieve data from the Firestore database.
      */
-    private FirebaseManager() {
+    public FirebaseManager() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         usersRef = db.collection("users");
@@ -244,6 +244,19 @@ public class FirebaseManager {
                 Toast.makeText(context, "This event has reached its maximum attendance. Sorry!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void checkInEvent(String eventID, String userID){
+        DocumentReference eventDocRef = eventsRef.document(eventID);
+        CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("userID", userID);
+
+        checkedInUsersRef.document(userID).set(data).addOnSuccessListener(aVoid ->
+            System.out.println("User checked in successfully"))
+            .addOnFailureListener(e ->
+            System.err.println("Error checking in user: " + e.getMessage()));
     }
 
     /**

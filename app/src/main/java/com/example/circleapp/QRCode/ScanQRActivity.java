@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -67,6 +68,8 @@ public class ScanQRActivity extends AppCompatActivity {
                 String qrType = parts[0];
                 String eventID = parts[1];
                 if (qrType.equals("check-in")) {
+                    FirebaseManager manager = new FirebaseManager();
+                    manager.checkInEvent(eventID, manager.getCurrentUserID());
                     Toast.makeText(this, "Checking in to event: " + eventID, Toast.LENGTH_LONG).show();
                 } else if (qrType.equals("details")) {
                     Toast.makeText(this, "Event details: " + eventID, Toast.LENGTH_LONG).show();
