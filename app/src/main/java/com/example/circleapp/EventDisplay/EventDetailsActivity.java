@@ -1,5 +1,6 @@
 package com.example.circleapp.EventDisplay;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +25,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     Event event;
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
     Button backButton;
-    Button generateQRButton;
+    Button generateQRDetailsButton;
+    Button generateQRCheckinButton;
     Button registerButton;
     Button guestlistButton;
     TextView eventNameTextView;
@@ -52,6 +54,7 @@ public class EventDetailsActivity extends AppCompatActivity {
      * @see YourEventsFragment
      * @see GenerateQRActivity
      */
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,11 +87,13 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Initialize buttons
         backButton = findViewById(R.id.back_button);
-        generateQRButton = findViewById(R.id.generate_qr_button);
+        generateQRDetailsButton = findViewById(R.id.generate_qr_details_button);
         registerButton = findViewById(R.id.register_button);
         guestlistButton = findViewById(R.id.guestlist_button);
+        generateQRDetailsButton = findViewById(R.id.generate_qr_details_button);
+        generateQRCheckinButton = findViewById(R.id.generate_qr_checkin_button);
 
-        // Set visibility of register and guest list buttons based on source
+        // Set visibility of register, guest list, and QR buttons based on source
         String source = getIntent().getStringExtra("source");
 
         registerButton.setVisibility(View.GONE);
@@ -98,18 +103,33 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         Log.d("WhatFragment", "Source: " + source);
         guestlistButton.setVisibility(View.GONE);
+        generateQRDetailsButton.setVisibility(View.GONE);
+        generateQRCheckinButton.setVisibility(View.GONE);
         if ("CreatedEventsFragment".equals(source)) {
             guestlistButton.setVisibility(View.VISIBLE);
+            generateQRDetailsButton.setVisibility(View.VISIBLE);
+            generateQRCheckinButton.setVisibility(View.VISIBLE);
         }
+
+
 
         // Back button click listener
         backButton.setOnClickListener(v -> finish());
 
-        // Generate QR button click listener
-        generateQRButton.setOnClickListener(v -> {
+        // Generate QR details button click listener
+        generateQRDetailsButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GenerateQRActivity.class);
             intent.putExtra("event", event);
             intent.putExtra("qrType", "details");
+            startActivity(intent);
+        });
+
+
+        // Generate QR checkin button click listener
+        generateQRCheckinButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, GenerateQRActivity.class);
+            intent.putExtra("event", event);
+            intent.putExtra("qrType", "check-in");
             startActivity(intent);
         });
 

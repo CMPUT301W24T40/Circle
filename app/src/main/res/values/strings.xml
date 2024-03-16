@@ -6,6 +6,10 @@
     <string name="email">Email</string>
     <string name="phone_number">Phone Number</string>
     <string name="last_name">Last Name</string>
-    <string name="generate_qr_code">Generate QR Code</string>
+    <string name="generate_qr_code_details">Generate QR Code (Event Details)</string>
+    <string name="generate_qr_code_checkin">Generate QR Code (Check In)</string>
+    <string name="view_guestlist">View Guestlist</string>
+    <string name="register">Register</string>
+    <string name="back">Back</string>
 
 </resources>
