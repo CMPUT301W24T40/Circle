@@ -2,6 +2,7 @@ package com.example.circleapp.Profile;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -21,6 +23,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This class is used for when a user wants to make profile
@@ -99,6 +104,20 @@ public class MakeProfileActivity extends AppCompatActivity {
 
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
             user.setGeoEnabled(isGeoEnabled);
+            // for MakeProfileActivity
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(new OnCompleteListener<String>() {
+                        @Override
+                        public void onComplete(@NonNull Task<String> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w("tag", "Fetching FCM registration token failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult();
+                            Log.d("tag", token);
+                            user.setToken(token);
+                        }
+                    });
 
             firebaseManager.addNewUser(user);
 
