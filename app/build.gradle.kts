@@ -53,7 +53,11 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-auth:22.3.1")
-    implementation("com.google.firebase:firebase-inappmessaging-ktx:20.4.0")
+
+    // Notifications
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
     //QR CODE
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.zxing:core:3.4.1")

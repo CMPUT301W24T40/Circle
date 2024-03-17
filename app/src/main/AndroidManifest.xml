@@ -58,6 +58,8 @@
         <activity
             android:name=".TempUserInfoActivity"
             android:exported="false" />
+        <activity android:name=".UserDisplay.SendNotificationActivity"
+            android:exported="false"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -68,6 +70,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />
         </provider>
+
+        <service android:name=".MyFirebaseMessagingService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
