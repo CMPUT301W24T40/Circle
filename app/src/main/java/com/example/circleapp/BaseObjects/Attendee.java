@@ -10,13 +10,15 @@ import androidx.annotation.NonNull;
  * This class represents an attendee of an event.
  */
 public class Attendee implements Parcelable {
-    private final String ID; // Unique identifier for the attendee
+    private String ID; // Unique identifier for the attendee
     private String firstName; // First name of the attendee
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
     private String phoneNumber; // Phone number of the attendee
     private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
+
+    private String token; // for notifications
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -42,6 +44,10 @@ public class Attendee implements Parcelable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.profilePic = profilePic;
+    }
+
+    public Attendee() {
+
     }
 
     // Parcelable constructor
@@ -213,5 +219,13 @@ public class Attendee implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
