@@ -85,7 +85,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
-            String ID = firebaseManager.generateRandomID();
+            String ID = firebaseManager.getPhoneID(this);
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             if (firstName.isEmpty()) {

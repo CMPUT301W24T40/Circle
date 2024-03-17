@@ -1,6 +1,7 @@
 package com.example.circleapp;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -72,6 +73,10 @@ public class FirebaseManager {
      */
     public String generateRandomID() {
         return UUID.randomUUID().toString();
+    }
+
+    public String getPhoneID(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
     // Methods for managing and retrieving user data
