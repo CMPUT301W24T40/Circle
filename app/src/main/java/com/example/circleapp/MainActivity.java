@@ -17,6 +17,7 @@ import com.example.circleapp.databinding.ActivityMainBinding;
  */
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding; // View binding instance
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
      * Called when the activity is starting.
@@ -30,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        firebaseManager.setPhoneID(this);
         replaceFragment(new BrowseEventsFragment()); // Start with BrowseEventsFragment
 
         // Bottom navigation item selection listener

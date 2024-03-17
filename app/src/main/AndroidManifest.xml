@@ -54,6 +54,9 @@
         <activity
             android:name=".UserDisplay.GuestlistActivity"
             android:exported="false" />
+        <activity
+            android:name=".TempUserInfoActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -1,7 +1,6 @@
 package com.example.circleapp.EventDisplay;
 
-import androidx.appcompat.app.AlertDialog;
-
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
+import com.example.circleapp.TempUserInfoActivity;
 
 import java.util.ArrayList;
 
@@ -53,19 +53,24 @@ public class BrowseEventsFragment extends Fragment {
         addEvent = rootView.findViewById(R.id.add_event_button);
 
         // Add event button click listener
-        addEvent.setOnClickListener(v -> {
-            if (firebaseManager.getCurrentUserID() != null) {
+        addEvent.setOnClickListener(v -> firebaseManager.checkDocExists(exists -> {
+            if (exists) {
                 Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
                 startActivity(intent);
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(rootView.getContext());
-                builder.setMessage("You need to make a profile to create an event.")
-                        .setPositiveButton("Dismiss", (dialog, which) -> dialog.dismiss());
+                builder.setTitle("Details needed");
+                builder.setMessage("Before creating an event, we need some details from you");
+                builder.setPositiveButton("Let's go!", (dialog, which) -> {
+                    Intent intent = new Intent(rootView.getContext(), TempUserInfoActivity.class);
+                    startActivity(intent);
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
                 dialog.show();
             }
-        });
+        }));
 
         adapter = new EventAdapter(getContext(), new ArrayList<>()); // Initialize adapter
         listView.setAdapter(adapter);

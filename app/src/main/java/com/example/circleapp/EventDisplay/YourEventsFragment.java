@@ -23,7 +23,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
  * This class is used to display a user's registered events.
  */
 public class YourEventsFragment extends Fragment {
-    FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
      * Called to have the fragment instantiate its user interface view. The fragment uses a TabLayout
@@ -50,38 +49,28 @@ public class YourEventsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_your_events, container, false);
 
-        if (firebaseManager.getCurrentUserID() != null) {
-            rootView.findViewById(R.id.layout1).setVisibility(View.VISIBLE);
-            rootView.findViewById(R.id.layout2).setVisibility(View.GONE);
+        ViewPager2 viewPager = rootView.findViewById(R.id.view_pager);
+        TabLayout tabLayout = rootView.findViewById(R.id.tab_layout);
+        Button scanButton = rootView.findViewById(R.id.scan_button);
 
-            ViewPager2 viewPager = rootView.findViewById(R.id.view_pager);
-            TabLayout tabLayout = rootView.findViewById(R.id.tab_layout);
-            Button scanButton = rootView.findViewById(R.id.scan_button);
+        viewPager.setAdapter(new EventsPagerAdapter(this));
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    switch (position) {
+                        case 0:
+                            tab.setText("Attending");
+                            break;
+                        case 1:
+                            tab.setText("Organizing");
+                            break;
+                    }
+                }).attach();
 
-            viewPager.setAdapter(new EventsPagerAdapter(this));
-            new TabLayoutMediator(tabLayout, viewPager,
-                    (tab, position) -> {
-                        switch (position) {
-                            case 0:
-                                tab.setText("Attending");
-                                break;
-                            case 1:
-                                tab.setText("Organizing");
-                                break;
-                        }
-                    }).attach();
-
-            // Scan button click listener
-            scanButton.setOnClickListener(v -> {
-                Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
-                startActivity(intent);
-            });
-
-        }
-        else {
-            rootView.findViewById(R.id.layout1).setVisibility(View.GONE);
-            rootView.findViewById(R.id.layout2).setVisibility(View.VISIBLE);
-        }
+        // Scan button click listener
+        scanButton.setOnClickListener(v -> {
+            Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
+            startActivity(intent);
+        });
 
         return rootView;
     }

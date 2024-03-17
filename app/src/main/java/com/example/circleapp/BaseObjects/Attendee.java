@@ -37,6 +37,13 @@ public class Attendee implements Parcelable {
         this.profilePic = profilePic;
     }
 
+    public Attendee(String ID, String firstName, String lastName, Uri profilePic) {
+        this.ID = ID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profilePic = profilePic;
+    }
+
     // Parcelable constructor
     protected Attendee(Parcel in) {
         ID = in.readString();

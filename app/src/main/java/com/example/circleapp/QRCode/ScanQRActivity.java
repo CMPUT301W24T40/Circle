@@ -69,7 +69,7 @@ public class ScanQRActivity extends AppCompatActivity {
                 String eventID = parts[1];
                 if (qrType.equals("check-in")) {
                     FirebaseManager manager = new FirebaseManager();
-                    manager.checkInEvent(eventID, manager.getCurrentUserID());
+                    manager.checkInEvent(eventID, manager.getPhoneID());
                     Toast.makeText(this, "Checking in to event: " + eventID, Toast.LENGTH_LONG).show();
                 } else if (qrType.equals("details")) {
                     Toast.makeText(this, "Event details: " + eventID, Toast.LENGTH_LONG).show();
