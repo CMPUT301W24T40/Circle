@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +15,7 @@ import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
 import com.example.circleapp.R;
+import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
 
 /**
@@ -101,7 +101,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             registerButton.setVisibility(View.VISIBLE);
         }
 
-        Log.d("WhatFragment", "Source: " + source);
         guestlistButton.setVisibility(View.GONE);
         generateQRDetailsButton.setVisibility(View.GONE);
         generateQRCheckinButton.setVisibility(View.GONE);
@@ -110,8 +109,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             generateQRDetailsButton.setVisibility(View.VISIBLE);
             generateQRCheckinButton.setVisibility(View.VISIBLE);
         }
-
-
 
         // Back button click listener
         backButton.setOnClickListener(v -> finish());
@@ -124,8 +121,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        // Generate QR checkin button click listener
+        // Generate QR check-in button click listener
         generateQRCheckinButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GenerateQRActivity.class);
             intent.putExtra("event", event);
@@ -134,15 +130,28 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
         // Register button click listener
-        registerButton.setOnClickListener(v -> {
+        registerButton.setOnClickListener(v -> firebaseManager.checkDocExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
-            builder.setTitle("Confirmation");
-            builder.setMessage("Are you sure you want to register?");
-            builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event, this));
-            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        });
+            if (exists) {
+                builder.setTitle("Confirmation");
+                builder.setMessage("Are you sure you want to register?");
+                builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event, this));
+                builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+            else {
+                builder.setTitle("Details needed");
+                builder.setMessage("Before creating an event, we need some details from you");
+                builder.setPositiveButton("Let's go!", (dialog, which) -> {
+                    Intent intent = new Intent(this, TempUserInfoActivity.class);
+                    startActivity(intent);
+                });
+                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        }));
 
         guestlistButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GuestlistActivity.class);

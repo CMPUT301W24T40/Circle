@@ -25,7 +25,7 @@ public class FirebaseManager {
     private static FirebaseManager instance;
     private final CollectionReference usersRef; // A reference to the "users" collection in Firestore
     private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
-    private String currentUserID; // A reference to the user ID of the user currently using the app
+    private String phoneID;  // A reference to the phone ID of the user currently using the app
 
     /**
      * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
@@ -51,22 +51,6 @@ public class FirebaseManager {
     }
 
     /**
-     * Sets the current user ID.
-     *
-     * @param ID The ID of the current user
-     */
-    public void setCurrentUserID(String ID) {
-        this.currentUserID = ID;
-    }
-
-    /**
-     * Retrieves the current user ID.
-     *
-     * @return The ID of the current user
-     */
-    public String getCurrentUserID() { return currentUserID; }
-
-    /**
      * Generates a random ID.
      *
      * @return The generated ID converted to a String
@@ -75,11 +59,74 @@ public class FirebaseManager {
         return UUID.randomUUID().toString();
     }
 
-    public String getPhoneID(Context context) {
-        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    /**
+     * Sets the current phone ID.
+     *
+     * @param context   Context of the activity/fragment that is initiating this method.
+     */
+    public void setPhoneID(Context context) {
+        this.phoneID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    /**
+     * Retrieves the current phone ID.
+     *
+     * @return The ID of the current phone being used
+     */
+    public String getPhoneID() {
+        return phoneID;
+    }
+
+    // Callback interfaces
+
+    /**
+     * Callback interface for Firestore operations with user documents.
+     */
+    public interface UserDocumentCallback {
+        /**
+         * Callback method to execute with the user document.
+         *
+         * @param exists Boolean representing whether the document exists in the database.
+         */
+        void onCallback(Boolean exists);
+    }
+
+    /**
+     * Callback interface for Firestore operations with attendees.
+     */
+    public interface AttendeesCallback {
+        /**
+         * Callback method to execute with the attendees list.
+         *
+         * @param attendeesList The list of attendees retrieved from Firestore
+         */
+        void onCallback(ArrayList<Attendee> attendeesList);
+    }
+
+    /**
+     * Callback interface for Firestore operations with events.
+     */
+    public interface EventsCallback {
+        /**
+         * Callback method to execute with the events list.
+         *
+         * @param eventsList The list of events retrieved from Firestore
+         */
+        void onCallback(ArrayList<Event> eventsList);
     }
 
     // Methods for managing and retrieving user data
+
+    public void checkDocExists(UserDocumentCallback callback) {
+        DocumentReference userDocRef = usersRef.document(phoneID);
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                boolean exists = document.exists();
+                callback.onCallback(exists);
+            }
+        });
+    }
 
     /**
      * Adds a new user to Firestore.
@@ -95,9 +142,9 @@ public class FirebaseManager {
         data.put("Phone", user.getPhoneNumber());
         data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
 
-        usersRef.document(user.getID()).set(data);
-        usersRef.document(user.getID()).collection("registeredEvents");
-        usersRef.document(user.getID()).collection("createdEvents");
+        usersRef.document(phoneID).set(data);
+        usersRef.document(phoneID).collection("registeredEvents");
+        usersRef.document(phoneID).collection("createdEvents");
     }
 
     /**
@@ -106,7 +153,7 @@ public class FirebaseManager {
      * @param user The user to edit
      */
     public void editUser(Attendee user) {
-        DocumentReference userDocRef = usersRef.document(user.getID());
+        DocumentReference userDocRef = usersRef.document(phoneID);
 
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -126,6 +173,12 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Retrieves registered users for the current event from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     * @param eventID  The ID of the event we want to find the registered users for
+     */
     public void getRegisteredUsers(AttendeesCallback callback, String eventID) {
         ArrayList<Attendee> attendeesList = new ArrayList<>();
 
@@ -136,18 +189,6 @@ public class FirebaseManager {
             }
             callback.onCallback(attendeesList);
         });
-    }
-
-    /**
-     * Callback interface for Firestore operations with attendees.
-     */
-    public interface AttendeesCallback {
-        /**
-         * Callback method to execute with the attendees list.
-         *
-         * @param attendeesList The list of attendees retrieved from Firestore
-         */
-        void onCallback(ArrayList<Attendee> attendeesList);
     }
 
     // Methods for managing and retrieving event data
@@ -177,7 +218,7 @@ public class FirebaseManager {
     public void getRegisteredEvents(EventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
-        usersRef.document(currentUserID).collection("registeredEvents").get().addOnCompleteListener(task -> {
+        usersRef.document(phoneID).collection("registeredEvents").get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
                 Event event = document.toObject(Event.class);
                 eventsList.add(event);
@@ -194,7 +235,7 @@ public class FirebaseManager {
     public void getCreatedEvents (EventsCallback callback) {
         ArrayList<Event> eventsList = new ArrayList<>();
 
-        usersRef.document(currentUserID).collection("createdEvents").get().addOnCompleteListener(task -> {
+        usersRef.document(phoneID).collection("createdEvents").get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
                 Event event = document.toObject(Event.class);
                 eventsList.add(event);
@@ -221,7 +262,7 @@ public class FirebaseManager {
         eventsRef.document(event.getID()).set(data);
         eventsRef.document(event.getID()).collection("registeredUsers");
 
-        CollectionReference userEventsRef = usersRef.document(currentUserID).collection("createdEvents");
+        CollectionReference userEventsRef = usersRef.document(phoneID).collection("createdEvents");
         eventsRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(data)));
     }
 
@@ -232,9 +273,9 @@ public class FirebaseManager {
      */
     public void registerEvent(Event event, Context context) {
         DocumentReference eventDocRef = eventsRef.document(event.getID());
-        DocumentReference userDocRef = usersRef.document(currentUserID);
+        DocumentReference userDocRef = usersRef.document(phoneID);
         CollectionReference eventsCollectionRef = eventDocRef.collection("registeredUsers");
-        CollectionReference userEventsRef = usersRef.document(currentUserID).collection("registeredEvents");
+        CollectionReference userEventsRef = usersRef.document(phoneID).collection("registeredEvents");
 
         eventsCollectionRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             int count = queryDocumentSnapshots.size();
@@ -242,7 +283,7 @@ public class FirebaseManager {
 
             if (count < capacity || capacity == -1) {
                 eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(event.getID()).set(Objects.requireNonNull(documentSnapshot.getData())));
-                userDocRef.get().addOnSuccessListener(documentSnapshot -> eventsCollectionRef.document(currentUserID).set(Objects.requireNonNull(documentSnapshot.getData())));
+                userDocRef.get().addOnSuccessListener(documentSnapshot -> eventsCollectionRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
                 Toast.makeText(context, "You've successfully registered for this event!", Toast.LENGTH_LONG).show();
             }
             else {
@@ -262,17 +303,5 @@ public class FirebaseManager {
             System.out.println("User checked in successfully"))
             .addOnFailureListener(e ->
             System.err.println("Error checking in user: " + e.getMessage()));
-    }
-
-    /**
-     * Callback interface for Firestore operations with events.
-     */
-    public interface EventsCallback {
-        /**
-         * Callback method to execute with the events list.
-         *
-         * @param eventsList The list of events retrieved from Firestore
-         */
-        void onCallback(ArrayList<Event> eventsList);
     }
 }

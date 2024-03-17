@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".EventDisplay.YourEventsFragment">
 
-    <RelativeLayout
-        android:id="@+id/layout1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-
     <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
@@ -48,24 +41,5 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="32dp"
             android:text="Scan QR Code" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/layout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-    <TextView
-            android:id="@+id/statementTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Make a profile to see your events!"
-            android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:textColor="@android:color/black" />
-
-    </RelativeLayout>
 
 </RelativeLayout>
