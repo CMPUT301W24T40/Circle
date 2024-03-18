@@ -2,6 +2,8 @@ package com.example.circleapp.UserDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -12,7 +14,18 @@ import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * This class is used to display all users registered to the given event.
@@ -23,6 +36,8 @@ public class GuestlistActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
     Event event;
+
+    Button notficationButton;
 
     /**
      * The activity uses a ListView in combination with an instance of the AttendeeAdapter class to
@@ -56,6 +71,25 @@ public class GuestlistActivity extends AppCompatActivity {
         // Back button click listener
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
+
+        // for notifications for now
+        notficationButton = findViewById(R.id.notify_button);
+        notficationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> tokens = new ArrayList<String>();
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    Attendee user = adapter.getItem(i);
+                    assert user != null;
+                    String token = user.getToken();
+                    tokens.add(token);
+                }
+                Intent intent = new Intent(v.getContext(), SendNotificationActivity.class);
+                intent.putStringArrayListExtra("tokens", tokens);
+                startActivity(intent);
+            }
+        });
+
 
     }
 
