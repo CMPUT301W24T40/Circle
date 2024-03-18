@@ -115,6 +115,18 @@ public class FirebaseManager {
         void onCallback(ArrayList<Event> eventsList);
     }
 
+    /**
+     * Callback interface for Firestore operations with a single event.
+     */
+    public interface EventCallback {
+        /**
+         * Callback method to execute with the event.
+         *
+         * @param event The event retrieved from Firestore
+         */
+        void onCallback(Event event);
+    }
+
     // Methods for managing and retrieving user data
 
     public void checkDocExists(UserDocumentCallback callback) {
@@ -192,6 +204,26 @@ public class FirebaseManager {
     }
 
     // Methods for managing and retrieving event data
+
+    /**
+     * Retrieves a specific event from Firestore.
+     *
+     * @param eventID The ID of the event to retrieve
+     * @param callback The callback to execute with the event
+     */
+    public void getEvent(String eventID, EventCallback callback) {
+        DocumentReference eventDocRef = eventsRef.document(eventID);
+
+        eventDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Event event = document.toObject(Event.class);
+                    callback.onCallback(event);
+                }
+            }
+        });
+    }
 
     /**
      * Retrieves all events from Firestore.
