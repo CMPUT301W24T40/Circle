@@ -2,7 +2,6 @@ package com.example.circleapp.UserDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -13,19 +12,9 @@ import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
+import com.example.circleapp.SendNotificationActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 /**
  * This class is used to display all users registered to the given event.
@@ -72,10 +61,13 @@ public class GuestlistActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
 
-        // for notifications for now
+        // for notifications
         notficationButton = findViewById(R.id.notify_button);
         notficationButton.setOnClickListener(new View.OnClickListener() {
             @Override
+            /*
+              Sends user to new activity to write out a notification to send to attendees of event
+             */
             public void onClick(View v) {
                 ArrayList<String> tokens = new ArrayList<String>();
                 for (int i = 0; i < adapter.getCount(); i++) {

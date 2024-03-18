@@ -104,7 +104,7 @@ public class MakeProfileActivity extends AppCompatActivity {
 
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
             user.setGeoEnabled(isGeoEnabled);
-            // for MakeProfileActivity
+            // for notifications, getting the token to send it to particular device
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(new OnCompleteListener<String>() {
                         @Override
@@ -114,7 +114,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                                 return;
                             }
                             String token = task.getResult();
-                            Log.d("tag", token);
+                            Log.d("my token", token);
                             user.setToken(token);
                         }
                     });
