@@ -1,4 +1,4 @@
-package com.example.circleapp.UserDisplay;
+package com.example.circleapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +25,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * This class handles notification sending from the organizer to the attendees
+ * of their event.
+ */
 public class SendNotificationActivity extends AppCompatActivity {
     EditText notifBody, notifTitle;
     Button sendNotifButton;
@@ -33,10 +37,14 @@ public class SendNotificationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_notification);
-        setReferences();
         tokens = getIntent().getStringArrayListExtra("tokens");
+        setReferences();
     }
 
+    /**
+     * Sets the references to the button and edit texts on the layout
+     * Clicking the sendNotif button sends the notification out to attendees.
+     */
     private void setReferences() {
         notifBody = findViewById(R.id.notif_body);
         notifTitle = findViewById(R.id.notif_title);
@@ -45,19 +53,31 @@ public class SendNotificationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendNotification(notifTitle.getText().toString(), notifBody.getText().toString());
+                finish();
             }
         });
     }
 
+    /**
+     * This method creates a JSONobject that is the notification message
+     * to be sent out to attendees
+     * @param title
+     *          The title of the notification
+     * @param body
+     *          The body of the notification, what's in it
+     */
     private void sendNotification(String title, String body) {
         for (String token : tokens) {
             JSONObject jsonNotif = new JSONObject();
             JSONObject wholeObject = new JSONObject();
+            JSONObject dataObject = new JSONObject();
             try {
                 jsonNotif.put("title", title);
                 jsonNotif.put("body", body);
+                dataObject.put("something", "some data");
                 wholeObject.put("to", token);
                 wholeObject.put("notification", jsonNotif);
+                wholeObject.put("data", dataObject);
             } catch (JSONException e) {
                 Log.d("log", e.toString());
             }
@@ -65,6 +85,12 @@ public class SendNotificationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method calls the API OkhttpClient used to be able to
+     * send the message to the attendee
+     * @param jsonObject
+     *          This is the jsonObject that will be the notification
+     */
     private void callApi(JSONObject jsonObject) {
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
