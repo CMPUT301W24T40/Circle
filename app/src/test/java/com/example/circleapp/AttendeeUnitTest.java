@@ -18,8 +18,9 @@ public class AttendeeUnitTest {
         String lastName = "Doe";
         String email = "john@example.com";
         String phoneNumber = "123456789";
+        String homepage = "https://www.roblox.com/home";
 
-        Attendee attendee = new Attendee(ID, firstName, lastName, email, phoneNumber, null);
+        Attendee attendee = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
 
         // Verify the constructor
         assertEquals(ID, attendee.getID());
@@ -27,12 +28,13 @@ public class AttendeeUnitTest {
         assertEquals(lastName, attendee.getLastName());
         assertEquals(email, attendee.getEmail());
         assertEquals(phoneNumber, attendee.getPhoneNumber());
+        assertEquals(homepage, attendee.getHomepage());
     }
 
     @Test
     public void testAttendeeSetters() {
         // sample Attendee object
-        Attendee attendee = new Attendee("123", "John", "Doe", "john@example.com", "123456789", null);
+        Attendee attendee = new Attendee("123", "John", "Doe", "john@example.com", "123456789", null, null);
 
         // Update info
         String newFirstName = "Jane";

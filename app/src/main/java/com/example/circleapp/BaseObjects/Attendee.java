@@ -15,9 +15,9 @@ public class Attendee implements Parcelable {
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
     private String phoneNumber; // Phone number of the attendee
+    private String homepage;
     private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
-
     private String token; // for notifications
 
     /**
@@ -28,15 +28,17 @@ public class Attendee implements Parcelable {
      * @param lastName    Last name of the attendee
      * @param email       Email address of the attendee
      * @param phoneNumber Phone number of the attendee
+     * @param homepage    Homepage URL of the attendee
      * @param profilePic  URI to the profile picture of the attendee
      */
-    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber, Uri profilePic) {
+    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber, String homepage, Uri profilePic) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.profilePic = profilePic;
+        this.homepage = homepage;
     }
 
     public Attendee(String ID, String firstName, String lastName, Uri profilePic) {
@@ -56,6 +58,7 @@ public class Attendee implements Parcelable {
         firstName = in.readString();
         lastName = in.readString();
         email = in.readString();
+        homepage = in.readString();
         phoneNumber = in.readString();
         isGeoEnabled = in.readByte() != 0;
 
@@ -117,6 +120,15 @@ public class Attendee implements Parcelable {
     }
 
     /**
+     * Gets the homepage of the attendee.
+     *
+     * @return The homepage URL
+     */
+    public String getHomepage(){
+        return homepage;
+    }
+
+    /**
      * Gets the phone number of the attendee.
      *
      * @return The phone number
@@ -171,6 +183,15 @@ public class Attendee implements Parcelable {
     }
 
     /**
+     * Gets the homepage of the attendee.
+     *
+     * @param homepage The new homepage URL
+     */
+    public void setHomepage(String homepage){
+        this.homepage = homepage;
+    }
+
+    /**
      * Sets the phone number of the attendee.
      *
      * @param phoneNumber The new phone number
@@ -216,6 +237,7 @@ public class Attendee implements Parcelable {
         dest.writeString(firstName);
         dest.writeString(lastName);
         dest.writeString(email);
+        dest.writeString(homepage);
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);

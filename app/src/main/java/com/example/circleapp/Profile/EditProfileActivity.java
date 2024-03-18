@@ -34,7 +34,7 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText lastNameEditText;
     EditText emailEditText;
     EditText phoneNumberEditText;
-    CardView circleBackground;
+    EditText homepageEditText;
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
@@ -68,6 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameEditText = findViewById(R.id.lname_edit);
         emailEditText = findViewById(R.id.edit_email);
         phoneNumberEditText = findViewById(R.id.edit_number);
+        homepageEditText = findViewById(R.id.edit_homepage);
         geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
@@ -76,7 +77,7 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameEditText.setText(user.getLastName());
         emailEditText.setText(user.getEmail());
         phoneNumberEditText.setText(user.getPhoneNumber());
-
+        homepageEditText.setText(user.getHomepage());
         geolocationEditText.setChecked(user.isGeoEnabled());
 
         if (user.getProfilePic() == null) {
@@ -115,12 +116,14 @@ public class EditProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
+            String homepage = homepageEditText.getText().toString();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
             user.setFirstName(firstName);
             user.setLastName(lastName);
             user.setPhoneNumber(phoneNumber);
             user.setEmail(email);
+            user.setHomepage(homepage);
             user.setGeoEnabled(isGeoEnabled);
 
             firebaseManager.editUser(user);

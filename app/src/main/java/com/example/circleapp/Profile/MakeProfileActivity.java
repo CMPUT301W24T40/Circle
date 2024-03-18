@@ -36,6 +36,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     EditText lastNameEditText;
     EditText emailEditText;
     EditText phoneNumberEditText;
+    EditText homepageEditText;
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
@@ -63,6 +64,7 @@ public class MakeProfileActivity extends AppCompatActivity {
         lastNameEditText = findViewById(R.id.lname_edit);
         emailEditText = findViewById(R.id.edit_email);
         phoneNumberEditText = findViewById(R.id.edit_number);
+        homepageEditText = findViewById(R.id.edit_homepage);
         geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
@@ -90,6 +92,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
+            String homepage = homepageEditText.getText().toString();
             String ID = firebaseManager.getPhoneID();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
@@ -102,7 +105,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, selectedImageUri);
+            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, selectedImageUri);
             user.setGeoEnabled(isGeoEnabled);
             // for notifications, getting the token to send it to particular device
             FirebaseMessaging.getInstance().getToken()
