@@ -85,14 +85,15 @@
             android:paddingTop="5dp"
             android:text="Phone Number:"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/circular_background"
-            android:layout_marginStart="29dp"
+            android:layout_marginStart="11dp"
             android:layout_marginTop="23dp"
             android:layout_toEndOf="@id/pn_title"
             android:backgroundTint="@color/black"
@@ -106,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/phone_number"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="33dp"
             android:backgroundTint="@color/black"
             android:paddingTop="10dp"
             android:text="Email:"
@@ -118,8 +119,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/phone_number"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="33dp"
             android:layout_toEndOf="@id/email_title"
             android:backgroundTint="@color/black"
             android:paddingStart="5dp"
@@ -145,9 +146,9 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="63dp"
             android:backgroundTint="@color/pastel_purple"
-            app:strokeWidth="5dp"
+            app:cardCornerRadius="70dp"
             app:strokeColor="@color/black"
-            app:cardCornerRadius="70dp">
+            app:strokeWidth="5dp">
 
             <ImageView
                 android:id="@+id/edit_pfp"
@@ -156,6 +157,7 @@
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
                 android:src="@drawable/default_profile_icon" />
+
         </com.google.android.material.card.MaterialCardView>
 
         <CheckBox
@@ -163,7 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/email"
-            android:layout_marginTop="27dp"
+            android:layout_marginTop="111dp"
             android:backgroundTint="@color/black"
             android:text="Geolocation Enabled"
             android:textSize="18sp" />
@@ -177,6 +179,30 @@
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
             android:text="Edit Profile" />
+
+        <TextView
+            android:id="@+id/homepage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_title"
+            android:layout_marginTop="48dp"
+            android:text="Homepage:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/homepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="49dp"
+            android:layout_toEndOf="@id/homepage_title"
+            android:autoLink="web"
+            android:text="https://www.google.ca"
+            android:textColor="#000000"
+            android:textColorLink="@color/purple_500"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 

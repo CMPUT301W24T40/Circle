@@ -36,6 +36,7 @@ public class ProfileFragment extends Fragment {
     TextView lastName;
     TextView email;
     TextView phoneNumber;
+    TextView homepage;
     CheckBox geolocation;
     Button makeProfile;
     Button editProfile;
@@ -79,6 +80,7 @@ public class ProfileFragment extends Fragment {
         lastName = view.findViewById(R.id.last_name);
         email = view.findViewById(R.id.email);
         phoneNumber = view.findViewById(R.id.phone_number);
+        homepage = view.findViewById(R.id.homepage);
         geolocation = view.findViewById(R.id.edit_geolocation);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
@@ -94,6 +96,7 @@ public class ProfileFragment extends Fragment {
             lastName.setText(sharedPreferences.getString("user_last_name", null));
             phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
             email.setText(sharedPreferences.getString("user_email", null));
+            homepage.setText(sharedPreferences.getString("user_homepage", null));
 
             String pfpString = sharedPreferences.getString("user_profile_pic", null);
 
@@ -125,12 +128,14 @@ public class ProfileFragment extends Fragment {
                         editor.putString("user_last_name", ourUser.getLastName());
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
                         editor.putString("user_email", ourUser.getEmail());
+                        editor.putString("user_homepage", ourUser.getHomepage());
                         editor.apply();
 
                         firstName.setText(ourUser.getFirstName());
                         lastName.setText(ourUser.getLastName());
                         email.setText(ourUser.getEmail());
                         phoneNumber.setText(ourUser.getPhoneNumber());
+                        homepage.setText(ourUser.getHomepage());
 
                         String checked = "Geolocation: ENABLED";
                         String unchecked = "Geolocation: DISABLED";
