@@ -116,10 +116,10 @@ public class MakeProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.setToken(token);
+                        firebaseManager.addNewUser(user);
+                        user.setHasProfile(true);
                     });
 
-            firebaseManager.addNewUser(user);
-            user.setHasProfile(true);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
             Bundle bundle = new Bundle();
