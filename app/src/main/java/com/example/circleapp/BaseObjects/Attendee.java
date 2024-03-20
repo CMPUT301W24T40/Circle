@@ -10,14 +10,17 @@ import androidx.annotation.NonNull;
  * This class represents an attendee of an event.
  */
 public class Attendee implements Parcelable {
-    private String ID; // Unique identifier for the attendee
+    private final String ID; // Unique identifier for the attendee
     private String firstName; // First name of the attendee
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
     private String phoneNumber; // Phone number of the attendee
-    private String homepage;
     private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
+    private String homepage;
+
+    private boolean hasProfile; // Indicates if the user has a profile or not
+
     private String token; // for notifications
 
     /**
@@ -39,17 +42,6 @@ public class Attendee implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.profilePic = profilePic;
         this.homepage = homepage;
-    }
-
-    public Attendee(String ID, String firstName, String lastName, Uri profilePic) {
-        this.ID = ID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.profilePic = profilePic;
-    }
-
-    public Attendee() {
-
     }
 
     // Parcelable constructor
@@ -120,15 +112,6 @@ public class Attendee implements Parcelable {
     }
 
     /**
-     * Gets the homepage of the attendee.
-     *
-     * @return The homepage URL
-     */
-    public String getHomepage(){
-        return homepage;
-    }
-
-    /**
      * Gets the phone number of the attendee.
      *
      * @return The phone number
@@ -154,6 +137,22 @@ public class Attendee implements Parcelable {
     public Uri getProfilePic() {
         return profilePic;
     }
+
+    /**
+     * Gets the homepage of the attendee.
+     *
+     * @return The homepage URL
+     */
+    public String getHomepage(){
+        return homepage;
+    }
+
+    /**
+     * Checks if the user has a profile or not.
+     *
+     * @return True if user doesn't have a profile, false otherwise
+     */
+    public boolean hasProfile() {return hasProfile; }
 
     /**
      * Sets the first name of the attendee.
@@ -183,15 +182,6 @@ public class Attendee implements Parcelable {
     }
 
     /**
-     * Gets the homepage of the attendee.
-     *
-     * @param homepage The new homepage URL
-     */
-    public void setHomepage(String homepage){
-        this.homepage = homepage;
-    }
-
-    /**
      * Sets the phone number of the attendee.
      *
      * @param phoneNumber The new phone number
@@ -217,6 +207,22 @@ public class Attendee implements Parcelable {
     public void setProfilePic(Uri profilePic) {
         this.profilePic = profilePic;
     }
+
+    /**
+     * Sets the homepage of the attendee.
+     *
+     * @param homepage The new homepage URL
+     */
+    public void setHomepage(String homepage){
+        this.homepage = homepage;
+    }
+
+    /**
+     * Sets whether the user has a profile or not.
+     *
+     * @param hasProfile True if user doesn't have a profile, false otherwise
+     */
+    public void setHasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
 
     // Parcelable methods
 

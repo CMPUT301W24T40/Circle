@@ -5,7 +5,6 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,13 +18,12 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
+import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
 
 /**
@@ -48,6 +46,7 @@ public class ProfileFragment extends Fragment {
     SharedPreferences.Editor editor;
     ActivityResultLauncher<Intent> launcher;
     static Attendee ourUser;
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
      * View prompts the user to make a profile with details. When user chooses to make
@@ -86,37 +85,41 @@ public class ProfileFragment extends Fragment {
         editProfile = view.findViewById(R.id.edit_profile_button);
         profilePic = view.findViewById(R.id.edit_pfp);
 
-        if (profileMade) {
-            makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
-            makeProfileLayout.setVisibility(View.INVISIBLE);
-            userProfileLayout = view.findViewById(R.id.user_profile_layout);
-            userProfileLayout.setVisibility(View.VISIBLE);
+        firebaseManager.checkProfileExists(exists -> {
+            if (exists) {
+                makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
+                makeProfileLayout.setVisibility(View.INVISIBLE);
+                userProfileLayout = view.findViewById(R.id.user_profile_layout);
+                userProfileLayout.setVisibility(View.VISIBLE);
 
-            firstName.setText(sharedPreferences.getString("user_first_name", null));
-            lastName.setText(sharedPreferences.getString("user_last_name", null));
-            phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
-            email.setText(sharedPreferences.getString("user_email", null));
-            homepage.setText(sharedPreferences.getString("user_homepage", null));
+                firstName.setText(sharedPreferences.getString("user_first_name", null));
+                lastName.setText(sharedPreferences.getString("user_last_name", null));
+                phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
+                email.setText(sharedPreferences.getString("user_email", null));
+                homepage.setText(sharedPreferences.getString("user_homepage", null));
 
-            String pfpString = sharedPreferences.getString("user_profile_pic", null);
+                String pfpString = sharedPreferences.getString("user_profile_pic", null);
 
-            if (pfpString != null) {
-                Uri uri = Uri.parse(pfpString);
-                Glide.with(ProfileFragment.this).load(uri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                if (pfpString != null) {
+                    Uri uri = Uri.parse(pfpString);
+                    Glide.with(ProfileFragment.this).load(uri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                }
+                else {
+                    char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);
+                    int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
+                    profilePic.setImageResource(defaultImageResource);
+                }
             }
-            else {
-                char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);
-                int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
-                profilePic.setImageResource(defaultImageResource);
-            }
-        }
+        });
 
         launcher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK) {
                         Intent data = result.getData();
+                        assert data != null;
                         Bundle bundle = data.getExtras();
+                        assert bundle != null;
                         ourUser = bundle.getParcelable("user");
 
                         makeProfileLayout = view.findViewById(R.id.startup_profile_layout);

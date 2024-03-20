@@ -2,7 +2,6 @@ package com.example.circleapp.Profile;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 
@@ -23,9 +22,9 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.Objects;
 
 /**
  * This class is used for when a user wants to make profile
@@ -109,20 +108,18 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setGeoEnabled(isGeoEnabled);
             // for notifications, getting the token to send it to particular device
             FirebaseMessaging.getInstance().getToken()
-                    .addOnCompleteListener(new OnCompleteListener<String>() {
-                        @Override
-                        public void onComplete(@NonNull Task<String> task) {
-                            if (!task.isSuccessful()) {
-                                Log.w("tag", "Fetching FCM registration token failed", task.getException());
-                                return;
-                            }
-                            String token = task.getResult();
-                            Log.d("my token", token);
-                            user.setToken(token);
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.w("tag", "Fetching FCM registration token failed", task.getException());
+                            return;
                         }
+                        String token = task.getResult();
+                        Log.d("my token", token);
+                        user.setToken(token);
                     });
 
             firebaseManager.addNewUser(user);
+            user.setHasProfile(true);
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
             Bundle bundle = new Bundle();
@@ -148,7 +145,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData().getData() != null) {
+                if (result.getResultCode() == Activity.RESULT_OK && Objects.requireNonNull(result.getData()).getData() != null) {
                     selectedImageUri = result.getData().getData();
                     Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
                 } else {

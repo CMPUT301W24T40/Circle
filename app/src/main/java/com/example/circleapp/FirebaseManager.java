@@ -129,7 +129,13 @@ public class FirebaseManager {
 
     // Methods for managing and retrieving user data
 
-    public void checkDocExists(UserDocumentCallback callback) {
+    /**
+     * Searches Firestore database to check if a user exists for the current phone.
+     *
+     * @param callback The callback to execute with the boolean representing if the
+     *                 user exists or not.
+     */
+    public void checkUserExists(UserDocumentCallback callback) {
         DocumentReference userDocRef = usersRef.document(phoneID);
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -141,22 +147,50 @@ public class FirebaseManager {
     }
 
     /**
+     * Searches Firestore database to check if a profile exists for the current user.
+     *
+     * @param callback The callback to execute with the boolean representing if the
+     *                 profile exists or not.
+     */
+    public void checkProfileExists(UserDocumentCallback callback) {
+        DocumentReference userDocRef = usersRef.document(phoneID);
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    String tempUserField = Objects.requireNonNull(document.get("HasProfile")).toString();
+                    boolean tempUser = Boolean.parseBoolean(tempUserField);
+                    callback.onCallback(tempUser);
+                }
+            }
+        });
+    }
+
+    /**
      * Adds a new user to Firestore.
      *
      * @param user The user to add
      */
     public void addNewUser(Attendee user) {
-        HashMap<String, String> data = new HashMap<>();
-        data.put("UserID", user.getID());
-        data.put("FirstName", user.getFirstName());
-        data.put("LastName", user.getLastName());
-        data.put("Email", user.getEmail());
-        data.put("Phone", user.getPhoneNumber());
-        data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
+        checkUserExists(exists -> {
+            if (exists) {
+                editUser(user);
+            }
+            else {
+                HashMap<String, String> data = new HashMap<>();
+                data.put("UserID", user.getID());
+                data.put("FirstName", user.getFirstName());
+                data.put("LastName", user.getLastName());
+                data.put("Email", user.getEmail());
+                data.put("Phone", user.getPhoneNumber());
+                data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
+                data.put("HasProfile", String.valueOf(user.hasProfile()));
 
-        usersRef.document(phoneID).set(data);
-        usersRef.document(phoneID).collection("registeredEvents");
-        usersRef.document(phoneID).collection("createdEvents");
+                usersRef.document(phoneID).set(data);
+                usersRef.document(phoneID).collection("registeredEvents");
+                usersRef.document(phoneID).collection("createdEvents");
+            }
+        });
     }
 
     /**
@@ -177,6 +211,7 @@ public class FirebaseManager {
                     updates.put("Email", user.getEmail());
                     updates.put("Phone", user.getPhoneNumber());
                     updates.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
+                    updates.put("HasProfile", String.valueOf(user.hasProfile()));
 
                     userDocRef.update(updates)
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
@@ -324,6 +359,12 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Checks in a user for a specific event.
+     *
+     * @param eventID The ID of the event to check in to.
+     * @param userID The ID of the user to check in.
+     */
     public void checkInEvent(String eventID, String userID){
         DocumentReference eventDocRef = eventsRef.document(eventID);
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");

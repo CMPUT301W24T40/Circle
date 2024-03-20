@@ -130,7 +130,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
         // Register button click listener
-        registerButton.setOnClickListener(v -> firebaseManager.checkDocExists(exists -> {
+        registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
             if (exists) {
                 builder.setTitle("Confirmation");
