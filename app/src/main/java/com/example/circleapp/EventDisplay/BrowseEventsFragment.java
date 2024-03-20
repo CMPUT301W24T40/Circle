@@ -53,7 +53,7 @@ public class BrowseEventsFragment extends Fragment {
         addEvent = rootView.findViewById(R.id.add_event_button);
 
         // Add event button click listener
-        addEvent.setOnClickListener(v -> firebaseManager.checkDocExists(exists -> {
+        addEvent.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             if (exists) {
                 Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
                 startActivity(intent);
