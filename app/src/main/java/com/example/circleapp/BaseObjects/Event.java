@@ -16,7 +16,7 @@ public class Event implements Parcelable {
     private String time;
     private String description;
     private String capacity;
-    private int eventPoster; // Resource ID for the event poster
+    private String eventPosterURL; // Resource ID for the event poster
 
     // Constructors
     /**
@@ -50,6 +50,7 @@ public class Event implements Parcelable {
         time = in.readString();
         description = in.readString();
         capacity = in.readString();
+        eventPosterURL = in.readString();
     }
 
     // Parcelable creator
@@ -134,8 +135,8 @@ public class Event implements Parcelable {
      *
      * @return The resource ID
      */
-    public int getEventPoster() {
-        return eventPoster;
+    public String getEventPosterURL() {
+        return eventPosterURL;
     }
 
     /**
@@ -202,10 +203,10 @@ public class Event implements Parcelable {
     /**
      * Sets the resource ID for the event poster.
      *
-     * @param eventPoster The new resource ID
+     * @param eventPosterURL The new resource ID
      */
-    public void setEventPoster(int eventPoster) {
-        this.eventPoster = eventPoster;
+    public void setEventPosterURL(String eventPosterURL) {
+        this.eventPosterURL = eventPosterURL;
     }
 
     // Parcelable methods
@@ -229,5 +230,6 @@ public class Event implements Parcelable {
         dest.writeString(time);
         dest.writeString(description);
         dest.writeString(capacity);
+        dest.writeString(eventPosterURL);
     }
 }
