@@ -339,6 +339,7 @@ public class FirebaseManager {
         data.put("time", event.getTime());
         data.put("description", event.getDescription());
         data.put("capacity", event.getCapacity());
+        data.put("eventPosterURL", event.getEventPosterURL());
 
         eventsRef.document(event.getID()).set(data);
         eventsRef.document(event.getID()).collection("registeredUsers");

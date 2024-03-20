@@ -3,14 +3,17 @@ package com.example.circleapp.EventDisplay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.ImageManager;
 import com.example.circleapp.R;
 
 /**
@@ -26,6 +29,7 @@ public class CreateEventActivity extends AppCompatActivity {
     ImageView eventPoster;
     Button confirmButton;
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
+    ImageManager imageManager;
 
     /**
      * When this Activity is created, a user can input details to create an Event. Details include
@@ -54,6 +58,10 @@ public class CreateEventActivity extends AppCompatActivity {
         eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
 
+        imageManager = new ImageManager(this, eventPoster);
+        // click listener for eventPoster
+        eventPoster.setOnClickListener(v -> imageManager.selectImage());
+
         // Confirm button click listener
         confirmButton.setOnClickListener(v -> {
             String eventName = eventNameEditText.getText().toString();
@@ -68,17 +76,25 @@ public class CreateEventActivity extends AppCompatActivity {
             if (capacity.isEmpty()) { event.setCapacity("-1"); }
             else { event.setCapacity(capacity); }
 
-            firebaseManager.createEvent(event);
+            imageManager.uploadImage(downloadURL -> {
+                event.setEventPosterURL(downloadURL);
+                firebaseManager.createEvent(event);
 
-            // Send result back to the caller activity
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("event", event);
-            Intent intent = new Intent();
-            intent.putExtras(bundle);
+                // Send result back to the caller activity
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("event", event);
+                Intent intent = new Intent();
+                intent.putExtras(bundle);
 
-            setResult(Activity.RESULT_OK, intent);
+                setResult(Activity.RESULT_OK, intent);
 
-            finish();
+                finish();
+            });
         });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageManager.onActivityResult(requestCode, resultCode, data);
     }
 }

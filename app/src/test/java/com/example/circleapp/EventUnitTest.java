@@ -20,7 +20,7 @@ public class EventUnitTest {
         event.setDate("2024-03-01");
         event.setTime("11:00 AM");
         event.setDescription("Description1");
-        event.setEventPoster(12345);
+        event.setEventPosterURL("firebase.com");
 
         // Check using getters
         assertEquals("123", event.getID());
@@ -29,7 +29,7 @@ public class EventUnitTest {
         assertEquals("2024-03-01", event.getDate());
         assertEquals("11:00 AM", event.getTime());
         assertEquals("Description1", event.getDescription());
-        assertEquals(12345, event.getEventPoster());
+        assertEquals("firebase.com", event.getEventPosterURL());
     }
 
 }
