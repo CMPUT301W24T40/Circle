@@ -185,6 +185,7 @@ public class FirebaseManager {
                 data.put("Phone", user.getPhoneNumber());
                 data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
                 data.put("HasProfile", String.valueOf(user.hasProfile()));
+                data.put("Token", user.getToken());
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
@@ -212,6 +213,7 @@ public class FirebaseManager {
                     updates.put("Phone", user.getPhoneNumber());
                     updates.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
                     updates.put("HasProfile", String.valueOf(user.hasProfile()));
+                    updates.put("Token", user.getToken());
 
                     userDocRef.update(updates)
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
@@ -236,6 +238,18 @@ public class FirebaseManager {
             }
             callback.onCallback(attendeesList);
         });
+    }
+
+    public ArrayList<Attendee> getRegisteredUserTokens(String eventID) {
+        ArrayList<Attendee> attendeesList = new ArrayList<>();
+
+        eventsRef.document(eventID).collection("registeredUsers").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Attendee attendee = document.toObject(Attendee.class);
+                attendeesList.add(attendee);
+            }
+        });
+        return attendeesList;
     }
 
     // Methods for managing and retrieving event data

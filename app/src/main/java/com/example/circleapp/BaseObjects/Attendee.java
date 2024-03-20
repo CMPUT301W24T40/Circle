@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
  * This class represents an attendee of an event.
  */
 public class Attendee implements Parcelable {
-    private final String ID; // Unique identifier for the attendee
+    private String ID; // Unique identifier for the attendee
     private String firstName; // First name of the attendee
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
@@ -42,6 +42,11 @@ public class Attendee implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.profilePic = profilePic;
         this.homepage = homepage;
+    }
+
+    // to avoid proguard error
+    public Attendee() {
+        // ahhhhh
     }
 
     // Parcelable constructor

@@ -13,6 +13,7 @@ import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -24,6 +25,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This class is used to edit an already existing user's profile.
@@ -125,8 +127,18 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setEmail(email);
             user.setHomepage(homepage);
             user.setGeoEnabled(isGeoEnabled);
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.w("tag", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        Log.d("my token", token);
+                        user.setToken(token);
+                        firebaseManager.editUser(user);
+                    });
 
-            firebaseManager.editUser(user);
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
