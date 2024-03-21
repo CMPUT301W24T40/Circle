@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
@@ -63,6 +64,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
         event = getIntent().getParcelableExtra("event");
 
+
         // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
         eventLocationTextView = findViewById(R.id.event_details_location);
@@ -89,7 +91,16 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         // Load event poster image
         String eventPosterURL = event.getEventPosterURL();
-        Glide.with(this).load(eventPosterURL).into(eventPosterImageView);
+        if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
+            Glide.with(this)
+                    .load(eventPosterURL)
+                    .apply(new RequestOptions().placeholder(R.drawable.no_poster))
+                    .into(eventPosterImageView);
+        } else {
+            Glide.with(this)
+                    .load(R.drawable.no_poster)
+                    .into(eventPosterImageView);
+        }
 
         // Initialize buttons
         backButton = findViewById(R.id.back_button);

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.R;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -50,7 +51,15 @@ public class EventAdapter extends ArrayAdapter<Event> {
         if (event != null) {
             eventName.setText(event.getEventName());
             eventDescription.setText(event.getDescription());
-            // Set other event details if needed
+            // Check if event has a poster URL
+            if (event.getEventPosterURL() != null && !event.getEventPosterURL().isEmpty()) {
+                Glide.with(getContext())
+                        .load(event.getEventPosterURL())
+                        .into(eventPoster);
+            } else {
+                // No poster URL, set placeholder
+                eventPoster.setImageResource(R.drawable.no_poster);
+            }
         }
 
         return convertView;
