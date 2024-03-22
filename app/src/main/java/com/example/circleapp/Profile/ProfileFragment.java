@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment {
 
                 if (pfpString != null) {
                     Uri uri = Uri.parse(pfpString);
-                    Glide.with(ProfileFragment.this).load(uri).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                    profilePic.setImageURI(uri);
                 }
                 else {
                     char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);

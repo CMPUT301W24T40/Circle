@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.Profile.EditProfileActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -33,7 +37,7 @@ public class ImageManager {
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
-    public void uploadImage(OnSuccessListener<String> onSuccessListener) {
+    public void uploadPosterImage(OnSuccessListener<String> onSuccessListener) {
         if (imageUri != null) {
             StorageReference eventPosterRef = storageRef.child("event_posters/" + System.currentTimeMillis() + ".jpg");
             eventPosterRef.putFile(imageUri)
@@ -44,10 +48,27 @@ public class ImageManager {
                     }));
         }
     }
+
+    public void uploadProfilePictureImage(OnSuccessListener<String> onSuccessListener) {
+        if (imageUri != null) {
+            StorageReference profilePicRef = storageRef.child("profile_pictures/" + System.currentTimeMillis() + ".jpg");
+            profilePicRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String downloadUrl = uri.toString();
+                        Log.d("ImageManager", "Image uploaded, download URL: " + downloadUrl);
+                        onSuccessListener.onSuccess(downloadUrl);
+                    }));
+        }
+    }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
+        } else {
+        Toast.makeText(
+                activity.getBaseContext(),
+                "Image Not Selected",
+                Toast.LENGTH_SHORT).show();
         }
     }
 }

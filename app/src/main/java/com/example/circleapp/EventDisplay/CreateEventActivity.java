@@ -76,7 +76,7 @@ public class CreateEventActivity extends AppCompatActivity {
             if (capacity.isEmpty()) { event.setCapacity("-1"); }
             else { event.setCapacity(capacity); }
 
-            imageManager.uploadImage(downloadURL -> {
+            imageManager.uploadPosterImage(downloadURL -> {
                 event.setEventPosterURL(downloadURL);
                 firebaseManager.createEvent(event);
 

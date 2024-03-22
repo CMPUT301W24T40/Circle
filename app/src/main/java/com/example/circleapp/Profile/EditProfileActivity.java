@@ -2,6 +2,7 @@ package com.example.circleapp.Profile;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.ImageManager;
 import com.example.circleapp.R;
 import com.google.firebase.messaging.FirebaseMessaging;
 
@@ -37,8 +39,8 @@ public class EditProfileActivity extends AppCompatActivity {
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
-    Uri selectedImageUri;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    ImageManager imageManager;
     Attendee user;
 
     /**
@@ -85,8 +87,10 @@ public class EditProfileActivity extends AppCompatActivity {
             profilePic.setImageResource(defaultImageResource);
         }
         else {
-            Glide.with(this).load(user.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            profilePic.setImageURI(user.getProfilePic());
         }
+
+        imageManager = new ImageManager(this, profilePic);
 
         profilePic.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
@@ -95,10 +99,9 @@ public class EditProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        selectImage();
+                        imageManager.selectImage();
                         break;
                     case 1:
-                        selectedImageUri = null;
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                         int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
                         profilePic.setImageResource(defaultImageResource);
@@ -136,6 +139,12 @@ public class EditProfileActivity extends AppCompatActivity {
                         firebaseManager.editUser(user);
                     });
 
+            imageManager.uploadProfilePictureImage(selectedImage -> {
+                user.setprofilePic(selectedImage);
+
+                setResult(Activity.RESULT_OK);
+                finish();
+            });
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
@@ -148,29 +157,9 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Displays an AlertDialog to allow the user to select a profile picture.
-     * The AlertDialog contains a GridView displaying a grid of selectable images.
-     *
-     *
-     */
-    public void selectImage(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickResultLauncher.launch(intent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageManager.onActivityResult(requestCode, resultCode, data);
     }
-
-    ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData().getData() != null) {
-                    selectedImageUri = result.getData().getData();
-                    user.setprofilePic(selectedImageUri.toString());
-                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                } else {
-                    Toast.makeText(
-                            EditProfileActivity.this,
-                            "Image Not Selected",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
 }
