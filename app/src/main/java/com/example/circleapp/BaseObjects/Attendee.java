@@ -164,7 +164,7 @@ public class Attendee implements Parcelable {
      *
      * @param name The new first name
      */
-    public void setFirstName(String name) {
+    public void setfirstName(String name) {
         this.firstName = name;
     }
 
@@ -173,7 +173,7 @@ public class Attendee implements Parcelable {
      *
      * @param lastName The new last name
      */
-    public void setLastName(String lastName) {
+    public void setlastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -182,7 +182,7 @@ public class Attendee implements Parcelable {
      *
      * @param email The new email address
      */
-    public void setEmail(String email) {
+    public void setemail(String email) {
         this.email = email;
     }
 
@@ -191,7 +191,7 @@ public class Attendee implements Parcelable {
      *
      * @param phoneNumber The new phone number
      */
-    public void setPhoneNumber(String phoneNumber) {
+    public void setphoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -200,7 +200,7 @@ public class Attendee implements Parcelable {
      *
      * @param geoEnabled True if geo-location is enabled, false otherwise
      */
-    public void setGeoEnabled(boolean geoEnabled) {
+    public void setisGeoEnabled(boolean geoEnabled) {
         isGeoEnabled = geoEnabled;
     }
 
@@ -209,8 +209,8 @@ public class Attendee implements Parcelable {
      *
      * @param profilePic The new URI to the profile picture
      */
-    public void setProfilePic(Uri profilePic) {
-        this.profilePic = profilePic;
+    public void setprofilePic(String profilePic) {
+        this.profilePic = Uri.parse(profilePic);
     }
 
     /**
@@ -218,7 +218,7 @@ public class Attendee implements Parcelable {
      *
      * @param homepage The new homepage URL
      */
-    public void setHomepage(String homepage){
+    public void sethomepage(String homepage){
         this.homepage = homepage;
     }
 
@@ -227,7 +227,7 @@ public class Attendee implements Parcelable {
      *
      * @param hasProfile True if user doesn't have a profile, false otherwise
      */
-    public void setHasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
+    public void sethasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
 
     // Parcelable methods
 
@@ -258,7 +258,7 @@ public class Attendee implements Parcelable {
         return token;
     }
 
-    public void setToken(String token) {
+    public void settoken(String token) {
         this.token = token;
     }
 }

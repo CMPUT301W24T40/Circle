@@ -68,6 +68,7 @@ public class SendNotificationActivity extends AppCompatActivity {
      */
     private void sendNotification(String title, String body) {
         for (String token : tokens) {
+            Log.d("what token", token.toString());
             JSONObject jsonNotif = new JSONObject();
             JSONObject wholeObject = new JSONObject();
             JSONObject dataObject = new JSONObject();

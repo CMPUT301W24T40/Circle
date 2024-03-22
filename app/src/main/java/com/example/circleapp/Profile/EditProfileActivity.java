@@ -4,12 +4,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -105,7 +102,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                         int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
                         profilePic.setImageResource(defaultImageResource);
-                        user.setProfilePic(null);
+                        user.setprofilePic(null);
                     case 2:
                         break;
                 }
@@ -121,12 +118,12 @@ public class EditProfileActivity extends AppCompatActivity {
             String homepage = homepageEditText.getText().toString();
             boolean isGeoEnabled = geolocationEditText.isChecked();
 
-            user.setFirstName(firstName);
-            user.setLastName(lastName);
-            user.setPhoneNumber(phoneNumber);
-            user.setEmail(email);
-            user.setHomepage(homepage);
-            user.setGeoEnabled(isGeoEnabled);
+            user.setfirstName(firstName);
+            user.setlastName(lastName);
+            user.setphoneNumber(phoneNumber);
+            user.setemail(email);
+            user.sethomepage(homepage);
+            user.setisGeoEnabled(isGeoEnabled);
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
@@ -135,7 +132,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         }
                         String token = task.getResult();
                         Log.d("my token", token);
-                        user.setToken(token);
+                        user.settoken(token);
                         firebaseManager.editUser(user);
                     });
 
@@ -167,7 +164,7 @@ public class EditProfileActivity extends AppCompatActivity {
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData().getData() != null) {
                     selectedImageUri = result.getData().getData();
-                    user.setProfilePic(selectedImageUri);
+                    user.setprofilePic(selectedImageUri.toString());
                     Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
                 } else {
                     Toast.makeText(

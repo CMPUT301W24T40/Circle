@@ -2,6 +2,7 @@ package com.example.circleapp.UserDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -27,6 +28,7 @@ public class GuestlistActivity extends AppCompatActivity {
     Event event;
 
     Button notficationButton;
+    ArrayList<Attendee> attendees;
 
     /**
      * The activity uses a ListView in combination with an instance of the AttendeeAdapter class to
@@ -61,6 +63,8 @@ public class GuestlistActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> finish());
 
+        attendees = firebaseManager.getRegisteredUserTokens(event.getID());
+
         // for notifications
         notficationButton = findViewById(R.id.notify_button);
         notficationButton.setOnClickListener(new View.OnClickListener() {
@@ -70,10 +74,9 @@ public class GuestlistActivity extends AppCompatActivity {
              */
             public void onClick(View v) {
                 ArrayList<String> tokens = new ArrayList<String>();
-                for (int i = 0; i < adapter.getCount(); i++) {
-                    Attendee user = adapter.getItem(i);
-                    assert user != null;
-                    String token = user.getToken();
+                for (Attendee attendee : attendees) {
+                    assert attendee != null;
+                    String token = attendee.getToken();
                     tokens.add(token);
                 }
                 Intent intent = new Intent(v.getContext(), SendNotificationActivity.class);
