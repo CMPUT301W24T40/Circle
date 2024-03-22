@@ -80,7 +80,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
             }
 
             Attendee user = new Attendee(ID, firstName, lastName, null, null, null, selectedImageUri);
-            user.setHasProfile(false);
+            user.sethasProfile(false);
 
             firebaseManager.addNewUser(user);
 
