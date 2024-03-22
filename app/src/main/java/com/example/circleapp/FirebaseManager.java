@@ -158,65 +158,9 @@ public class FirebaseManager {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    String tempUserField = Objects.requireNonNull(document.get("HasProfile")).toString();
+                    String tempUserField = Objects.requireNonNull(document.get("hasProfile")).toString();
                     boolean tempUser = Boolean.parseBoolean(tempUserField);
                     callback.onCallback(tempUser);
-                }
-            }
-        });
-    }
-
-    /**
-     * Adds a new user to Firestore.
-     *
-     * @param user The user to add
-     */
-    public void addNewUser(Attendee user) {
-        checkUserExists(exists -> {
-            if (exists) {
-                editUser(user);
-            }
-            else {
-                HashMap<String, String> data = new HashMap<>();
-                data.put("UserID", user.getID());
-                data.put("FirstName", user.getFirstName());
-                data.put("LastName", user.getLastName());
-                data.put("Email", user.getEmail());
-                data.put("Phone", user.getPhoneNumber());
-                data.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
-                data.put("HasProfile", String.valueOf(user.hasProfile()));
-                data.put("Token", user.getToken());
-
-                usersRef.document(phoneID).set(data);
-                usersRef.document(phoneID).collection("registeredEvents");
-                usersRef.document(phoneID).collection("createdEvents");
-            }
-        });
-    }
-
-    /**
-     * Edits an existing user in Firestore.
-     *
-     * @param user The user to edit
-     */
-    public void editUser(Attendee user) {
-        DocumentReference userDocRef = usersRef.document(phoneID);
-
-        userDocRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("FirstName", user.getFirstName());
-                    updates.put("LastName", user.getLastName());
-                    updates.put("Email", user.getEmail());
-                    updates.put("Phone", user.getPhoneNumber());
-                    updates.put("LocationEnabled", String.valueOf(user.isGeoEnabled()));
-                    updates.put("HasProfile", String.valueOf(user.hasProfile()));
-                    updates.put("Token", user.getToken());
-
-                    userDocRef.update(updates)
-                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
                 }
             }
         });
@@ -250,6 +194,66 @@ public class FirebaseManager {
             }
         });
         return attendeesList;
+    }
+
+    /**
+     * Adds a new user to Firestore.
+     *
+     * @param user The user to add
+     */
+    public void addNewUser(Attendee user) {
+        checkUserExists(exists -> {
+            if (exists) {
+                editUser(user);
+            }
+            else {
+                HashMap<String, String> data = new HashMap<>();
+                data.put("ID", user.getID());
+                data.put("firstName", user.getFirstName());
+                data.put("lastName", user.getLastName());
+                data.put("email", user.getEmail());
+                data.put("phoneNumber", user.getPhoneNumber());
+                data.put("isGeoEnabled", String.valueOf(user.isGeoEnabled()));
+                data.put("profilePic", String.valueOf(user.getProfilePic()));
+                data.put("homepage", String.valueOf(user.getHomepage()));
+                data.put("hasProfile", String.valueOf(user.hasProfile()));
+                data.put("token", user.getToken());
+
+                usersRef.document(phoneID).set(data);
+                usersRef.document(phoneID).collection("registeredEvents");
+                usersRef.document(phoneID).collection("createdEvents");
+            }
+        });
+    }
+
+    /**
+     * Edits an existing user in Firestore.
+     *
+     * @param user The user to edit
+     */
+    public void editUser(Attendee user) {
+        DocumentReference userDocRef = usersRef.document(phoneID);
+
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("firstName", user.getFirstName());
+                    updates.put("lastName", user.getLastName());
+                    updates.put("email", user.getEmail());
+                    updates.put("phoneNumber", user.getPhoneNumber());
+                    updates.put("isGeoEnabled", String.valueOf(user.isGeoEnabled()));
+                    updates.put("profilePic", String.valueOf(user.getProfilePic()));
+                    updates.put("homepage", String.valueOf(user.getHomepage()));
+                    updates.put("hasProfile", String.valueOf(user.hasProfile()));
+                    updates.put("token", user.getToken());
+
+                    userDocRef.update(updates)
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
+                }
+            }
+        });
     }
 
     // Methods for managing and retrieving event data
