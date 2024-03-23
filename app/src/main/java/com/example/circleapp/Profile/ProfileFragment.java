@@ -41,7 +41,6 @@ public class ProfileFragment extends Fragment {
     ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
-    static boolean profileMade;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ActivityResultLauncher<Intent> launcher;
@@ -65,9 +64,6 @@ public class ProfileFragment extends Fragment {
      * @return                  Returns the View shown to the user.
      * @see MakeProfileActivity
      * @see EditProfileActivity
-     *
-     * Current issues:          Profile picture disappears after navigating away and returning to
-     *                          fragment.
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,6 +128,7 @@ public class ProfileFragment extends Fragment {
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
                         editor.putString("user_email", ourUser.getEmail());
                         editor.putString("user_homepage", ourUser.getHomepage());
+                        editor.putString("location", Boolean.toString(ourUser.isGeoEnabled()));
                         editor.apply();
 
                         firstName.setText(ourUser.getFirstName());
@@ -146,7 +143,8 @@ public class ProfileFragment extends Fragment {
                         if (ourUser.isGeoEnabled()) {
                             geolocation.setText(checked);
                             geolocation.setChecked(true);
-                        } else {
+                        }
+                        else {
                             geolocation.setText(unchecked);
                             geolocation.setChecked(false);
                         }
@@ -161,7 +159,7 @@ public class ProfileFragment extends Fragment {
                             profilePic.setImageResource(defaultImageResource);
                             editor.putString("user_profile_pic", null);
                         }
-                        editor.apply();
+                        editor.commit();
                     }
                 }
         );

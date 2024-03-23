@@ -18,9 +18,7 @@ public class Attendee implements Parcelable {
     private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
     private String homepage;
-
     private boolean hasProfile; // Indicates if the user has a profile or not
-
     private String token; // for notifications
 
     /**
@@ -159,6 +157,10 @@ public class Attendee implements Parcelable {
      */
     public boolean hasProfile() {return hasProfile; }
 
+    public String getToken() {
+        return token;
+    }
+
     /**
      * Sets the first name of the attendee.
      *
@@ -229,6 +231,10 @@ public class Attendee implements Parcelable {
      */
     public void sethasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
 
+    public void settoken(String token) {
+        this.token = token;
+    }
+
     // Parcelable methods
 
     @Override
@@ -252,13 +258,5 @@ public class Attendee implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void settoken(String token) {
-        this.token = token;
     }
 }
