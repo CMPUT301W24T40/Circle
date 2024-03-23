@@ -330,6 +330,29 @@ public class FirebaseManager {
     }
 
     /**
+     * Retrieves an event by its check-in ID.
+     *
+     * @param checkinID The check-in ID of the event to retrieve
+     * @param callback The callback to execute with the event
+     */
+
+    public void getEventByCheckinID(String checkinID, EventCallback callback) {
+        eventsRef.whereEqualTo("checkInID", checkinID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                if (document.exists()) {
+                    Event event = document.toObject(Event.class);
+                    callback.onCallback(event);
+                } else {
+                    callback.onCallback(null);
+                }
+            } else {
+                Log.d("Firestore", "Error getting documents: ", task.getException());
+            }
+        });
+    }
+
+    /**
      * Adds a new event to Firestore.
      *
      * @param event The event to add
@@ -344,6 +367,7 @@ public class FirebaseManager {
         data.put("description", event.getDescription());
         data.put("capacity", event.getCapacity());
         data.put("eventPosterURL", event.getEventPosterURL());
+        data.put("checkInID", event.getCheckInID());
 
         eventsRef.document(event.getID()).set(data);
         eventsRef.document(event.getID()).collection("registeredUsers");
@@ -395,5 +419,35 @@ public class FirebaseManager {
             System.out.println("User checked in successfully"))
             .addOnFailureListener(e ->
             System.err.println("Error checking in user: " + e.getMessage()));
+    }
+
+    /**
+     * Edits an existing event in Firestore.
+     *
+     * @param event The event to edit
+     */
+    public void editEvent(Event event) {
+        DocumentReference eventDocRef = eventsRef.document(event.getID());
+
+        eventDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("eventName", event.getEventName());
+                    updates.put("location", event.getLocation());
+                    updates.put("date", event.getDate());
+                    updates.put("time", event.getTime());
+                    updates.put("description", event.getDescription());
+                    updates.put("capacity", event.getCapacity());
+                    updates.put("eventPosterURL", event.getEventPosterURL());
+                    updates.put("checkInID", event.getCheckInID());
+
+                    eventDocRef.update(updates)
+                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Event successfully updated!"))
+                            .addOnFailureListener(e -> Log.d("Firestore", "Error updating event!", e));
+                }
+            }
+        });
     }
 }

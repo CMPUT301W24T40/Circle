@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
+import com.example.circleapp.QRCode.ReuseQRActivity;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
@@ -28,6 +29,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
     Button backButton;
     Button generateQRButton;
+    Button reuseQRButton;
     Button registerButton;
     Button guestlistButton;
     TextView eventNameTextView;
@@ -105,6 +107,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         generateQRButton = findViewById(R.id.generate_qr_button);
         registerButton = findViewById(R.id.register_button);
         guestlistButton = findViewById(R.id.guestlist_button);
+        reuseQRButton = findViewById(R.id.reuse_qr_button);
 
         // Set visibility of register, guest list, and QR buttons based on source
         String source = getIntent().getStringExtra("source");
@@ -116,9 +119,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         guestlistButton.setVisibility(View.GONE);
         generateQRButton.setVisibility(View.GONE);
+        reuseQRButton.setVisibility(View.GONE);
         if ("CreatedEventsFragment".equals(source)) {
             guestlistButton.setVisibility(View.VISIBLE);
             generateQRButton.setVisibility(View.VISIBLE);
+            reuseQRButton.setVisibility(View.VISIBLE);
         }
 
         // Back button click listener
@@ -134,6 +139,13 @@ public class EventDetailsActivity extends AppCompatActivity {
                     .setPositiveButton("Check-in", (dialog, which) -> startGenerateQRActivity("check-in"))
                     .setNegativeButton("Details", (dialog, which) -> startGenerateQRActivity("details"))
                     .show();
+        });
+
+        // Reuse QR button click listener
+        reuseQRButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ReuseQRActivity.class);
+            intent.putExtra("event", event);
+            startActivity(intent);
         });
 
         // Register button click listener

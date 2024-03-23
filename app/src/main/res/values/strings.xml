@@ -10,5 +10,6 @@
     <string name="view_guestlist">View Guestlist</string>
     <string name="register">Register</string>
     <string name="back">Back</string>
+    <string name="reuse_qr_code">Reuse QR Code (Check-In Only)</string>
 
 </resources>

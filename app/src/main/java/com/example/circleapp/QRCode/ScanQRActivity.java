@@ -77,19 +77,31 @@ public class ScanQRActivity extends AppCompatActivity {
                 Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 finish();
             } else {
-                String[] parts = result.getContents().split(":");
-                String qrType = parts[0];
-                String eventID = parts[1];
-                if (qrType.equals("check-in")) {
-                    manager.checkInEvent(eventID, manager.getPhoneID());
-                    Toast.makeText(this, "Checking in to event: " + eventID, Toast.LENGTH_LONG).show();
-                    finish();
-                } else if (qrType.equals("details")) {
-                    manager.getEvent(eventID, event -> {
-                        Intent intent = new Intent(this, EventDetailsActivity.class);
-                        intent.putExtra("event", event);
-                        startActivity(intent);
-                        finish();
+                String qrData = result.getContents();
+                if (qrData.contains("details")) {
+                    String[] parts = qrData.split(":");
+                    String qrType = parts[0];
+                    String eventID = parts[1];
+                    if (qrType.equals("details")) {
+                        manager.getEvent(eventID, event -> {
+                            Intent intent = new Intent(this, EventDetailsActivity.class);
+                            intent.putExtra("event", event);
+                            startActivity(intent);
+                            finish();
+                        });
+                    }
+                } else {
+                    // Check if the qrData matches the checkinID of any event
+                    manager.getEventByCheckinID(qrData, event -> {
+                        if (event != null) {
+                            // If it does, check the user into that event
+                            manager.checkInEvent(event.getID(), manager.getPhoneID());
+                            Toast.makeText(this, "Checking in to event: " + event.getID(), Toast.LENGTH_LONG).show();
+                            finish();
+                        } else {
+                            Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_LONG).show();
+                            finish();
+                        }
                     });
                 }
             }

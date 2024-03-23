@@ -17,6 +17,7 @@ public class Event implements Parcelable {
     private String description;
     private String capacity;
     private String eventPosterURL; // Resource ID for the event poster
+    private String checkInID; // Used for reusing QR codes
 
     // Constructors
     /**
@@ -51,6 +52,7 @@ public class Event implements Parcelable {
         description = in.readString();
         capacity = in.readString();
         eventPosterURL = in.readString();
+        checkInID = in.readString();
     }
 
     // Parcelable creator
@@ -140,6 +142,13 @@ public class Event implements Parcelable {
     }
 
     /**
+     * Gets the check-in ID for the event.
+     *
+     * @return The check-in ID
+     */
+    public String getCheckInID() {return checkInID;}
+
+    /**
      * Sets the unique identifier of the event.
      *
      * @param ID The new unique identifier
@@ -208,6 +217,13 @@ public class Event implements Parcelable {
     public void setEventPosterURL(String eventPosterURL) {
         this.eventPosterURL = eventPosterURL;
     }
+
+    /**
+     * Sets the check-in ID for the event.
+     *
+     * @param checkInID The new check-in ID
+     */
+    public void setCheckInID(String checkInID) {this.checkInID = checkInID;}
 
     // Parcelable methods
     @Override
