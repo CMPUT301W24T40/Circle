@@ -38,6 +38,7 @@
             android:name=".QRCode.ScanQRActivity"
             android:exported="true"
             android:theme="@style/Theme.CircleApp.NoActionBar" />
+        <activity android:name=".QRCode.ReuseQRActivity" />
         <activity
             android:name=".EventDisplay.EventDetailsActivity"
             android:exported="true"

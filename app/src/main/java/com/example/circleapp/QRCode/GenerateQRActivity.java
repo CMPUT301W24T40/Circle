@@ -70,8 +70,10 @@ public class GenerateQRActivity extends AppCompatActivity{
     private Bitmap generateQRCode(String data, String qrType){
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            String encodedData = qrType + ":" + data;
-            BitMatrix bitMatrix = writer.encode(encodedData, BarcodeFormat.QR_CODE, 512, 512);
+            String encodedData = data;
+            if (qrType.equals("details")) {
+                encodedData = qrType + ":" + data;
+            }            BitMatrix bitMatrix = writer.encode(encodedData, BarcodeFormat.QR_CODE, 512, 512);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
