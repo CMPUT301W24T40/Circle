@@ -1,32 +1,23 @@
 package com.example.circleapp.Profile;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.ImageManager;
 import com.example.circleapp.R;
 import com.google.firebase.messaging.FirebaseMessaging;
-
-import java.util.Objects;
 
 /**
  * This class is used for when a user wants to make profile
@@ -119,8 +110,8 @@ public class MakeProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.settoken(token);
-                        firebaseManager.addNewUser(user);
                         user.sethasProfile(true);
+                        firebaseManager.addNewUser(user);
                     });
 
             imageManager.uploadProfilePictureImage(selectedImage -> {
@@ -138,9 +129,6 @@ public class MakeProfileActivity extends AppCompatActivity {
 
             // Letting the fragment know it has results or not in this case it ALWAYS will, for now just to test
             setResult(Activity.RESULT_OK, intent);
-
-            // Closes the activity
-            ProfileFragment.profileMade = true;
             finish();
         });
 

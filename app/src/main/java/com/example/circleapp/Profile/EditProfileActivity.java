@@ -1,25 +1,21 @@
 package com.example.circleapp.Profile;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.ImageManager;
@@ -29,7 +25,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 /**
  * This class is used to edit an already existing user's profile.
  */
-
 public class EditProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -39,6 +34,8 @@ public class EditProfileActivity extends AppCompatActivity {
     CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
@@ -61,9 +58,18 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = this.getSharedPreferences("UserData", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         setContentView(R.layout.activity_make_profile);
 
-        user = getIntent().getParcelableExtra("user");
+        String pfpString = sharedPreferences.getString("user_profile_pic", null);
+        user = new Attendee(firebaseManager.getPhoneID(),
+                sharedPreferences.getString("user_first_name", null),
+                sharedPreferences.getString("user_last_name", null),
+                sharedPreferences.getString("user_email", null),
+                sharedPreferences.getString("user_phone_number", null),
+                sharedPreferences.getString("user_homepage", null),
+                (pfpString != null) ? Uri.parse(sharedPreferences.getString("user_profile_pic", null)) : null);
 
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
@@ -136,6 +142,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.settoken(token);
+                        user.sethasProfile(true);
                         firebaseManager.editUser(user);
                     });
 
@@ -152,7 +159,6 @@ public class EditProfileActivity extends AppCompatActivity {
             intent.putExtras(bundle);
 
             setResult(Activity.RESULT_OK, intent);
-            ProfileFragment.profileMade = true;
             finish();
         });
     }
