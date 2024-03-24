@@ -247,5 +247,6 @@ public class Event implements Parcelable {
         dest.writeString(description);
         dest.writeString(capacity);
         dest.writeString(eventPosterURL);
+        dest.writeString(checkInID);
     }
 }
