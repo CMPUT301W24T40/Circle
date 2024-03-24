@@ -336,15 +336,19 @@ public class FirebaseManager {
      * @param callback The callback to execute with the event
      */
 
-    public void getEventByCheckinID(String checkinID, EventCallback callback) {
+    public void getEventByCheckInID(String checkinID, EventCallback callback) {
         eventsRef.whereEqualTo("checkInID", checkinID).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult().getDocuments().get(0);
-                if (document.exists()) {
-                    Event event = document.toObject(Event.class);
-                    callback.onCallback(event);
+                if (!task.getResult().getDocuments().isEmpty()) {
+                    DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                    if (document.exists()) {
+                        Event event = document.toObject(Event.class);
+                        callback.onCallback(event);
+                    } else {
+                        callback.onCallback(null);
+                    }
                 } else {
-                    callback.onCallback(null);
+                    Log.d("Firestore", "No documents found with the provided check-in ID");
                 }
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());
@@ -406,19 +410,19 @@ public class FirebaseManager {
      * Checks in a user for a specific event.
      *
      * @param eventID The ID of the event to check in to.
-     * @param userID The ID of the user to check in.
      */
-    public void checkInEvent(String eventID, String userID){
+    public void checkInEvent(String eventID){
         DocumentReference eventDocRef = eventsRef.document(eventID);
+        DocumentReference userDocRef = usersRef.document(phoneID);
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
+        CollectionReference userEventsRef = usersRef.document(phoneID).collection("checkedInEvents");
+
 
         HashMap<String, String> data = new HashMap<>();
-        data.put("userID", userID);
+        data.put("ID", phoneID);
 
-        checkedInUsersRef.document(userID).set(data).addOnSuccessListener(aVoid ->
-            System.out.println("User checked in successfully"))
-            .addOnFailureListener(e ->
-            System.err.println("Error checking in user: " + e.getMessage()));
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
+        userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
     }
 
     /**

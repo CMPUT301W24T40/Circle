@@ -57,7 +57,7 @@ public class ReuseQRActivity extends AppCompatActivity {
                 finish();
             } else {
                 // Check if the QR code has a "check-in" or "details" prefix, then check if the event already exists
-                String[] parts = result.getContents().split(":");
+                String[] parts = result.getContents().split("~");
                 if (parts.length == 2 && (parts[0].equals("check-in") || parts[0].equals("details"))) {
                     String eventID = parts[1];
                     firebaseManager.getEvent(eventID, event -> {
@@ -72,7 +72,7 @@ public class ReuseQRActivity extends AppCompatActivity {
                                     .show();
                         }
                         else {
-                            // Show an alert dialog saying this is a corrupted QR code
+                            // The qr code has the correct format but the event is not found
                             new AlertDialog.Builder(this)
                                     .setTitle("Corrupted QR Code")
                                     .setMessage("This QR code is corrupted.")

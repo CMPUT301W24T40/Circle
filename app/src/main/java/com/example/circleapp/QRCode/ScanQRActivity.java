@@ -2,11 +2,13 @@ package com.example.circleapp.QRCode;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.FirebaseManager;
 import com.example.circleapp.R;
@@ -71,18 +73,34 @@ public class ScanQRActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        FirebaseManager manager = new FirebaseManager();
+        FirebaseManager manager = FirebaseManager.getInstance();
         if (result != null) {
             if (result.getContents() == null) {
                 Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
                 finish();
             } else {
-                String qrData = result.getContents();
-                if (qrData.contains("details")) {
-                    String[] parts = qrData.split(":");
+                String[] parts = result.getContents().split("~");
+                if (parts.length == 2) {
                     String qrType = parts[0];
                     String eventID = parts[1];
-                    if (qrType.equals("details")) {
+                    if (qrType.equals("check-in")) {
+                        manager.getEvent(eventID, event -> {
+                            if (event != null) {
+                                manager.checkUserExists(exists -> {
+                                    if (exists) {
+                                        manager.checkInEvent(event.getID());
+                                        Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
+                                    }
+                                    finish();
+                                });
+                            } else {
+                                Toast.makeText(this, "No event found with this check-in ID", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                        });
+                    } else if (qrType.equals("details")) {
                         manager.getEvent(eventID, event -> {
                             Intent intent = new Intent(this, EventDetailsActivity.class);
                             intent.putExtra("event", event);
@@ -91,15 +109,21 @@ public class ScanQRActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    // Check if the qrData matches the checkinID of any event
-                    manager.getEventByCheckinID(qrData, event -> {
+                    // If the QR code doesn't have a prefix, assume it's a checkInID
+                    String checkInID = result.getContents();
+                    manager.getEventByCheckInID(checkInID, event -> {
                         if (event != null) {
-                            // If it does, check the user into that event
-                            manager.checkInEvent(event.getID(), manager.getPhoneID());
-                            Toast.makeText(this, "Checking in to event: " + event.getID(), Toast.LENGTH_LONG).show();
-                            finish();
+                            manager.checkUserExists(exists -> {
+                                if (exists) {
+                                    manager.checkInEvent(event.getID());
+                                    Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
+                                }
+                                finish();
+                            });
                         } else {
-                            Toast.makeText(this, "Invalid QR Code", Toast.LENGTH_LONG).show();
+                            Toast.makeText(this, "No event found with this check-in ID", Toast.LENGTH_LONG).show();
                             finish();
                         }
                     });
