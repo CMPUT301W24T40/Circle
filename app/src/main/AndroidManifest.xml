@@ -58,6 +58,9 @@
             android:name=".UserDisplay.GuestlistActivity"
             android:exported="false" />
         <activity
+            android:name=".UserDisplay.UserDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".TempUserInfoActivity"
             android:exported="false" />
         <activity android:name=".SendNotificationActivity"

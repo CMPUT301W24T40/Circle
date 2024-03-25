@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/activity_horizontal_margin"
+    tools:context=".UserDisplay.UserDetailsActivity">
+
+    <RelativeLayout
+        android:id="@+id/user_profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-137dp">
+
+        <TextView
+            android:id="@+id/user_details_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Details"
+            android:textAlignment="center"
+            android:textSize="34sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/fname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_details_text"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="41dp"
+            android:layout_toEndOf="@id/circular_background"
+            android:backgroundTint="@color/black"
+            android:text="FName:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/first_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_details_text"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="41dp"
+            android:layout_toEndOf="@id/fname"
+            android:backgroundTint="@color/black"
+            android:paddingStart="5dp"
+            android:text="First"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/lname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/first_name"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="30dp"
+            android:layout_toEndOf="@id/circular_background"
+            android:backgroundTint="@color/black"
+            android:inputType="text"
+            android:paddingTop="10dp"
+            android:text="LName:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/last_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/first_name"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="31dp"
+            android:layout_toEndOf="@id/lname"
+            android:backgroundTint="@color/black"
+            android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:text="Last"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/pn_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/circular_background"
+            android:layout_marginTop="22dp"
+            android:backgroundTint="@color/black"
+            android:paddingTop="5dp"
+            android:text="Phone Number:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/circular_background"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="23dp"
+            android:layout_toEndOf="@id/pn_title"
+            android:backgroundTint="@color/black"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:text="XXX-XXX-XXXX"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/email_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phone_number"
+            android:layout_marginTop="33dp"
+            android:backgroundTint="@color/black"
+            android:paddingTop="10dp"
+            android:text="Email:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/phone_number"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="33dp"
+            android:layout_toEndOf="@id/email_title"
+            android:backgroundTint="@color/black"
+            android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:text="android@user.com"
+            android:textSize="20sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/circular_background"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="63dp"
+            android:backgroundTint="@color/pastel_purple"
+            app:cardCornerRadius="70dp"
+            app:strokeColor="@color/black"
+            app:strokeWidth="5dp">
+
+            <ImageView
+                android:id="@+id/edit_pfp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_profile_icon" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <CheckBox
+            android:id="@+id/edit_geolocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email"
+            android:layout_marginTop="111dp"
+            android:backgroundTint="@color/black"
+            android:text="Geolocation Enabled"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/homepage_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email_title"
+            android:layout_marginTop="48dp"
+            android:text="Homepage:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/homepage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="49dp"
+            android:layout_toEndOf="@id/homepage_title"
+            android:autoLink="web"
+            android:text="https://www.google.ca"
+            android:textColor="#000000"
+            android:textColorLink="@color/purple_500"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:text="@string/back" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

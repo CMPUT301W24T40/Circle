@@ -2,8 +2,6 @@ package com.example.circleapp.UserDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -26,7 +24,6 @@ public class GuestlistActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
     Event event;
-
     Button notficationButton;
     ArrayList<Attendee> attendees;
 
@@ -67,22 +64,19 @@ public class GuestlistActivity extends AppCompatActivity {
 
         // for notifications
         notficationButton = findViewById(R.id.notify_button);
-        notficationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            /*
-              Sends user to new activity to write out a notification to send to attendees of event
-             */
-            public void onClick(View v) {
-                ArrayList<String> tokens = new ArrayList<String>();
-                for (Attendee attendee : attendees) {
-                    assert attendee != null;
-                    String token = attendee.getToken();
-                    tokens.add(token);
-                }
-                Intent intent = new Intent(v.getContext(), SendNotificationActivity.class);
-                intent.putStringArrayListExtra("tokens", tokens);
-                startActivity(intent);
+        /*
+          Sends user to new activity to write out a notification to send to attendees of event
+         */
+        notficationButton.setOnClickListener(v -> {
+            ArrayList<String> tokens = new ArrayList<>();
+            for (Attendee attendee : attendees) {
+                assert attendee != null;
+                String token = attendee.getToken();
+                tokens.add(token);
             }
+            Intent intent = new Intent(v.getContext(), SendNotificationActivity.class);
+            intent.putStringArrayListExtra("tokens", tokens);
+            startActivity(intent);
         });
 
 
@@ -105,7 +99,7 @@ public class GuestlistActivity extends AppCompatActivity {
      */
     private void attendeeClicked(Attendee attendee) {
         Intent intent = new Intent(this, UserDetailsActivity.class);
-        intent.putExtra("source", "GuestlistFragment");
+        intent.putExtra("source", "GuestlistActivity");
         intent.putExtra("attendee", attendee);
         startActivity(intent);
     }

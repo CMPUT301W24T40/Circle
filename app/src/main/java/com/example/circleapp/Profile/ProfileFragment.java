@@ -81,7 +81,7 @@ public class ProfileFragment extends Fragment {
         editProfile = view.findViewById(R.id.edit_profile_button);
         profilePic = view.findViewById(R.id.edit_pfp);
 
-        firebaseManager.checkProfileExists(exists -> {
+        firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
             if (exists) {
                 makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
                 makeProfileLayout.setVisibility(View.INVISIBLE);
