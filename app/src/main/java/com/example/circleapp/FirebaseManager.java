@@ -152,8 +152,8 @@ public class FirebaseManager {
      * @param callback The callback to execute with the boolean representing if the
      *                 profile exists or not.
      */
-    public void checkProfileExists(UserDocumentCallback callback) {
-        DocumentReference userDocRef = usersRef.document(phoneID);
+    public void checkProfileExists(String ID, UserDocumentCallback callback) {
+        DocumentReference userDocRef = usersRef.document(ID);
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
