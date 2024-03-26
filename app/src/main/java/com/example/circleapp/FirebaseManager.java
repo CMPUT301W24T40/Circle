@@ -1,6 +1,7 @@
 package com.example.circleapp;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import com.example.circleapp.BaseObjects.Event;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -436,13 +438,22 @@ public class FirebaseManager {
         DocumentReference userDocRef = usersRef.document(phoneID);
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
         CollectionReference userEventsRef = usersRef.document(phoneID).collection("checkedInEvents");
+        // For tracking number of check-ins
+        DocumentReference checkInsRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("checkIns").document();
 
 
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", phoneID);
 
+        Map<String, Object> checkIn = new HashMap<>();
+        checkIn.put("userID", phoneID);
+        checkIn.put("timestamp", FieldValue.serverTimestamp());
+
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
         userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
+        checkInsRef.set(checkIn)
+                .addOnSuccessListener(aVoid -> Log.d("Check-in", "Check-in successful"))
+                .addOnFailureListener(e -> Log.w("Check-in", "Error checking in", e));
     }
 
     /**
