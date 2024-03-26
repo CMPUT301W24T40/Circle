@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
 public class UserDetailsActivity extends AppCompatActivity {

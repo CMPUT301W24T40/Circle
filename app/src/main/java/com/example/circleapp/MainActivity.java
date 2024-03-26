@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.EventDisplay.BrowseEventsFragment;
 import com.example.circleapp.EventDisplay.YourEventsFragment;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.databinding.ActivityMainBinding;
 

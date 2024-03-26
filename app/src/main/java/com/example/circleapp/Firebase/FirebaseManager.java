@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.Firebase;
 
 import android.content.Context;
 import android.provider.Settings;
@@ -128,6 +128,10 @@ public class FirebaseManager {
          * @param event The event retrieved from Firestore
          */
         void onCallback(Event event);
+    }
+
+    public interface URLCallback {
+        void onCallback(ArrayList<String> urlList);
     }
 
     // Methods for managing and retrieving user data
@@ -511,6 +515,17 @@ public class FirebaseManager {
         data.put("ID", phoneID);
 
         adminsRef.document(phoneID).set(data);
+    }
+
+    public void getPosterURLs(URLCallback callback) {
+        ArrayList<String> urlList = new ArrayList<>();
+
+        eventsRef.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                urlList.add(document.getString("eventPosterURL"));
+            }
+            callback.onCallback(urlList);
+        });
     }
 
     public void deleteUser(String ID) {

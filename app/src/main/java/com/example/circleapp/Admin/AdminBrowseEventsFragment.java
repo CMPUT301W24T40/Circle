@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.EventDisplay.EventAdapter;
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
 import java.util.ArrayList;
