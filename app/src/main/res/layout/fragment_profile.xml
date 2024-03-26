@@ -179,6 +179,16 @@
             android:layout_marginBottom="16dp"
             android:text="Edit Profile" />
 
+        <Button
+            android:id="@+id/become_admin_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="85dp"
+            android:text="Become an admin" />
+
         <TextView
             android:id="@+id/homepage_title"
             android:layout_width="wrap_content"

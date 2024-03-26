@@ -25,7 +25,9 @@ public class FirebaseManager {
     private static FirebaseManager instance;
     private final CollectionReference usersRef; // A reference to the "users" collection in Firestore
     private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
+    private final CollectionReference adminsRef; // A reference to the "events" collection in Firestore
     private String phoneID;  // A reference to the phone ID of the user currently using the app
+    private final String adminPassword = "12345";
 
     /**
      * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
@@ -36,6 +38,7 @@ public class FirebaseManager {
 
         usersRef = db.collection("users");
         eventsRef = db.collection("events");
+        adminsRef = db.collection("admins");
     }
 
     /**
@@ -163,6 +166,23 @@ public class FirebaseManager {
                     callback.onCallback(tempUser);
                 }
             }
+        });
+    }
+
+    /**
+     * Retrieves all users of the app from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     */
+    public void getAllUsers(AttendeesCallback callback) {
+        ArrayList<Attendee> attendeesList = new ArrayList<>();
+
+        usersRef.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Attendee attendee = document.toObject(Attendee.class);
+                attendeesList.add(attendee);
+            }
+            callback.onCallback(attendeesList);
         });
     }
 
@@ -453,5 +473,73 @@ public class FirebaseManager {
                 }
             }
         });
+    }
+
+    // Methods for managing admin creation and abilities
+
+    public void isAdmin(UserDocumentCallback callback) {
+        DocumentReference adminDocRef = adminsRef.document(phoneID);
+        adminDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                boolean exists = document.exists();
+                callback.onCallback(exists);
+            }
+        });
+    }
+
+    public void becomeAdmin(String password) {
+        if (password.equals(adminPassword)) {
+            addNewAdmin();
+            new MainActivity();
+        }
+    }
+
+    public void addNewAdmin() {
+        deleteUser(phoneID);
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("ID", phoneID);
+
+        adminsRef.document(phoneID).set(data);
+    }
+
+    public void deleteUser(String ID) {
+        DocumentReference userDocRef = usersRef.document(ID);
+        CollectionReference registeredEventsCollection = userDocRef.collection("registeredEvents");
+        CollectionReference createdEventsCollection = userDocRef.collection("createdEvents");
+
+        registeredEventsCollection.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                String eventID = document.getId();
+
+                DocumentReference eventDocRef = eventsRef.document(eventID);
+                CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+
+                registeredUsersCollection.document(ID).delete();
+
+                registeredEventsCollection.document(eventID).delete();
+            }
+        });
+
+        createdEventsCollection.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                String eventID = document.getId();
+
+                DocumentReference eventDocRef = eventsRef.document(eventID);
+                CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+
+                registeredUsersCollection.get().addOnCompleteListener(task2 -> {
+                    for (DocumentSnapshot document2 : task.getResult()) {
+                        registeredUsersCollection.document(document2.getId()).delete();
+                    }
+                });
+
+                eventDocRef.delete();
+                createdEventsCollection.document(eventID).delete();
+            }
+        });
+
+        userDocRef.delete();
     }
 }
