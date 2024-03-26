@@ -77,7 +77,7 @@
         </provider>
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".Firebase.MyFirebaseMessagingService"
             android:exported="true"
             android:enabled="true">
             <intent-filter>

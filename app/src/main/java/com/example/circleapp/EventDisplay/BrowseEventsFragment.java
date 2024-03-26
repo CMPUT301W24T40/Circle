@@ -12,7 +12,7 @@ import android.widget.ListView;
 import androidx.fragment.app.Fragment;
 
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 

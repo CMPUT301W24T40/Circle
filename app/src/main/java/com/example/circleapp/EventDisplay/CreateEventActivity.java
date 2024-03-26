@@ -3,7 +3,6 @@ package com.example.circleapp.EventDisplay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,8 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.FirebaseManager;
-import com.example.circleapp.ImageManager;
+import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.Firebase.ImageManager;
 import com.example.circleapp.R;
 
 /**

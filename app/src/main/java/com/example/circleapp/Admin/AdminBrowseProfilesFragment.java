@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.example.circleapp.UserDisplay.AttendeeAdapter;
 import com.example.circleapp.UserDisplay.UserDetailsActivity;

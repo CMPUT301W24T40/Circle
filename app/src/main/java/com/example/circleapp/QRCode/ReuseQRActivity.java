@@ -9,7 +9,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 

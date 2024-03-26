@@ -25,7 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
 /**

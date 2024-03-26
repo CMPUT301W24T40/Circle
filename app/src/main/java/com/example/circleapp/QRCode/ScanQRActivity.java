@@ -2,15 +2,13 @@ package com.example.circleapp.QRCode;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
-import com.example.circleapp.FirebaseManager;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;

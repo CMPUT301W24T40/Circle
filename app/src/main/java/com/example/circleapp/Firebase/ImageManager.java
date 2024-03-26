@@ -1,4 +1,4 @@
-package com.example.circleapp;
+package com.example.circleapp.Firebase;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,12 +7,11 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.example.circleapp.Profile.EditProfileActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 /**
  * This class is used to manage images with Firebase Storage.
@@ -25,9 +24,37 @@ public class ImageManager {
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef = storage.getReference();
 
+    // please leave this extra constructor
+    public ImageManager(Activity activity) {
+        this.activity = activity;
+        this.imageView = null;
+    }
+
     public ImageManager(Activity activity, ImageView imageView) {
         this.activity = activity;
         this.imageView = imageView;
+    }
+
+    public interface ImagesCallback {
+        void onCallback(ArrayList<Uri> imagesList);
+    }
+
+    public void getImages(ImagesCallback callback) {
+        ArrayList<Uri> imagesList = new ArrayList<>();
+
+        FirebaseManager firebaseManager = FirebaseManager.getInstance();
+        firebaseManager.getPosterURLs(urlList -> {
+
+            for (String url : urlList) {
+                StorageReference imageRef = storage.getReferenceFromUrl(url);
+
+                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    imagesList.add(uri);
+
+                    callback.onCallback(imagesList);
+                });
+            }
+        });
     }
 
     public void selectImage() {
