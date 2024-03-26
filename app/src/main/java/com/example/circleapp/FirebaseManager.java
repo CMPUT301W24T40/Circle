@@ -1,7 +1,6 @@
 package com.example.circleapp;
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,7 +28,6 @@ public class FirebaseManager {
     private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
     private final CollectionReference adminsRef; // A reference to the "events" collection in Firestore
     private String phoneID;  // A reference to the phone ID of the user currently using the app
-    private final String adminPassword = "12345";
 
     /**
      * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
@@ -500,9 +498,9 @@ public class FirebaseManager {
     }
 
     public void becomeAdmin(String password) {
+        String adminPassword = "12345";
         if (password.equals(adminPassword)) {
             addNewAdmin();
-            new MainActivity();
         }
     }
 
@@ -552,5 +550,34 @@ public class FirebaseManager {
         });
 
         userDocRef.delete();
+    }
+
+    public void deleteEvent(String ID) {
+        DocumentReference eventDocRef = eventsRef.document(ID);
+        CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+
+        registeredUsersCollection.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                String userID = document.getId();
+
+                DocumentReference userDocRef = usersRef.document(userID);
+                CollectionReference registeredEventsCollection = userDocRef.collection("registeredEvents");
+                registeredEventsCollection.document(ID).delete();
+
+                registeredUsersCollection.document(userID).delete();
+            }
+        });
+
+        usersRef.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                String userID = document.getId();
+
+                DocumentReference userDocRef = usersRef.document(userID);
+                CollectionReference createdEventsCollection = userDocRef.collection("createdEvents");
+                createdEventsCollection.document(ID).delete();
+            }
+        });
+
+        eventDocRef.delete();
     }
 }
