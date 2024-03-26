@@ -1,5 +1,6 @@
 package com.example.circleapp.Admin;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -83,9 +84,18 @@ public class AdminBrowseEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
-        intent.putExtra("source", "AdminBrowseEventsFragment");
-        intent.putExtra("event", event);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Select one of the following options:");
+        builder.setPositiveButton("View event details", (dialog, which) -> {
+            Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+            intent.putExtra("event", event);
+            startActivity(intent);
+        });
+        builder.setNegativeButton("Delete event", (dialog, which) -> {
+            firebaseManager.deleteEvent(event.getID());
+            dialog.dismiss();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

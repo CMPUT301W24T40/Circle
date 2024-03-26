@@ -1,5 +1,6 @@
 package com.example.circleapp.Admin;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +11,6 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.FirebaseManager;
@@ -70,9 +70,15 @@ public class AdminBrowseProfilesFragment extends Fragment {
      * @param attendee The clicked attendee
      */
     private void attendeeClicked(Attendee attendee) {
-        Intent intent = new Intent(getContext(), UserDetailsActivity.class);
-        intent.putExtra("source", "AdminBrowseProfilesFragment");
-        intent.putExtra("attendee", attendee);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Select one of the following options:");
+        builder.setPositiveButton("View user details", (dialog, which) -> {
+            Intent intent = new Intent(getContext(), UserDetailsActivity.class);
+            intent.putExtra("attendee", attendee);
+            startActivity(intent);
+        });
+        builder.setNegativeButton("Delete user", (dialog, which) -> firebaseManager.deleteUser(attendee.getID()));
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
