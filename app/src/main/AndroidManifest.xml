@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -20,6 +22,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CircleApp"
         tools:targetApi="31">
+        <activity
+            android:name=".UserDisplay.MapViewActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key" />
+
         <activity
             android:name=".Profile.EditProfileActivity"
             android:exported="false" />
@@ -53,8 +63,8 @@
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
-            tools:replace="android:screenOrientation"
-            android:stateNotNeeded="true"/>
+            android:stateNotNeeded="true"
+            tools:replace="android:screenOrientation" />
         <activity
             android:name=".UserDisplay.GuestlistActivity"
             android:exported="false" />
@@ -64,8 +74,9 @@
         <activity
             android:name=".TempUserInfoActivity"
             android:exported="false" />
-        <activity android:name=".SendNotificationActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".SendNotificationActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -79,23 +90,22 @@
 
         <service
             android:name=".Firebase.MyFirebaseMessagingService"
-            android:exported="true"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification_icon"/>
+            android:resource="@drawable/ic_notification_icon" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/white"/>
+            android:resource="@color/white" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel"
-            android:value="Default"/>
-
+            android:value="Default" />
     </application>
 
 </manifest>

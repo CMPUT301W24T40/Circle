@@ -60,7 +60,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
-    //QR CODE
+    // QR CODE
     implementation ("com.journeyapps:zxing-android-embedded:4.2.0")
     implementation ("com.google.zxing:core:3.4.1")
     // Image Uploads
@@ -70,4 +70,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
 
     implementation("com.google.android.material:material:1.11.0")
+
+    // Maps
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.android.gms:play-services-location:21.2.0")
 }
