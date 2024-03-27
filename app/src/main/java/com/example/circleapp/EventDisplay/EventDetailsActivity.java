@@ -32,6 +32,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     Button reuseQRButton;
     Button registerButton;
     Button guestlistButton;
+    Button addAnnouncementButton;
     TextView eventNameTextView;
     TextView eventLocationTextView;
     TextView eventDateTextView;
@@ -108,6 +109,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.register_button);
         guestlistButton = findViewById(R.id.guestlist_button);
         reuseQRButton = findViewById(R.id.reuse_qr_button);
+        addAnnouncementButton = findViewById(R.id.add_announcement_button);
 
         // Set visibility of register, guest list, and QR buttons based on source
         String source = getIntent().getStringExtra("source");
@@ -120,10 +122,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         guestlistButton.setVisibility(View.GONE);
         generateQRButton.setVisibility(View.GONE);
         reuseQRButton.setVisibility(View.GONE);
+        addAnnouncementButton.setVisibility(View.GONE);
         if ("CreatedEventsFragment".equals(source)) {
             guestlistButton.setVisibility(View.VISIBLE);
             generateQRButton.setVisibility(View.VISIBLE);
             reuseQRButton.setVisibility(View.VISIBLE);
+            addAnnouncementButton.setVisibility(View.VISIBLE);
         }
 
         // Back button click listener
@@ -178,6 +182,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             intent.putExtra("event", event);
             startActivity(intent);
         });
+
+
     }
 
     // New method to start GenerateQRActivity with the given qrType
