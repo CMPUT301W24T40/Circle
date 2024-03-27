@@ -57,6 +57,10 @@ public class ImageManager {
         });
     }
 
+    public boolean hasImage() {
+        return imageView.getDrawable() != null;
+    }
+
     public void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
