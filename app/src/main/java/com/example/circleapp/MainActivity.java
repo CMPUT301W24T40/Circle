@@ -1,6 +1,5 @@
 package com.example.circleapp;
 
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,8 +22,6 @@ import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.databinding.ActivityMainBinding;
 
-import org.checkerframework.checker.units.qual.A;
-
 /**
  * The main activity of the application.
  */
@@ -42,12 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     alertDialog.setMessage("You will not receive any notifications from this app." +
                             "You can change this by going to the app permissions in Settings.");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
+                            (dialog, which) -> dialog.dismiss());
                     alertDialog.show();
                 }
             });
@@ -127,5 +119,10 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
         }
+    }
+
+    public void setNavBarVisibility(boolean isVisible) {
+        if (isVisible) { binding.bottomNavigationView.setVisibility(View.VISIBLE); }
+        else { binding.bottomNavigationView.setVisibility(View.GONE); }
     }
 }

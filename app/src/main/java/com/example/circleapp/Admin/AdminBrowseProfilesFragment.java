@@ -24,6 +24,7 @@ public class AdminBrowseProfilesFragment extends Fragment {
     ListView listView;
     Button backButton;
     Button notifyButton;
+    Button mapButton;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
 
@@ -33,7 +34,9 @@ public class AdminBrowseProfilesFragment extends Fragment {
         listView = rootView.findViewById(R.id.list_view);
         backButton = rootView.findViewById(R.id.back_button);
         notifyButton = rootView.findViewById(R.id.notify_button);
+        mapButton = rootView.findViewById(R.id.map_button);
         notifyButton.setVisibility(View.INVISIBLE);
+        mapButton.setVisibility(View.INVISIBLE);
 
         adapter = new AttendeeAdapter(rootView.getContext(), new ArrayList<>());
         listView.setAdapter(adapter);

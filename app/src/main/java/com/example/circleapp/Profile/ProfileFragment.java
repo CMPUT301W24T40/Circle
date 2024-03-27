@@ -21,11 +21,15 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
 
 /**
@@ -189,6 +193,15 @@ public class ProfileFragment extends Fragment {
             builder.setPositiveButton("Enter", (dialog, which) -> {
                 String password = userInput.getText().toString();
                 firebaseManager.becomeAdmin(password);
+
+                firebaseManager.isAdmin(exists -> {
+                    ((MainActivity) getActivity()).setNavBarVisibility(false);
+
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
+                    fragmentTransaction.commit();
+                });
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
             AlertDialog dialog = builder.create();
