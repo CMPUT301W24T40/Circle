@@ -2,6 +2,7 @@ package com.example.circleapp.UserDisplay;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -24,6 +25,7 @@ public class GuestlistActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
     Event event;
+    Button mapButton;
     Button notficationButton;
     ArrayList<Attendee> attendees;
 
@@ -79,7 +81,16 @@ public class GuestlistActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        mapButton = findViewById(R.id.map_button);
 
+        mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapViewActivity.class);
+                intent.putParcelableArrayListExtra("attendees", attendees);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
