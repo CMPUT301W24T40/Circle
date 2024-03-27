@@ -11,5 +11,6 @@
     <string name="register">Register</string>
     <string name="back">Back</string>
     <string name="reuse_qr_code">Reuse QR Code (Check-In Only)</string>
+    <string name="Default_event_poster_URL"><![CDATA[https://firebasestorage.googleapis.com/v0/b/circleapp-2e84b.appspot.com/o/default_pics%2Fdefault_event_poster.webp?alt=media&token=e3a687a5-8ca8-4f25-9fbd-a9be6631ee0c]]></string>
 
 </resources>

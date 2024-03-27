@@ -75,8 +75,25 @@ public class CreateEventActivity extends AppCompatActivity {
             if (capacity.isEmpty()) { event.setCapacity("-1"); }
             else { event.setCapacity(capacity); }
 
-            imageManager.uploadPosterImage(downloadURL -> {
-                event.setEventPosterURL(downloadURL);
+            if (imageManager.hasImage()) {
+                imageManager.uploadPosterImage(downloadURL -> {
+                    event.setEventPosterURL(downloadURL);
+                    firebaseManager.createEvent(event);
+
+                    // Send result back to the caller activity
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("event", event);
+                    Intent intent = new Intent();
+                    intent.putExtras(bundle);
+
+                    setResult(Activity.RESULT_OK, intent);
+
+                    finish();
+                });
+            } else {
+                // Set default image URL if no image is selected
+                String defaultImageURL = getString(R.string.Default_event_poster_URL);
+                event.setEventPosterURL(defaultImageURL);
                 firebaseManager.createEvent(event);
 
                 // Send result back to the caller activity
@@ -88,7 +105,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 setResult(Activity.RESULT_OK, intent);
 
                 finish();
-            });
+            }
         });
     }
     @Override
