@@ -2,17 +2,22 @@ package com.example.circleapp.EventDisplay;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
@@ -20,6 +25,11 @@ import com.example.circleapp.QRCode.ReuseQRActivity;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * This class is used to display event details.
@@ -40,6 +50,9 @@ public class EventDetailsActivity extends AppCompatActivity {
     TextView eventDescriptionTextView;
     TextView eventCapacityTextView;
     ImageView eventPosterImageView;
+    private ArrayList<Announcement> announcementsList;
+    private AnnouncementAdapter announcementAdapter;
+    private ListView listView;
 
     /**
      * When this Activity is created, a user can view the details of the event they clicked on
@@ -64,6 +77,25 @@ public class EventDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
         event = getIntent().getParcelableExtra("event");
+        assert event != null;
+        String eventId = event.getID(); // Use getID() to access the event's ID
+
+        // Initialize announcements list
+        announcementsList = new ArrayList<>();
+        // Load announcements from Firebase and then set up the ListView and its adapter
+        firebaseManager.loadAnnouncements(eventId, announcements -> {
+            announcementsList.clear();
+            announcementsList.addAll(announcements);
+
+            // Initialize and set the adapter here after loading announcements
+            announcementAdapter = new AnnouncementAdapter(this, announcementsList);
+            listView = findViewById(R.id.announcement_listview);
+            listView.setAdapter(announcementAdapter);
+        });
+
+
+        listView = findViewById(R.id.announcement_listview);
+        listView.setAdapter(announcementAdapter);
 
 
         // Initialize views
@@ -110,6 +142,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         guestlistButton = findViewById(R.id.guestlist_button);
         reuseQRButton = findViewById(R.id.reuse_qr_button);
         addAnnouncementButton = findViewById(R.id.add_announcement_button);
+        addAnnouncementButton.setOnClickListener(v -> showAddAnnouncementDialog());
 
         // Set visibility of register, guest list, and QR buttons based on source
         String source = getIntent().getStringExtra("source");
@@ -185,6 +218,43 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 
     }
+    private void showAddAnnouncementDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_announcement);
+        dialog.setCancelable(true);
+
+        EditText announcementEditText = dialog.findViewById(R.id.edit_text_announcement);
+        Button addButton = dialog.findViewById(R.id.button_add_announcement);
+
+        addButton.setOnClickListener(v -> {
+            String announcementText = announcementEditText.getText().toString().trim();
+            if (!announcementText.isEmpty()) {
+                Announcement announcement = new Announcement();
+                announcement.setContent(announcementText);
+                announcement.setTimestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
+                announcement.setAnnouncementID(firebaseManager.generateRandomID()); // Ensure you have a method to generate unique IDs
+
+                // Use the event's ID to add the announcement to the correct event in Firebase
+                firebaseManager.addAnnouncement(event.getID(), announcement, task -> {
+                    if (task.isSuccessful()) {
+                        announcementsList.add(announcement);
+                        announcementAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(EventDetailsActivity.this, "Failed to add announcement", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                });
+            } else {
+                Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Button backButton = dialog.findViewById(R.id.button_back);
+        backButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
 
     // New method to start GenerateQRActivity with the given qrType
     private void startGenerateQRActivity(String qrType) {

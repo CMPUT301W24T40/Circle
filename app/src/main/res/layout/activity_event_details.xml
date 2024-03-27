@@ -95,7 +95,7 @@
 
 
     <ListView
-        android:id="@+id/announcements_listview"
+        android:id="@+id/announcement_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/announcements_title"
@@ -105,7 +105,7 @@
         android:id="@+id/add_announcement_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/announcements_listview"
+        android:layout_below="@id/announcement_listview"
         android:layout_centerHorizontal="true"
         android:text="Add Announcement"
         android:layout_marginTop="16dp" />

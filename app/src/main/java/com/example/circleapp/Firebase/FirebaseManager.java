@@ -8,14 +8,18 @@ import android.widget.Toast;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -567,27 +571,31 @@ public class FirebaseManager {
 
         userDocRef.delete();
     }
-    public void addAnnouncementToEvent(String eventID, Announcement announcement) {
-        DocumentReference eventDocRef = eventsRef.document(eventID);
-        eventDocRef.collection("announcements").add(announcement);
+    public void addAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
+        if (announcement.getAnnouncementID() == null || announcement.getAnnouncementID().isEmpty()) {
+            announcement.setAnnouncementID(UUID.randomUUID().toString());
+        }
+        FirebaseFirestore.getInstance()
+                .collection("events").document(eventId)
+                .collection("announcements").document(announcement.getAnnouncementID())
+                .set(announcement)
+                .addOnCompleteListener(listener);
+    }
+    public void loadAnnouncements(String eventId, OnSuccessListener<List<Announcement>> listener) {
+        FirebaseFirestore.getInstance()
+                .collection("events").document(eventId)
+                .collection("announcements")
+                .orderBy("timestamp")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Announcement> announcements = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        announcements.add(document.toObject(Announcement.class));
+                    }
+                    listener.onSuccess(announcements);
+                });
     }
 
-    public void getEventAnnouncements(String eventID, AnnouncementCallback callback) {
-        ArrayList<Announcement> announcementsList = new ArrayList<>();
-
-        eventsRef.document(eventID).collection("announcements").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                for (DocumentSnapshot document : task.getResult()) {
-                    Announcement announcement = document.toObject(Announcement.class);
-                    announcementsList.add(announcement);
-                }
-                callback.onCallback(announcementsList);
-            } else {
-                Log.d("FirebaseManager", "Error getting announcements: ", task.getException());
-                callback.onCallback(null);
-            }
-        });
-    }
 
     public interface AnnouncementCallback {
         void onCallback(ArrayList<Announcement> announcements);
