@@ -18,12 +18,12 @@ public class Announcement implements Parcelable {
         this.announcementID = announcementID;
         this.title = title;
         this.content = content;
-        this.timestamp = generateTimestamp();
+        this.timestamp = timestamp;
     }
 
     public Announcement() {}
 
-    protected Announcement(Parcel in) {
+    public Announcement(Parcel in) {
         announcementID = in.readString();
         title = in.readString();
         content = in.readString();
