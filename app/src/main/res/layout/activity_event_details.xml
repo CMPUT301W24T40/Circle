@@ -82,6 +82,33 @@
             tools:srcCompat="@tools:sample/avatars" />
 
     </com.google.android.material.card.MaterialCardView>
+    <TextView
+        android:id="@+id/announcements_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rectangular_background"
+        android:layout_centerHorizontal="true"
+        android:text="Event Announcements"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+
+    <ListView
+        android:id="@+id/announcements_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/announcements_title"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/add_announcement_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/announcements_listview"
+        android:layout_centerHorizontal="true"
+        android:text="Add Announcement"
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/back_button"
@@ -92,6 +119,19 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:text="@string/back" />
+
+
+    <Button
+        android:id="@+id/register_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="@string/register" />
+
+
 
     <Button
         android:id="@+id/generate_qr_button"
@@ -117,6 +157,12 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="32dp"
         android:text="@string/reuse_qr_code" />
+    <ListView
+        android:id="@+id/announcementListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/guestlist_button"
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/guestlist_button"
@@ -130,15 +176,6 @@
         android:layout_marginEnd="129dp"
         android:text="@string/view_guestlist" />
 
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="@string/register" />
 
     <FrameLayout
         android:id="@+id/frame_layout"

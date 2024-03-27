@@ -5,6 +5,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.google.firebase.firestore.CollectionReference;
@@ -565,6 +566,37 @@ public class FirebaseManager {
         });
 
         userDocRef.delete();
+    }
+    public void addAnnouncementToEvent(String eventID, Announcement announcement) {
+        DocumentReference eventDocRef = eventsRef.document(eventID);
+        eventDocRef.collection("announcements").add(announcement);
+    }
+
+    public void getEventAnnouncements(String eventID, AnnouncementCallback callback) {
+        ArrayList<Announcement> announcementsList = new ArrayList<>();
+
+        eventsRef.document(eventID).collection("announcements").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    Announcement announcement = document.toObject(Announcement.class);
+                    announcementsList.add(announcement);
+                }
+                callback.onCallback(announcementsList);
+            } else {
+                Log.d("FirebaseManager", "Error getting announcements: ", task.getException());
+                callback.onCallback(null);
+            }
+        });
+    }
+
+    public interface AnnouncementCallback {
+        void onCallback(ArrayList<Announcement> announcements);
+    }
+    public void deleteAnnouncement(String eventID, String announcementID) {
+        DocumentReference announcementDocRef = eventsRef.document(eventID).collection("announcements").document(announcementID);
+        announcementDocRef.delete()
+                .addOnSuccessListener(aVoid -> Log.d("FirebaseManager", "Announcement deleted successfully"))
+                .addOnFailureListener(e -> Log.e("FirebaseManager", "Error deleting announcement", e));
     }
 
     public void deleteEvent(String ID) {
