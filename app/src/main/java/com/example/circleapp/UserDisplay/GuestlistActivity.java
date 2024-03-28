@@ -88,7 +88,7 @@ public class GuestlistActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), MapViewActivity.class);
-                intent.putParcelableArrayListExtra("attendees", attendees);
+                intent.putExtra("event", event);
                 startActivity(intent);
             }
         });

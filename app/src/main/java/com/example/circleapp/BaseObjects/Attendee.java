@@ -1,5 +1,6 @@
 package com.example.circleapp.BaseObjects;
 
+import android.location.Location;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -20,6 +21,7 @@ public class Attendee implements Parcelable {
     private String homepage;
     private boolean hasProfile; // Indicates if the user has a profile or not
     private String token; // for notifications
+    private Location location; // Location of attendee for map
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -56,6 +58,7 @@ public class Attendee implements Parcelable {
         homepage = in.readString();
         phoneNumber = in.readString();
         isGeoEnabled = in.readByte() != 0;
+        location = in.readParcelable(getClass().getClassLoader());
 
         // Read the Uri as a String from the Parcel
         String uriString = in.readString();
@@ -90,7 +93,7 @@ public class Attendee implements Parcelable {
     /**
      * Gets the first name of the attendee.
      *
-     * @return The first name
+     * @return The first nameFirebaseManager manager
      */
     public String getFirstName() {
         return firstName;
@@ -157,8 +160,22 @@ public class Attendee implements Parcelable {
      */
     public boolean hasProfile() {return hasProfile; }
 
+    /**
+     * Gets the token of the attendee.
+     *
+     * @return The token
+     */
     public String getToken() {
         return token;
+    }
+
+    /**
+     * Gets the location of the attendee.
+     *
+     * @return The location
+     */
+    public Location getLocation() {
+        return location;
     }
 
     /**
@@ -231,8 +248,22 @@ public class Attendee implements Parcelable {
      */
     public void sethasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
 
+    /**
+     * Sets the token of the attendee.
+     *
+     * @param token The new token
+     */
     public void settoken(String token) {
         this.token = token;
+    }
+
+    /**
+     * Sets the location of the attendee.
+     *
+     * @param location The new location
+     */
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
     // Parcelable methods
@@ -258,5 +289,6 @@ public class Attendee implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
+        location.writeToParcel(dest, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }
