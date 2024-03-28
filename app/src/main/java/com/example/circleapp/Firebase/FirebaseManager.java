@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Manages interactions with Firebase Firestore.
@@ -600,11 +601,11 @@ public class FirebaseManager {
     public interface AnnouncementCallback {
         void onCallback(ArrayList<Announcement> announcements);
     }
-    public void deleteAnnouncement(String eventID, String announcementID) {
-        DocumentReference announcementDocRef = eventsRef.document(eventID).collection("announcements").document(announcementID);
+    public void deleteAnnouncement(String eventID, String announcementID, Runnable onSuccess, Consumer<String> onError) {
+        DocumentReference announcementDocRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("announcements").document(announcementID);
         announcementDocRef.delete()
-                .addOnSuccessListener(aVoid -> Log.d("FirebaseManager", "Announcement deleted successfully"))
-                .addOnFailureListener(e -> Log.e("FirebaseManager", "Error deleting announcement", e));
+                .addOnSuccessListener(aVoid -> onSuccess.run())
+                .addOnFailureListener(e -> onError.accept(e.getMessage()));
     }
 
     public void deleteEvent(String ID) {

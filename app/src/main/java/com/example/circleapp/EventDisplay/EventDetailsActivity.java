@@ -216,7 +216,41 @@ public class EventDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        // To allow organizers to modify announcements
+        setupAnnouncementInteractionRole();
 
+    }
+    private void setupAnnouncementInteractionRole() {
+        String source = getIntent().getStringExtra("source");
+
+        if ("CreatedEventsFragment".equals(source)) {
+            // The user is an organizer if they came from CreatedEventsFragment
+            listView.setOnItemClickListener((parent, view, position, id) -> {
+                Announcement selectedAnnouncement = announcementsList.get(position);
+                showOptionsDialog(selectedAnnouncement);
+            });
+        }
+    }
+    private void showOptionsDialog(Announcement announcement) {
+        new AlertDialog.Builder(this)
+                .setTitle("Announcement Options")
+                .setItems(new CharSequence[]{"Delete"}, (dialog, which) -> {
+                    if (which == 0) {
+                        deleteAnnouncement(announcement);
+                    }
+                })
+                .show();
+    }
+    private void deleteAnnouncement(Announcement announcement) {
+        firebaseManager.deleteAnnouncement(event.getID(), announcement.getAnnouncementID(), () -> {
+            // onSuccess
+            announcementsList.remove(announcement);
+            announcementAdapter.notifyDataSetChanged();
+            Toast.makeText(EventDetailsActivity.this, "Announcement deleted successfully", Toast.LENGTH_SHORT).show();
+        }, errorMessage -> {
+            // onError
+            Toast.makeText(EventDetailsActivity.this, "Failed to delete announcement: " + errorMessage, Toast.LENGTH_SHORT).show();
+        });
     }
     private void showAddAnnouncementDialog() {
         Dialog dialog = new Dialog(this);
