@@ -54,7 +54,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true).setContentIntent(pendingIntent)
-                .setPriority(Notification.PRIORITY_MAX);
+                .setPriority(Notification.PRIORITY_MAX)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(body));
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             NotificationChannel channel = new NotificationChannel(channelId, "Default channel", NotificationManager.IMPORTANCE_HIGH);

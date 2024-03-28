@@ -78,6 +78,7 @@ public class GuestlistActivity extends AppCompatActivity {
             }
             Intent intent = new Intent(v.getContext(), SendNotificationActivity.class);
             intent.putStringArrayListExtra("tokens", tokens);
+            intent.putExtra("event name", event.getEventName());
             startActivity(intent);
         });
 
