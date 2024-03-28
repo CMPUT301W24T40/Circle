@@ -1,15 +1,23 @@
 package com.example.circleapp.QRCode;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -17,6 +25,10 @@ import com.google.zxing.integration.android.IntentResult;
  * This is a class used for scanning QR codes.
  */
 public class ScanQRActivity extends AppCompatActivity {
+    FusedLocationProviderClient fusedLocationProviderClient;
+    final private int FINE_PERMISSION_CODE = 1;
+    Location currentLocation;
+
     /**
      * When the Activity is created, the ability to scan QR codes is initiated,
      * opening up a camera for scanning QR codes.
@@ -86,7 +98,9 @@ public class ScanQRActivity extends AppCompatActivity {
                             if (event != null) {
                                 manager.checkUserExists(exists -> {
                                     if (exists) {
-                                        manager.checkInEvent(event.getID());
+                                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                                        getCurrentLocation();
+                                        manager.checkInEvent(event.getID(), currentLocation);
                                         Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
@@ -113,7 +127,9 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (event != null) {
                             manager.checkUserExists(exists -> {
                                 if (exists) {
-                                    manager.checkInEvent(event.getID());
+                                    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+                                    getCurrentLocation();
+                                    manager.checkInEvent(event.getID(), currentLocation);
                                     Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
@@ -130,5 +146,21 @@ public class ScanQRActivity extends AppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+            return;
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    currentLocation = location;
+                }
+            }
+        });
     }
 }

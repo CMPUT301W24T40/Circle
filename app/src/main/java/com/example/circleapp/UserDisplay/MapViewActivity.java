@@ -4,10 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.circleapp.BaseObjects.Attendee;
+import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,19 +25,27 @@ import java.util.ArrayList;
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback {
     Button backButton;
     GoogleMap attendeeMap;
-    ArrayList<Attendee> attendees;
+    Event event;
+    FirebaseManager firebaseManager;
+    ArrayList<Attendee> checkedInAttendees;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapview);
 
+        firebaseManager = FirebaseManager.getInstance();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        attendees = getIntent().getParcelableArrayListExtra("attendees");
-        assert attendees != null;
-        for (Attendee attendee : attendees) {
-            assert attendee != null;
+        event = getIntent().getParcelableExtra("event");
+
+        assert event != null;
+        checkedInAttendees = firebaseManager.getCheckedInAttendees(event.getID());
+        Log.d("mom_attendees", checkedInAttendees.toString());
+
+        if (checkedInAttendees.isEmpty()) {
+            Toast.makeText(this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
         }
 
         backButton = findViewById(R.id.back_button);
@@ -49,9 +61,13 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public void onMapReady(@NonNull GoogleMap googleMap) {
         attendeeMap = googleMap;
 
-        LatLng tempCity = new LatLng(53.5461, -113.4937);
-        attendeeMap.addMarker(new MarkerOptions().position(tempCity).title("Edmonton"));
-        attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(tempCity));
+        for (Attendee attendee : checkedInAttendees) {
+            assert attendee != null;
+
+            LatLng location = new LatLng(attendee.getLocation().getLatitude(), attendee.getLocation().getLongitude());
+            attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
+            attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        }
     }
 
 }

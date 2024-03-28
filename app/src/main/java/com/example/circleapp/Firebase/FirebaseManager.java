@@ -1,6 +1,7 @@
 package com.example.circleapp.Firebase;
 
 import android.content.Context;
+import android.location.Location;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -8,6 +9,9 @@ import android.widget.Toast;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.QRCode.ScanQRActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -212,6 +216,11 @@ public class FirebaseManager {
             callback.onCallback(attendeesList);
         });
     }
+    /**
+     * Retrieves registered users tokens for the current event from Firestore.
+     *
+     * @param eventID  The ID of the event we want to find the registered user tokens for
+     */
 
     public ArrayList<Attendee> getRegisteredUserTokens(String eventID) {
         ArrayList<Attendee> attendeesList = new ArrayList<>();
@@ -223,6 +232,25 @@ public class FirebaseManager {
             }
         });
         return attendeesList;
+    }
+
+    /**
+     * Retrieves checked-in users for the current event from Firestore.
+     *
+     * @param eventID  The ID of the event we want to find the checked-in users for
+     */
+    public ArrayList<Attendee> getCheckedInAttendees(String eventID) {
+        ArrayList<Attendee> checkedInAttendeesList = new ArrayList<>();
+
+        eventsRef.document(eventID).collection("checkedInUsers").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Attendee attendee = document.toObject(Attendee.class);
+                checkedInAttendeesList.add(attendee);
+                //Log.d("mom_fire", checkedInAttendeesList.toString());
+            }
+        });
+
+        return checkedInAttendeesList;
     }
 
     /**
@@ -247,6 +275,7 @@ public class FirebaseManager {
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", String.valueOf(user.hasProfile()));
                 data.put("token", user.getToken());
+                data.put("location", null);
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
@@ -277,6 +306,7 @@ public class FirebaseManager {
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));
                     updates.put("token", user.getToken());
+                    updates.put("location", user.getLocation());
 
                     userDocRef.update(updates)
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
@@ -440,7 +470,7 @@ public class FirebaseManager {
      *
      * @param eventID The ID of the event to check in to.
      */
-    public void checkInEvent(String eventID){
+    public void checkInEvent(String eventID, Location location){
         DocumentReference eventDocRef = eventsRef.document(eventID);
         DocumentReference userDocRef = usersRef.document(phoneID);
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
@@ -448,6 +478,16 @@ public class FirebaseManager {
         // For tracking number of check-ins
         DocumentReference checkInsRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("checkIns").document();
 
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    Attendee attendee = document.toObject(Attendee.class);
+                    attendee.setLocation(location);
+                    editUser(attendee);
+                }
+            }
+        });
 
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", phoneID);
@@ -455,6 +495,7 @@ public class FirebaseManager {
         Map<String, Object> checkIn = new HashMap<>();
         checkIn.put("userID", phoneID);
         checkIn.put("timestamp", FieldValue.serverTimestamp());
+        checkIn.put("location", location);
 
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
         userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
