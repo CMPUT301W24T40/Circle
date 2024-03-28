@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
+
+import java.util.Objects;
 
 /**
  * This class is used to display the profile of a user.
@@ -157,9 +160,11 @@ public class ProfileFragment extends Fragment {
                             geolocation.setChecked(false);
                         }
 
-                        if (ourUser.getProfilePic() != null) {
-                            Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                            editor.putString("user_profile_pic", ourUser.getProfilePic().toString());
+                        String pfp = bundle.getString("pfp", "null");
+                        Log.d("pfp",pfp);
+                        if (!Objects.equals(pfp, "null")) {
+                            Glide.with(ProfileFragment.this).load(Uri.parse(pfp)).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                            editor.putString("user_profile_pic", pfp);
                         }
                         else {
                             char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
@@ -168,6 +173,8 @@ public class ProfileFragment extends Fragment {
                             editor.putString("user_profile_pic", null);
                         }
                         editor.commit();
+
+                        Log.d("profile pic", "=" + ((sharedPreferences.getString("user_profile_pic", null) != null) ? sharedPreferences.getString("user_profile_pic", null) : "null"));
                     }
                 }
         );
@@ -179,7 +186,6 @@ public class ProfileFragment extends Fragment {
 
         editProfile.setOnClickListener(v -> {
             Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
-            intent.putExtra("user", ourUser);
             launcher.launch(intent);
         });
 

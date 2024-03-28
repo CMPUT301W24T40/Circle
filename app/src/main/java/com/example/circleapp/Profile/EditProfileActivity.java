@@ -143,15 +143,26 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d("my token", token);
                         user.settoken(token);
                         user.sethasProfile(true);
+
+                        if (imageManager.hasImage()) {
+                            imageManager.uploadProfilePictureImage(selectedImage -> {
+
+                                user.setprofilePic(selectedImage);
+                                firebaseManager.editUser(user);
+
+                                // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable("user", user);
+                                Intent intent = new Intent();
+                                intent.putExtras(bundle);
+
+                                setResult(Activity.RESULT_OK);
+                                finish();
+                            });
+                        }
+
                         firebaseManager.editUser(user);
                     });
-
-            imageManager.uploadProfilePictureImage(selectedImage -> {
-                user.setprofilePic(selectedImage);
-
-                setResult(Activity.RESULT_OK);
-                finish();
-            });
 
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);

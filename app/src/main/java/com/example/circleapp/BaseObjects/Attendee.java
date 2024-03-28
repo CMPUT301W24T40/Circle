@@ -289,6 +289,6 @@ public class Attendee implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-        location.writeToParcel(dest, PARCELABLE_WRITE_RETURN_VALUE);
+        //location.writeToParcel(dest, PARCELABLE_WRITE_RETURN_VALUE);
     }
 }
