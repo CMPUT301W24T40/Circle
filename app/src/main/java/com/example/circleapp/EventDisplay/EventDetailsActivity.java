@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Announcement;
+import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
@@ -25,6 +26,7 @@ import com.example.circleapp.QRCode.ReuseQRActivity;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
+import com.example.circleapp.SendNotificationActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -225,6 +227,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         EditText announcementEditText = dialog.findViewById(R.id.edit_text_announcement);
         Button addButton = dialog.findViewById(R.id.button_add_announcement);
+        // for notifications to see who to send the notif too
+        ArrayList<Attendee> attendees = firebaseManager.getRegisteredUserTokens(event.getID());
+
 
         addButton.setOnClickListener(v -> {
             String announcementText = announcementEditText.getText().toString().trim();
@@ -247,12 +252,18 @@ public class EventDetailsActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
             }
+            for (Attendee attendee : attendees) {
+                assert attendee != null;
+                String token = attendee.getToken();
+                SendNotificationActivity.sendAnnouncementNotif(token, event.getEventName());
+            }
         });
 
         Button backButton = dialog.findViewById(R.id.button_back);
         backButton.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
+
     }
 
 

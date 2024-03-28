@@ -1,6 +1,7 @@
 package com.example.circleapp;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.example.circleapp.Profile.MakeProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,11 +34,13 @@ public class SendNotificationActivity extends AppCompatActivity {
     EditText notifBody, notifTitle;
     Button sendNotifButton;
     ArrayList<String> tokens;
+    String eventName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_notification);
         tokens = getIntent().getStringArrayListExtra("tokens");
+        eventName = getIntent().getStringExtra("event name");
         setReferences();
     }
 
@@ -50,10 +55,33 @@ public class SendNotificationActivity extends AppCompatActivity {
         sendNotifButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (notifBody.getText().toString().isEmpty()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SendNotificationActivity.this);
+                    builder.setMessage("Please write a message to send to your attendees!")
+                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return;
+                }
                 sendNotification(notifTitle.getText().toString(), notifBody.getText().toString());
                 finish();
             }
         });
+    }
+
+    public static void sendAnnouncementNotif(String token, String eName) {
+        Log.d("what token", token.toString());
+        JSONObject jsonNotif = new JSONObject();
+        JSONObject wholeObject = new JSONObject();
+        try {
+            jsonNotif.put("title", "Announcement");
+            jsonNotif.put("body", "Posted for: " + eName + ". Check out the event page!");
+            wholeObject.put("to", token);
+            wholeObject.put("notification", jsonNotif);
+        } catch (JSONException e) {
+            Log.d("log", e.toString());
+        }
+        callApi(wholeObject);
     }
 
     /**
@@ -69,14 +97,11 @@ public class SendNotificationActivity extends AppCompatActivity {
             Log.d("what token", token.toString());
             JSONObject jsonNotif = new JSONObject();
             JSONObject wholeObject = new JSONObject();
-            JSONObject dataObject = new JSONObject();
             try {
-                jsonNotif.put("title", title);
+                jsonNotif.put("title", eventName + ": " + title);
                 jsonNotif.put("body", body);
-                dataObject.put("something", "some data");
                 wholeObject.put("to", token);
                 wholeObject.put("notification", jsonNotif);
-                wholeObject.put("data", dataObject);
             } catch (JSONException e) {
                 Log.d("log", e.toString());
             }
@@ -90,7 +115,7 @@ public class SendNotificationActivity extends AppCompatActivity {
      * @param jsonObject
      *          This is the jsonObject that will be the notification
      */
-    private void callApi(JSONObject jsonObject) {
+    private static void callApi(JSONObject jsonObject) {
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
         String url = "https://fcm.googleapis.com/fcm/send";
