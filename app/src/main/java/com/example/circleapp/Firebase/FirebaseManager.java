@@ -19,6 +19,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -276,7 +277,8 @@ public class FirebaseManager {
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", String.valueOf(user.hasProfile()));
                 data.put("token", user.getToken());
-                data.put("location", null);
+                data.put("locationLatitude", null);
+                data.put("locationLongitude", null);
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
@@ -307,7 +309,8 @@ public class FirebaseManager {
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));
                     updates.put("token", user.getToken());
-                    updates.put("location", user.getLocation());
+                    updates.put("locationLatitude", user.getLocationLatitude());
+                    updates.put("locationLongitude", user.getLocationLongitude());
 
                     userDocRef.update(updates)
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
@@ -484,19 +487,18 @@ public class FirebaseManager {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     Attendee attendee = document.toObject(Attendee.class);
-                    attendee.setLocation(location);
+                    attendee.setLocationLatitude(location.getLatitude());
+                    attendee.setLocationLongitude(location.getLongitude());
                     editUser(attendee);
                 }
             }
         });
 
-        HashMap<String, String> data = new HashMap<>();
-        data.put("ID", phoneID);
-
         Map<String, Object> checkIn = new HashMap<>();
         checkIn.put("userID", phoneID);
         checkIn.put("timestamp", FieldValue.serverTimestamp());
-        checkIn.put("location", location);
+        checkIn.put("locationLatitude", location.getLatitude());
+        checkIn.put("locationLongitude", location.getLongitude());
 
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
         userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
