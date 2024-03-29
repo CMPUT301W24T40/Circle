@@ -9,9 +9,6 @@ import android.widget.Toast;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.QRCode.ScanQRActivity;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -537,6 +534,40 @@ public class FirebaseManager {
         });
     }
 
+    // Methods for managing announcements
+
+    public void addAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
+        if (announcement.getAnnouncementID() == null || announcement.getAnnouncementID().isEmpty()) {
+            announcement.setAnnouncementID(UUID.randomUUID().toString());
+        }
+        FirebaseFirestore.getInstance()
+                .collection("events").document(eventId)
+                .collection("announcements").document(announcement.getAnnouncementID())
+                .set(announcement)
+                .addOnCompleteListener(listener);
+    }
+    public void loadAnnouncements(String eventId, OnSuccessListener<List<Announcement>> listener) {
+        FirebaseFirestore.getInstance()
+                .collection("events").document(eventId)
+                .collection("announcements")
+                .orderBy("timestamp")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<Announcement> announcements = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        announcements.add(document.toObject(Announcement.class));
+                    }
+                    listener.onSuccess(announcements);
+                });
+    }
+
+    public void deleteAnnouncement(String eventID, String announcementID, Runnable onSuccess, Consumer<String> onError) {
+        DocumentReference announcementDocRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("announcements").document(announcementID);
+        announcementDocRef.delete()
+                .addOnSuccessListener(aVoid -> onSuccess.run())
+                .addOnFailureListener(e -> onError.accept(e.getMessage()));
+    }
+
     // Methods for managing admin creation and abilities
 
     public void isAdmin(UserDocumentCallback callback) {
@@ -571,7 +602,20 @@ public class FirebaseManager {
 
         eventsRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
-                urlList.add(document.getString("eventPosterURL"));
+                String posterURL = (document.getString("eventPosterURL").startsWith("https")) ? document.getString("eventPosterURL") : null;
+                if (posterURL != null) { urlList.add(posterURL); }
+            }
+            callback.onCallback(urlList);
+        });
+    }
+
+    public void getPFPURLs(URLCallback callback) {
+        ArrayList<String> urlList = new ArrayList<>();
+
+        usersRef.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                String pfpURL = (document.getString("profilePic").startsWith("https")) ? document.getString("profilePic") : null;
+                if (pfpURL != null) { urlList.add(pfpURL); }
             }
             callback.onCallback(urlList);
         });
@@ -615,41 +659,6 @@ public class FirebaseManager {
 
         userDocRef.delete();
     }
-    public void addAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
-        if (announcement.getAnnouncementID() == null || announcement.getAnnouncementID().isEmpty()) {
-            announcement.setAnnouncementID(UUID.randomUUID().toString());
-        }
-        FirebaseFirestore.getInstance()
-                .collection("events").document(eventId)
-                .collection("announcements").document(announcement.getAnnouncementID())
-                .set(announcement)
-                .addOnCompleteListener(listener);
-    }
-    public void loadAnnouncements(String eventId, OnSuccessListener<List<Announcement>> listener) {
-        FirebaseFirestore.getInstance()
-                .collection("events").document(eventId)
-                .collection("announcements")
-                .orderBy("timestamp")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Announcement> announcements = new ArrayList<>();
-                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                        announcements.add(document.toObject(Announcement.class));
-                    }
-                    listener.onSuccess(announcements);
-                });
-    }
-
-
-    public interface AnnouncementCallback {
-        void onCallback(ArrayList<Announcement> announcements);
-    }
-    public void deleteAnnouncement(String eventID, String announcementID, Runnable onSuccess, Consumer<String> onError) {
-        DocumentReference announcementDocRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("announcements").document(announcementID);
-        announcementDocRef.delete()
-                .addOnSuccessListener(aVoid -> onSuccess.run())
-                .addOnFailureListener(e -> onError.accept(e.getMessage()));
-    }
 
     public void deleteEvent(String ID) {
         DocumentReference eventDocRef = eventsRef.document(ID);
@@ -678,5 +687,32 @@ public class FirebaseManager {
         });
 
         eventDocRef.delete();
+    }
+
+    public void deleteImageUsage(String URL, boolean isPosterURL) {
+        if (isPosterURL) {
+            eventsRef.get().addOnCompleteListener(task -> {
+                for (DocumentSnapshot document : task.getResult()) {
+                    DocumentReference eventDocRef = eventsRef.document(document.getId());
+                    String eventPosterURL = document.getString("eventPosterURL");
+
+                    if (eventPosterURL.equals(URL)) {
+                        eventDocRef.update("eventPosterURL", "https://firebasestorage.googleapis.com/v0/b/circleapp-2e84b.appspot.com/o/default_pics%2Fdefault_event_poster.webp?alt=media&token=e3a687a5-8ca8-4f25-9fbd-a9be6631ee0c");
+                    }
+                }
+            });
+        }
+        else {
+            usersRef.get().addOnCompleteListener(task -> {
+                for (DocumentSnapshot document : task.getResult()) {
+                    DocumentReference userDocRef = usersRef.document(document.getId());
+                    String pfpURL = document.getString("profilePic");
+
+                    if (pfpURL.equals(URL)) {
+                        userDocRef.update("profilePic", "null");
+                    }
+                }
+            });
+        }
     }
 }
