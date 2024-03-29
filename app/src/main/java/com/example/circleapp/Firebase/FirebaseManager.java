@@ -245,7 +245,6 @@ public class FirebaseManager {
             for (DocumentSnapshot document : task.getResult()) {
                 Attendee attendee = document.toObject(Attendee.class);
                 checkedInAttendeesList.add(attendee);
-                //Log.d("mom_fire", checkedInAttendeesList.toString());
             }
         });
 
@@ -269,13 +268,12 @@ public class FirebaseManager {
                 data.put("lastName", user.getLastName());
                 data.put("email", user.getEmail());
                 data.put("phoneNumber", user.getPhoneNumber());
-                data.put("isGeoEnabled", String.valueOf(user.isGeoEnabled()));
                 data.put("profilePic", String.valueOf(user.getProfilePic()));
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", String.valueOf(user.hasProfile()));
                 data.put("token", user.getToken());
-                data.put("locationLatitude", null);
-                data.put("locationLongitude", null);
+                data.put("locationLatitude", String.valueOf(user.getLocationLatitude()));
+                data.put("locationLongitude", String.valueOf(user.getLocationLongitude()));
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
@@ -301,7 +299,6 @@ public class FirebaseManager {
                     updates.put("lastName", user.getLastName());
                     updates.put("email", user.getEmail());
                     updates.put("phoneNumber", user.getPhoneNumber());
-                    updates.put("isGeoEnabled", String.valueOf(user.isGeoEnabled()));
                     updates.put("profilePic", String.valueOf(user.getProfilePic()));
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));

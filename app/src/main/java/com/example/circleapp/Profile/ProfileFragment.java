@@ -41,7 +41,6 @@ public class ProfileFragment extends Fragment {
     TextView email;
     TextView phoneNumber;
     TextView homepage;
-    CheckBox geolocation;
     Button makeProfile;
     Button editProfile;
     Button becomeAdmin;
@@ -83,7 +82,6 @@ public class ProfileFragment extends Fragment {
         email = view.findViewById(R.id.email);
         phoneNumber = view.findViewById(R.id.phone_number);
         homepage = view.findViewById(R.id.homepage);
-        geolocation = view.findViewById(R.id.edit_geolocation);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
         becomeAdmin = view.findViewById(R.id.become_admin_button);
@@ -136,7 +134,6 @@ public class ProfileFragment extends Fragment {
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
                         editor.putString("user_email", ourUser.getEmail());
                         editor.putString("user_homepage", ourUser.getHomepage());
-                        editor.putString("location", Boolean.toString(ourUser.isGeoEnabled()));
                         editor.apply();
 
                         firstName.setText(ourUser.getFirstName());
@@ -144,18 +141,6 @@ public class ProfileFragment extends Fragment {
                         email.setText(ourUser.getEmail());
                         phoneNumber.setText(ourUser.getPhoneNumber());
                         homepage.setText(ourUser.getHomepage());
-
-                        String checked = "Geolocation: ENABLED";
-                        String unchecked = "Geolocation: DISABLED";
-                        geolocation.setClickable(false);
-                        if (ourUser.isGeoEnabled()) {
-                            geolocation.setText(checked);
-                            geolocation.setChecked(true);
-                        }
-                        else {
-                            geolocation.setText(unchecked);
-                            geolocation.setChecked(false);
-                        }
 
                         if (ourUser.getProfilePic() != null) {
                             Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);

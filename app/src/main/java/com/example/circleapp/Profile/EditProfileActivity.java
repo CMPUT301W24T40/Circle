@@ -31,7 +31,6 @@ public class EditProfileActivity extends AppCompatActivity {
     EditText emailEditText;
     EditText phoneNumberEditText;
     EditText homepageEditText;
-    CheckBox geolocationEditText;
     Button confirmButton;
     ImageView profilePic;
     SharedPreferences sharedPreferences;
@@ -76,7 +75,6 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.edit_email);
         phoneNumberEditText = findViewById(R.id.edit_number);
         homepageEditText = findViewById(R.id.edit_homepage);
-        geolocationEditText = findViewById(R.id.edit_geolocation);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
 
@@ -85,7 +83,6 @@ public class EditProfileActivity extends AppCompatActivity {
         emailEditText.setText(user.getEmail());
         phoneNumberEditText.setText(user.getPhoneNumber());
         homepageEditText.setText(user.getHomepage());
-        geolocationEditText.setChecked(user.isGeoEnabled());
 
         if (user.getProfilePic() == null) {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
@@ -125,14 +122,12 @@ public class EditProfileActivity extends AppCompatActivity {
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
             String homepage = homepageEditText.getText().toString();
-            boolean isGeoEnabled = geolocationEditText.isChecked();
 
             user.setfirstName(firstName);
             user.setlastName(lastName);
             user.setphoneNumber(phoneNumber);
             user.setemail(email);
             user.sethomepage(homepage);
-            user.setisGeoEnabled(isGeoEnabled);
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
