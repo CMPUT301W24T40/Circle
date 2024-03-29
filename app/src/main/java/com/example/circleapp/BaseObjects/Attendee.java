@@ -21,7 +21,8 @@ public class Attendee implements Parcelable {
     private String homepage;
     private boolean hasProfile; // Indicates if the user has a profile or not
     private String token; // for notifications
-    private Location location; // Location of attendee for map
+    private Double locationLatitude; // latitude of location of attendee
+    private Double locationLongitude; // longitude of location of attendee
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -58,7 +59,8 @@ public class Attendee implements Parcelable {
         homepage = in.readString();
         phoneNumber = in.readString();
         isGeoEnabled = in.readByte() != 0;
-        location = in.readParcelable(getClass().getClassLoader());
+        locationLatitude = in.readDouble();
+        locationLongitude = in.readDouble();
 
         // Read the Uri as a String from the Parcel
         String uriString = in.readString();
@@ -170,13 +172,23 @@ public class Attendee implements Parcelable {
     }
 
     /**
-     * Gets the location of the attendee.
+     * Gets the latitude of location of the attendee.
      *
-     * @return The location
+     * @return The latitude
      */
-    public Location getLocation() {
-        return location;
+    public Double getLocationLatitude() {
+        return locationLatitude;
     }
+
+    /**
+     * Gets the longitude of location of the attendee.
+     *
+     * @return The longitude
+     */
+    public Double getLocationLongitude() {
+        return locationLongitude;
+    }
+
 
     /**
      * Sets the first name of the attendee.
@@ -260,10 +272,19 @@ public class Attendee implements Parcelable {
     /**
      * Sets the location of the attendee.
      *
-     * @param location The new location
+     * @param latitude The new latitude
      */
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocationLatitude(Double latitude) {
+        this.locationLatitude = latitude;
+    }
+
+    /**
+     * Sets the location of the attendee.
+     *
+     * @param longitude The new longitude
+     */
+    public void setLocationLongitude(Double longitude) {
+        this.locationLongitude = longitude;
     }
 
     // Parcelable methods
@@ -289,6 +310,7 @@ public class Attendee implements Parcelable {
         dest.writeString(phoneNumber);
         dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-        location.writeToParcel(dest, PARCELABLE_WRITE_RETURN_VALUE);
+        dest.writeDouble(locationLatitude);
+        dest.writeDouble(locationLongitude);
     }
 }
