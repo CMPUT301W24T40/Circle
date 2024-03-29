@@ -31,12 +31,13 @@ public class AdminBrowseImagesFragment extends Fragment {
         adapter = new ImageAdapter(getContext(), new ArrayList<>()); // Initialize adapter
         listView.setAdapter(adapter);
 
-        loadImages();
+        loadPosters();
+        loadPFPs();
 
         // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Uri image = (Uri) parent.getItemAtPosition(position);
-            eventClicked(image);
+            imageClicked(image.toString());
         });
 
         backButton.setOnClickListener(v -> {
@@ -50,11 +51,15 @@ public class AdminBrowseImagesFragment extends Fragment {
     /**
      * Loads images from Firebase Storage and updates the ListView.
      */
-    private void loadImages() {
-        imageManager.getImages(images -> {
+    private void loadPosters() {
+        imageManager.getPosters(images -> {
             adapter.clear();
             adapter.addAll(images);
         });
+    }
+
+    private void loadPFPs() {
+        imageManager.getPFPs(images -> adapter.addAll(images));
     }
 
     /**
@@ -62,10 +67,13 @@ public class AdminBrowseImagesFragment extends Fragment {
      *
      * @param image The clicked image
      */
-    private void eventClicked(Uri image) {
+    private void imageClicked(String image) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Select one of the following options:");
-        builder.setPositiveButton("Delete image", (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton("Delete image", (dialog, which) -> {
+            imageManager.deleteImage(image);
+            dialog.dismiss();
+        });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         AlertDialog dialog = builder.create();
         dialog.show();

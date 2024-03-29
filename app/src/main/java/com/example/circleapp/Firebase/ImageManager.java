@@ -23,9 +23,12 @@ public class ImageManager {
     private Uri imageUri;
     private final FirebaseStorage storage = FirebaseStorage.getInstance();
     private final StorageReference storageRef = storage.getReference();
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
-    // please leave this extra constructor
-    public ImageManager(Activity activity) {
+
+    // Constructors
+
+    public ImageManager(Activity activity) {  // Leave this constructor
         this.activity = activity;
         this.imageView = null;
     }
@@ -35,14 +38,17 @@ public class ImageManager {
         this.imageView = imageView;
     }
 
+    // Callback interfaces
+
     public interface ImagesCallback {
         void onCallback(ArrayList<Uri> imagesList);
     }
 
-    public void getImages(ImagesCallback callback) {
+    // Methods associated with Admin
+
+    public void getPosters(ImagesCallback callback) {
         ArrayList<Uri> imagesList = new ArrayList<>();
 
-        FirebaseManager firebaseManager = FirebaseManager.getInstance();
         firebaseManager.getPosterURLs(urlList -> {
 
             for (String url : urlList) {
@@ -56,6 +62,37 @@ public class ImageManager {
             }
         });
     }
+
+    public void getPFPs(ImagesCallback callback) {
+        ArrayList<Uri> imagesList = new ArrayList<>();
+
+        firebaseManager.getPFPURLs(urlList -> {
+
+            for (String url : urlList) {
+                StorageReference imageRef = storage.getReferenceFromUrl(url);
+
+                imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    imagesList.add(uri);
+
+                    callback.onCallback(imagesList);
+                });
+            }
+        });
+    }
+
+    public void deleteImage(String imageURL) {
+        StorageReference imageRef = storage.getReferenceFromUrl(imageURL);
+        imageRef.delete();
+
+        if (imageURL.contains("profile_pictures")) {
+            firebaseManager.deleteImageUsage(imageURL, false);
+        }
+        else if (imageURL.contains("event_posters")) {
+            firebaseManager.deleteImageUsage(imageURL, true);
+        }
+    }
+
+    // Methods to manage image selection and upload
 
     public boolean hasImage() {
         return imageView.getDrawable() != null;
@@ -91,6 +128,7 @@ public class ImageManager {
                     }));
         }
     }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
