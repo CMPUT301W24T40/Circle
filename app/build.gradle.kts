@@ -33,6 +33,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    sourceSets {
+        getByName("main") {
+            res {
+                srcDirs("src/main/res", "src/main/res/layouts/events", "src/main/res/layouts/attendees", "src/main/res/layouts/admin", "src/main/res/layouts/notifs_announcements", "src/main/res/layouts/qr_code", "src/main/res/layouts/main")
+            }
+        }
+    }
 }
 
 dependencies {
