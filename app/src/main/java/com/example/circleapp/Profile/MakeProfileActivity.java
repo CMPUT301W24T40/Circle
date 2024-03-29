@@ -123,7 +123,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                                 Intent intent = new Intent();
                                 intent.putExtras(bundle);
 
-                                firebaseManager.addNewUser(user);
+                                firebaseManager.addNewUser(user); //comment
 
                                 setResult(Activity.RESULT_OK, intent);
                                 finish();
