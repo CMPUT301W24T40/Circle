@@ -111,27 +111,15 @@ public class MakeProfileActivity extends AppCompatActivity {
                         Log.d("my token", token);
                         user.settoken(token);
                         user.sethasProfile(true);
-
-                        if (imageManager.hasImage()) {
-                            imageManager.uploadProfilePictureImage(selectedImage -> {
-                                user.setprofilePic(selectedImage);
-
-                                // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable("user", user);
-                                bundle.putString("pfp", selectedImage);
-                                Intent intent = new Intent();
-                                intent.putExtras(bundle);
-
-                                firebaseManager.addNewUser(user); //comment
-
-                                setResult(Activity.RESULT_OK, intent);
-                                finish();
-                            });
-                        }
-
                         firebaseManager.addNewUser(user);
                     });
+
+            imageManager.uploadProfilePictureImage(selectedImage -> {
+                user.setprofilePic(selectedImage);
+
+                setResult(Activity.RESULT_OK);
+                finish();
+            });
 
             // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
             Bundle bundle = new Bundle();
