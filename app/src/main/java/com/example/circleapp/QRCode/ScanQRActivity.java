@@ -5,16 +5,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -26,8 +30,9 @@ import com.google.zxing.integration.android.IntentResult;
  */
 public class ScanQRActivity extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
-    final private int FINE_PERMISSION_CODE = 1;
+    final private int FINE_PERMISSION_CODE = 100;
     Location currentLocation;
+    FirebaseManager manager;
 
     /**
      * When the Activity is created, the ability to scan QR codes is initiated,
@@ -83,7 +88,7 @@ public class ScanQRActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        FirebaseManager manager = FirebaseManager.getInstance();
+        manager = FirebaseManager.getInstance();
         if (result != null) {
             if (result.getContents() == null) {
                 Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
@@ -98,9 +103,19 @@ public class ScanQRActivity extends AppCompatActivity {
                             if (event != null) {
                                 manager.checkUserExists(exists -> {
                                     if (exists) {
-                                        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                                        getCurrentLocation();
-                                        manager.checkInEvent(event.getID(), currentLocation);
+                                        getCurrentLocation(new LocationCallback() {
+                                            @Override
+                                            public void onLocationResult(Location location) {
+                                                currentLocation = location;
+                                                handleLocationSuccess(eventID);
+                                            }
+
+                                            @Override
+                                            public void onLocationUnavailable() {
+                                                Toast.makeText(ScanQRActivity.this, "Location is unavailable", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
                                         Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
@@ -127,9 +142,19 @@ public class ScanQRActivity extends AppCompatActivity {
                         if (event != null) {
                             manager.checkUserExists(exists -> {
                                 if (exists) {
-                                    fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-                                    getCurrentLocation();
-                                    manager.checkInEvent(event.getID(), currentLocation);
+                                    getCurrentLocation(new LocationCallback() {
+                                        @Override
+                                        public void onLocationResult(Location location) {
+                                            currentLocation = location;
+                                            handleLocationSuccess(event.getID());
+                                        }
+
+                                        @Override
+                                        public void onLocationUnavailable() {
+                                            Toast.makeText(ScanQRActivity.this, "Location is unavailable", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+
                                     Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
                                 } else {
                                     Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
@@ -148,19 +173,60 @@ public class ScanQRActivity extends AppCompatActivity {
         }
     }
 
-    private void getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
-            return;
+
+    public interface LocationCallback {
+        void onLocationResult(Location location);
+        void onLocationUnavailable();
+    }
+
+    private void handleLocationSuccess(String eventID) {
+        manager.checkInEvent(eventID, currentLocation);
+    }
+
+    private void getCurrentLocation(LocationCallback callback) {
+        if (ContextCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
+
+            fusedLocationProviderClient.getLastLocation()
+                            .addOnSuccessListener(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    if (location != null) {
+                                        callback.onLocationResult(location);;
+                                    } else {
+                                        callback.onLocationUnavailable();
+                                    }
+                                }
+                            });
+        } else {
+            askPermission();
         }
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    currentLocation = location;
-                }
+    }
+
+    private void askPermission() {
+        ActivityCompat.requestPermissions(this, new String[]
+                {Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == FINE_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation(new LocationCallback() {
+                    @Override
+                    public void onLocationResult(Location location) {
+                        currentLocation = location;
+                    }
+
+                    @Override
+                    public void onLocationUnavailable() {
+                        Toast.makeText(ScanQRActivity.this, "Location is unavailable", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Location Disabled", Toast.LENGTH_SHORT).show();
             }
-        });
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
