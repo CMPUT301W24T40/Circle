@@ -16,7 +16,6 @@ public class Attendee implements Parcelable {
     private String lastName; // Last name of the attendee
     private String email; // Email address of the attendee
     private String phoneNumber; // Phone number of the attendee
-    private boolean isGeoEnabled; // Indicates if the attendee has geo-location enabled
     private Uri profilePic; // URI to the profile picture of the attendee
     private String homepage;
     private boolean hasProfile; // Indicates if the user has a profile or not
@@ -58,7 +57,6 @@ public class Attendee implements Parcelable {
         email = in.readString();
         homepage = in.readString();
         phoneNumber = in.readString();
-        isGeoEnabled = in.readByte() != 0;
         locationLatitude = in.readDouble();
         locationLongitude = in.readDouble();
 
@@ -126,15 +124,6 @@ public class Attendee implements Parcelable {
      */
     public String getPhoneNumber() {
         return phoneNumber;
-    }
-
-    /**
-     * Checks if the geo-location is enabled for the attendee.
-     *
-     * @return True if geo-location is enabled, false otherwise
-     */
-    public boolean isGeoEnabled() {
-        return isGeoEnabled;
     }
 
     /**
@@ -227,15 +216,6 @@ public class Attendee implements Parcelable {
     }
 
     /**
-     * Sets whether geo-location is enabled for the attendee.
-     *
-     * @param geoEnabled True if geo-location is enabled, false otherwise
-     */
-    public void setisGeoEnabled(boolean geoEnabled) {
-        isGeoEnabled = geoEnabled;
-    }
-
-    /**
      * Sets the URI to the profile picture of the attendee.
      *
      * @param profilePic The new URI to the profile picture
@@ -308,9 +288,8 @@ public class Attendee implements Parcelable {
         dest.writeString(email);
         dest.writeString(homepage);
         dest.writeString(phoneNumber);
-        dest.writeByte((byte) (isGeoEnabled ? 1 : 0));
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-        dest.writeDouble(locationLatitude);
-        dest.writeDouble(locationLongitude);
+        dest.writeString(locationLatitude != null ? String.valueOf(locationLatitude) : null);
+        dest.writeString(locationLongitude != null ? String.valueOf(locationLongitude) : null);
     }
 }

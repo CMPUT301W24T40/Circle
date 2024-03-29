@@ -72,12 +72,10 @@
         android:backgroundTint="@color/black"
         android:ems="10"
         android:hint="Homepage"
-        app:layout_constraintBottom_toTopOf="@+id/edit_geolocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.281"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_email"
-        app:layout_constraintVertical_bias="0.055" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_email" />
 
     <TextView
         android:id="@+id/edit_profile_text"
@@ -117,21 +115,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/default_profile_icon" />
     </com.google.android.material.card.MaterialCardView>
-
-    <CheckBox
-        android:id="@+id/edit_geolocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/black"
-        android:text="@string/enable_geolocation"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.087"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_email"
-        app:layout_constraintVertical_bias="0.334" />
 
     <Button
         android:id="@+id/confirm_edit_button"
