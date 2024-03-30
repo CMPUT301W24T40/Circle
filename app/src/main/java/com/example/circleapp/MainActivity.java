@@ -1,15 +1,22 @@
 package com.example.circleapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.Manifest;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -44,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private SharedPreferences sharedPreferences;
     ActivityMainBinding binding; // View binding instance
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
@@ -58,8 +67,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         askNotificationPermission();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        sharedPreferences = getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
+
+        if (!isLocationPermissionGranted()) {
+            requestLocationPermission();
+        }
+
+        Log.d("Permission", String.valueOf(sharedPreferences.getBoolean("location_permission_granted", false)));
 
         firebaseManager.setPhoneID(this);
 
@@ -118,6 +136,24 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
+        }
+    }
+
+    private boolean isLocationPermissionGranted()  {
+        return sharedPreferences.getBoolean("location_permission_granted", false);
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            sharedPreferences.edit().putBoolean("location_permission_granted", true).apply();
         }
     }
 

@@ -39,14 +39,21 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         event = getIntent().getParcelableExtra("event");
+        firebaseManager.getCheckedInAttendees(event.getID(), new CheckedInAttendeesCallback() {
+            @Override
+            public void onAttendeesReceived(ArrayList<Attendee> attendees) {
+                checkedInAttendees = attendees;
+                Log.d("mom_attendees", checkedInAttendees.toString());
 
-        assert event != null;
-        checkedInAttendees = firebaseManager.getCheckedInAttendees(event.getID());
-        Log.d("mom_attendees", checkedInAttendees.toString());
-
-        if (checkedInAttendees.isEmpty()) {
-            Toast.makeText(this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
-        }
+                if (checkedInAttendees.isEmpty()) {
+                    Toast.makeText(MapViewActivity.this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
+                } else {
+                    if (attendeeMap != null) {
+                        populateMap();
+                    }
+                }
+            }
+        });
 
         backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -60,14 +67,18 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         attendeeMap = googleMap;
-
-        for (Attendee attendee : checkedInAttendees) {
-            assert attendee != null;
-
-            LatLng location = new LatLng(attendee.getLocationLatitude(), attendee.getLocationLongitude());
-            attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
-            attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        if (checkedInAttendees != null && !checkedInAttendees.isEmpty()) {
+            populateMap();
         }
     }
 
+    private void populateMap() {
+        for (Attendee attendee : checkedInAttendees) {
+            if (attendee.getLocationLatitude() != null && attendee.getLocationLongitude() != null) {
+                LatLng location = new LatLng(attendee.getLocationLatitude(), attendee.getLocationLongitude());
+                attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
+                attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+            }
+        }
+    }
 }

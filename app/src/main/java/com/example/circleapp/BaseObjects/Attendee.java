@@ -289,7 +289,7 @@ public class Attendee implements Parcelable {
         dest.writeString(homepage);
         dest.writeString(phoneNumber);
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-        dest.writeString(locationLatitude != null ? String.valueOf(locationLatitude) : null);
-        dest.writeString(locationLongitude != null ? String.valueOf(locationLongitude) : null);
+        dest.writeDouble(locationLatitude);
+        dest.writeDouble(locationLongitude);
     }
 }

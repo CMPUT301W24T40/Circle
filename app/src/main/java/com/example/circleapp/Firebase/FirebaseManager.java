@@ -6,9 +6,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.UserDisplay.CheckedInAttendeesCallback;
+import com.example.circleapp.UserDisplay.MapViewActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -19,6 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import org.checkerframework.checker.units.qual.N;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +43,7 @@ public class FirebaseManager {
     private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
     private final CollectionReference adminsRef; // A reference to the "events" collection in Firestore
     private String phoneID;  // A reference to the phone ID of the user currently using the app
+    final double NULL_DOUBLE = -999999999;
 
     /**
      * Constructs a new FirebaseManager instance. Contains all methods used to manage, query and
@@ -238,13 +246,19 @@ public class FirebaseManager {
      *
      * @param eventID  The ID of the event we want to find the checked-in users for
      */
-    public ArrayList<Attendee> getCheckedInAttendees(String eventID) {
+    public ArrayList<Attendee> getCheckedInAttendees(String eventID, CheckedInAttendeesCallback callback) {
         ArrayList<Attendee> checkedInAttendeesList = new ArrayList<>();
 
         eventsRef.document(eventID).collection("checkedInUsers").get().addOnCompleteListener(task -> {
-            for (DocumentSnapshot document : task.getResult()) {
-                Attendee attendee = document.toObject(Attendee.class);
-                checkedInAttendeesList.add(attendee);
+            if (task.isSuccessful()) {
+                for (DocumentSnapshot document : task.getResult()) {
+                    Attendee attendee = document.toObject(Attendee.class);
+                    checkedInAttendeesList.add(attendee);
+                }
+                callback.onAttendeesReceived(checkedInAttendeesList);
+            } else {
+                Log.e("Firebase", "Error getting checked-in attendees", task.getException());
+                callback.onAttendeesReceived(new ArrayList<>());
             }
         });
 
@@ -262,7 +276,7 @@ public class FirebaseManager {
                 editUser(user);
             }
             else {
-                HashMap<String, String> data = new HashMap<>();
+                HashMap<String, Object> data = new HashMap<>();
                 data.put("ID", user.getID());
                 data.put("firstName", user.getFirstName());
                 data.put("lastName", user.getLastName());
@@ -272,8 +286,8 @@ public class FirebaseManager {
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", String.valueOf(user.hasProfile()));
                 data.put("token", user.getToken());
-                data.put("locationLatitude", String.valueOf(user.getLocationLatitude()));
-                data.put("locationLongitude", String.valueOf(user.getLocationLongitude()));
+                data.put("locationLatitude", user.getLocationLatitude());
+                data.put("locationLongitude", user.getLocationLongitude());
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
@@ -303,8 +317,15 @@ public class FirebaseManager {
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));
                     updates.put("token", user.getToken());
-                    updates.put("locationLatitude", user.getLocationLatitude());
-                    updates.put("locationLongitude", user.getLocationLongitude());
+                    if ((user.getLocationLatitude() == NULL_DOUBLE || user.getLocationLatitude() == null)
+                            && (user.getLocationLongitude() == NULL_DOUBLE || user.getLocationLongitude() == null)) {
+                        updates.put("locationLatitude", null);
+                        updates.put("locationLongitude", null);
+                    } else {
+                        updates.put("locationLatitude", user.getLocationLatitude());
+                        updates.put("locationLongitude", user.getLocationLongitude());
+                    }
+
 
                     userDocRef.update(updates)
                             .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
@@ -468,7 +489,7 @@ public class FirebaseManager {
      *
      * @param eventID The ID of the event to check in to.
      */
-    public void checkInEvent(String eventID, Location location){
+    public void checkInEvent(String eventID, @Nullable Location location){
         DocumentReference eventDocRef = eventsRef.document(eventID);
         DocumentReference userDocRef = usersRef.document(phoneID);
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
@@ -481,8 +502,13 @@ public class FirebaseManager {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     Attendee attendee = document.toObject(Attendee.class);
-                    attendee.setLocationLatitude(location.getLatitude());
-                    attendee.setLocationLongitude(location.getLongitude());
+                    if (location != null) {
+                        attendee.setLocationLatitude(location.getLatitude());
+                        attendee.setLocationLongitude(location.getLongitude());
+                    } else {
+                        attendee.setLocationLatitude(NULL_DOUBLE);
+                        attendee.setLocationLongitude(NULL_DOUBLE);
+                    }
                     editUser(attendee);
                 }
             }
@@ -491,8 +517,13 @@ public class FirebaseManager {
         Map<String, Object> checkIn = new HashMap<>();
         checkIn.put("userID", phoneID);
         checkIn.put("timestamp", FieldValue.serverTimestamp());
-        checkIn.put("locationLatitude", location.getLatitude());
-        checkIn.put("locationLongitude", location.getLongitude());
+        if (location != null) {
+            checkIn.put("locationLatitude", location.getLatitude());
+            checkIn.put("locationLongitude", location.getLongitude());
+        } else {
+            checkIn.put("locationLatitude", null);
+            checkIn.put("locationLongitude", null);
+        }
 
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
         userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
