@@ -1,11 +1,17 @@
 package com.example.circleapp.EventDisplay;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,20 +21,24 @@ import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.Firebase.ImageManager;
 import com.example.circleapp.R;
 
+import java.util.Calendar;
+
 /**
  * This class is used for when a user wants to create an event.
  */
 public class CreateEventActivity extends AppCompatActivity {
     EditText eventNameEditText;
     EditText locationEditText;
-    EditText dateEditText;
-    EditText timeEditText;
     EditText descriptionEditText;
     EditText capacityEditText;
     ImageView eventPoster;
     Button confirmButton;
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
     ImageManager imageManager;
+
+    // for new date and time picker
+    TextView datePicker;
+    TextView timePicker;
 
     /**
      * When this Activity is created, a user can input details to create an Event. Details include
@@ -50,12 +60,28 @@ public class CreateEventActivity extends AppCompatActivity {
         // Initialize views
         eventNameEditText = findViewById(R.id.eventName_edit);
         locationEditText = findViewById(R.id.location_edit);
-        dateEditText = findViewById(R.id.date_edit);
-        timeEditText = findViewById(R.id.time_edit);
         descriptionEditText = findViewById(R.id.description_edit);
         capacityEditText = findViewById(R.id.capacity_edit);
         eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
+
+        // new date and time picker
+        datePicker = findViewById(R.id.date_edit_picker);
+        timePicker = findViewById(R.id.time_edit_picker);
+
+        datePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDateDialog();
+            }
+        });
+
+        timePicker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTimeDialog();
+            }
+        });
 
         imageManager = new ImageManager(this, eventPoster);
         // click listener for eventPoster
@@ -65,8 +91,10 @@ public class CreateEventActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(v -> {
             String eventName = eventNameEditText.getText().toString();
             String location = locationEditText.getText().toString();
-            String date = dateEditText.getText().toString();
-            String time = timeEditText.getText().toString();
+
+            // new date and time
+            String date = datePicker.getText().toString();
+            String time = timePicker.getText().toString();
             String description = descriptionEditText.getText().toString();
             String capacity = capacityEditText.getText().toString();
             String ID = firebaseManager.generateRandomID();
@@ -112,5 +140,35 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * This method is used to choose and display the date the user wants for their event.
+     */
+    private void openDateDialog() {
+        Calendar c = Calendar.getInstance();
+        int currYear = c.get(Calendar.YEAR);
+        int currMonth = c.get(Calendar.MONTH);
+        int currDay = c.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                datePicker.setText(String.format("%s/%02d/%02d", year, month + 1, dayOfMonth));
+            }
+        }, currYear, currMonth, currDay);
+        dialog.show();
+    }
+
+    /**
+     * This method is used to choose and display the time the user wants for their event.
+     */
+    private void openTimeDialog() {
+        TimePickerDialog dialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                timePicker.setText(String.format("%02d:%02d", hourOfDay, minute));
+            }
+        }, 12, 00, true);
+        dialog.show();
     }
 }

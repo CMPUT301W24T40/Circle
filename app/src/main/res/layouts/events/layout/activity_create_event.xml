@@ -1,110 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/eventName_edit"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Event Name"
-        android:inputType="text"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/location_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/eventName_edit"
-        android:hint="Event Location"
-        android:inputType="text"
-        android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/date_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/location_edit"
-        android:hint="Date"
-        android:inputType="text"
-        android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/time_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/date_edit"
-        android:hint="Time"
-        android:inputType="text"
-        android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
-
-    <EditText
-        android:id="@+id/description_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/time_edit"
-        android:hint="Description"
-        android:inputType="text"
-        android:textSize="18sp"
-        android:layout_marginBottom="24dp"/>
-
-    <EditText
-        android:id="@+id/capacity_edit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/description_edit"
-        android:layout_marginBottom="24dp"
-        android:hint="Guests allowed"
-        android:inputType="text"
-        android:minHeight="48dp"
-        android:textSize="18sp" />
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/rectangular_background"
-        android:layout_width="match_parent"
-        android:layout_height="173dp"
-        android:layout_below="@id/capacity_edit"
-        android:clickable="true"
-        android:focusable="true"
-        android:backgroundTint="@color/pastel_purple"
-        app:strokeWidth="3dp"
-        app:strokeColor="@color/black">
+        android:layout_height="match_parent"
+        android:padding="16dp" >
+        <TextView
+            android:id="@+id/add_event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/poster_click_text"
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/add_event_title"
+            android:paddingTop="10dp"
+            android:text="Title:"
+            android:textSize="21sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/eventName_edit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/title"
+            android:background="@drawable/edittext_border"
+            android:hint="My Event"
+            android:padding="10dp"
+            android:inputType="text"
+            android:maxLength="50"
+            android:textAlignment="textStart"
+            android:textSize="21sp" />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/eventName_edit"
+            android:paddingTop="10dp"
+            android:text="Location:"
+            android:textSize="21sp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/location_edit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/location"
+            android:background="@drawable/edittext_border"
+            android:hint="Event Location"
+            android:padding="10dp"
+            android:inputType="text"
+            android:textAlignment="textStart"
+            android:textSize="21sp" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_edit"
+            android:paddingTop="10dp"
+            android:text="Date:"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/date_edit_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click to Select a Poster Image"
-            android:layout_gravity="center"
-            android:textColor="@color/black"
-            android:textSize="20dp"/>
+            android:layout_below="@id/date"
+            android:text="YYYY/MM/DD"
+            android:textSize="21sp"
+            app:drawableEndCompat="@android:drawable/ic_menu_my_calendar" />
 
-        <ImageView
-            android:id="@+id/eventPoster_edit"
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/location_edit"
+            android:layout_marginStart="24dp"
+            android:layout_toEndOf="@id/date"
+            android:paddingTop="10dp"
+            android:text="Time: "
+            android:textSize="21sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/time_edit_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/time"
+            android:layout_marginStart="24dp"
+            android:layout_toEndOf="@id/date_edit_picker"
+            android:text="XX:XX"
+            android:textSize="21sp"
+            app:drawableEndCompat="@android:drawable/ic_menu_recent_history" />
+
+        <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/date_edit_picker"
+            android:text="Add a description for your event: "
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:paddingTop="10dp"/>
+
+        <EditText
+            android:id="@+id/description_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/description"
+            android:padding="10dp"
+            android:background="@drawable/edittext_border"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:gravity="start|top"
+            android:textSize="21sp" />
+
+
+        <NumberPicker
+            android:id="@+id/capacity_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_below="@id/description_edit"
+            android:layout_marginTop="1dp"
+            android:gravity="center" />
+
+        <EditText
+            android:id="@+id/capacity_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/capacity_picker"
+            android:hint="Guests allowed"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:textSize="18sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/rectangular_background"
+            android:layout_width="match_parent"
+            android:layout_height="173dp"
             android:layout_below="@id/capacity_edit"
             android:clickable="true"
             android:focusable="true"
-            android:scaleType="centerCrop" />
+            android:backgroundTint="@color/pastel_purple"
+            app:strokeWidth="3dp"
+            app:strokeColor="@color/black">
 
-    </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/poster_click_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click to Select a Poster Image"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"/>
 
-    <Button
-        android:id="@+id/create_event_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rectangular_background"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="Create Event" />
+            <ImageView
+                android:id="@+id/eventPoster_edit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/capacity_edit"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="centerCrop" />
 
-</RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <Button
+            android:id="@+id/create_event_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rectangular_background"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="Create Event" />
+
+    </RelativeLayout>
+
+
+
+</ScrollView>
