@@ -30,7 +30,7 @@ public class AdminBrowseProfilesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_guestlist, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_guestlist_admin, container, false);
         listView = rootView.findViewById(R.id.list_view);
         backButton = rootView.findViewById(R.id.back_button);
         notifyButton = rootView.findViewById(R.id.notify_button);
