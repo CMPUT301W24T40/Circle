@@ -102,6 +102,18 @@
         android:layout_below="@id/announcements_title"
         android:layout_marginTop="8dp" />
 
+    <TextView
+        android:id="@+id/no_announcements_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="There are no announcements at this time"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="16dp"
+        android:textSize="20sp"
+        android:layout_below="@id/announcement_listview"
+        android:layout_marginTop="8dp"/>
+
     <Button
         android:id="@+id/add_announcement_button"
         android:layout_width="wrap_content"
@@ -158,12 +170,6 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="32dp"
         android:text="@string/reuse_qr_code" />
-    <ListView
-        android:id="@+id/announcementListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/guestlist_button"
-        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/guestlist_button"
