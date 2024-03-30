@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -30,7 +31,6 @@ public class CreateEventActivity extends AppCompatActivity {
     EditText eventNameEditText;
     EditText locationEditText;
     EditText descriptionEditText;
-    EditText capacityEditText;
     ImageView eventPoster;
     Button confirmButton;
     FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
@@ -39,6 +39,9 @@ public class CreateEventActivity extends AppCompatActivity {
     // for new date and time picker
     TextView datePicker;
     TextView timePicker;
+
+    // new for capacity
+    NumberPicker capacityPicker;
 
     /**
      * When this Activity is created, a user can input details to create an Event. Details include
@@ -61,13 +64,18 @@ public class CreateEventActivity extends AppCompatActivity {
         eventNameEditText = findViewById(R.id.eventName_edit);
         locationEditText = findViewById(R.id.location_edit);
         descriptionEditText = findViewById(R.id.description_edit);
-        capacityEditText = findViewById(R.id.capacity_edit);
         eventPoster = findViewById(R.id.eventPoster_edit);
         confirmButton = findViewById(R.id.create_event_button);
 
         // new date and time picker
         datePicker = findViewById(R.id.date_edit_picker);
         timePicker = findViewById(R.id.time_edit_picker);
+
+        // new capacity picker
+        capacityPicker = findViewById(R.id.capacity_picker);
+
+        capacityPicker.setMinValue(1);
+        capacityPicker.setMaxValue(10);
 
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +104,10 @@ public class CreateEventActivity extends AppCompatActivity {
             String date = datePicker.getText().toString();
             String time = timePicker.getText().toString();
             String description = descriptionEditText.getText().toString();
-            String capacity = capacityEditText.getText().toString();
+
+            // new capacity
+            String capacity = String.valueOf(capacityPicker.getValue());
+
             String ID = firebaseManager.generateRandomID();
 
             Event event = new Event(ID, eventName, location, date, time, description);
