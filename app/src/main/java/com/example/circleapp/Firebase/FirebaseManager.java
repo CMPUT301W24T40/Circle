@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.SetOptions;
 
 import org.checkerframework.checker.units.qual.N;
 
@@ -594,6 +595,14 @@ public class FirebaseManager {
         announcementDocRef.delete()
                 .addOnSuccessListener(aVoid -> onSuccess.run())
                 .addOnFailureListener(e -> onError.accept(e.getMessage()));
+    }
+
+    public void updateAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
+        FirebaseFirestore.getInstance()
+                .collection("events").document(eventId)
+                .collection("announcements").document(announcement.getAnnouncementID())
+                .set(announcement, SetOptions.merge()) //  merge option to update existing document
+                .addOnCompleteListener(listener);
     }
 
     // Methods for managing admin creation and abilities

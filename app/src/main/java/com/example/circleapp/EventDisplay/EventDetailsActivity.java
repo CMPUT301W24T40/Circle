@@ -82,6 +82,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         assert event != null;
         String eventId = event.getID(); // Use getID() to access the event's ID
 
+        TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
+        listView = findViewById(R.id.announcement_listview);
+
         // Initialize announcements list
         announcementsList = new ArrayList<>();
         // Load announcements from Firebase and then set up the ListView and its adapter
@@ -89,16 +92,20 @@ public class EventDetailsActivity extends AppCompatActivity {
             announcementsList.clear();
             announcementsList.addAll(announcements);
 
-            // Initialize and set the adapter here after loading announcements
-            announcementAdapter = new AnnouncementAdapter(this, announcementsList);
-            listView = findViewById(R.id.announcement_listview);
+            announcementAdapter = new AnnouncementAdapter(EventDetailsActivity.this, announcementsList);
             listView.setAdapter(announcementAdapter);
+
+            // After loading announcements, check if the list is empty
+            if (announcementsList.isEmpty()) {
+                noAnnouncementsTextView.setVisibility(View.VISIBLE);
+                listView.setVisibility(View.GONE);
+            } else {
+                noAnnouncementsTextView.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
+            }
         });
-
-
-        listView = findViewById(R.id.announcement_listview);
+        //updates list immediately after adding announcement (from organizer's view)
         listView.setAdapter(announcementAdapter);
-
 
         // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
@@ -236,13 +243,49 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void showOptionsDialog(Announcement announcement) {
         new AlertDialog.Builder(this)
                 .setTitle("Announcement Options")
-                .setItems(new CharSequence[]{"Delete"}, (dialog, which) -> {
+                .setItems(new CharSequence[]{"Edit","Delete"}, (dialog, which) -> {
                     if (which == 0) {
+                        editAnnouncement(announcement);
+                    } else if (which == 1) {
                         deleteAnnouncement(announcement);
                     }
                 })
                 .show();
     }
+
+    private void editAnnouncement(Announcement announcement) {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_add_announcement);
+        dialog.setCancelable(true);
+
+        EditText announcementEditText = dialog.findViewById(R.id.edit_text_announcement);
+        Button editButton = dialog.findViewById(R.id.button_add_announcement);
+        announcementEditText.setText(announcement.getContent());
+
+        editButton.setOnClickListener(v -> {
+            String updatedText = announcementEditText.getText().toString().trim();
+            if (!updatedText.isEmpty()) {
+                announcement.setContent(updatedText);
+                announcement.setTimestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date())); // Update timestamp
+
+                firebaseManager.updateAnnouncement(event.getID(), announcement, task -> {
+                    if (task.isSuccessful()) {
+
+                        announcementAdapter.notifyDataSetChanged();
+                        Toast.makeText(EventDetailsActivity.this, "Announcement updated successfully", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(EventDetailsActivity.this, "Failed to update announcement", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                });
+            } else {
+                Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+    }
+
     private void deleteAnnouncement(Announcement announcement) {
         firebaseManager.deleteAnnouncement(event.getID(), announcement.getAnnouncementID(), () -> {
             // onSuccess
@@ -270,8 +313,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (!announcementText.isEmpty()) {
                 Announcement announcement = new Announcement();
                 announcement.setContent(announcementText);
-                announcement.setTimestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date()));
-                announcement.setAnnouncementID(firebaseManager.generateRandomID()); // Ensure you have a method to generate unique IDs
+                announcement.setTimestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date()));
+                announcement.setAnnouncementID(firebaseManager.generateRandomID());
 
                 // Use the event's ID to add the announcement to the correct event in Firebase
                 firebaseManager.addAnnouncement(event.getID(), announcement, task -> {
@@ -299,7 +342,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         dialog.show();
 
     }
-
 
     // New method to start GenerateQRActivity with the given qrType
     private void startGenerateQRActivity(String qrType) {
