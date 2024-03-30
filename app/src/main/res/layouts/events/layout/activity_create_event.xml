@@ -124,32 +124,34 @@
             android:inputType="textMultiLine"
             android:ems="10"
             android:gravity="start|top"
-            android:textSize="21sp" />
+            android:textSize="20sp" />
 
 
         <NumberPicker
             android:id="@+id/capacity_picker"
             android:layout_width="wrap_content"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/description_edit"
-            android:layout_marginTop="1dp"
             android:gravity="center" />
 
-        <EditText
-            android:id="@+id/capacity_edit"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/capacity"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/capacity_picker"
-            android:hint="Guests allowed"
-            android:inputType="text"
-            android:minHeight="48dp"
-            android:textSize="18sp" />
+            android:layout_below="@id/description_edit"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="57dp"
+            android:layout_toEndOf="@id/capacity_picker"
+            android:padding="16dp"
+            android:text="Number of Guests Allowed"
+            android:textSize="21sp"
+            android:textStyle="bold" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/rectangular_background"
             android:layout_width="match_parent"
             android:layout_height="173dp"
-            android:layout_below="@id/capacity_edit"
+            android:layout_below="@id/capacity_picker"
             android:clickable="true"
             android:focusable="true"
             android:backgroundTint="@color/pastel_purple"
@@ -169,7 +171,7 @@
                 android:id="@+id/eventPoster_edit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/capacity_edit"
+                android:layout_below="@id/capacity_picker"
                 android:clickable="true"
                 android:focusable="true"
                 android:scaleType="centerCrop" />
