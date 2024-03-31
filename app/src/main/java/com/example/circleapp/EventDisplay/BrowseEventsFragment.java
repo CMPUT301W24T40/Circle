@@ -102,8 +102,7 @@ public class BrowseEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
-        intent.putExtra("source", "BrowseEventsFragment");
+        Intent intent = new Intent(getContext(), BrowseEventsDetailsActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);
     }
