@@ -15,11 +15,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.Firebase.ImageManager;
+import com.example.circleapp.Profile.MakeProfileActivity;
 import com.example.circleapp.R;
 
 import java.util.Calendar;
@@ -110,6 +112,20 @@ public class CreateEventActivity extends AppCompatActivity {
 
             String ID = firebaseManager.generateRandomID();
 
+            if (eventName.isEmpty() ||
+                    location.isEmpty() ||
+                    date.equals("YYYY/MM/DD") ||
+                    time.equals("XX:XX") ||
+                    description.isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateEventActivity.this);
+                builder.setTitle("Wait a minute!")
+                        .setMessage("Please fill in all event details before creating an event.")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return;
+            }
+
             Event event = new Event(ID, eventName, location, date, time, description);
             if (capacity.isEmpty()) { event.setCapacity("-1"); }
             else { event.setCapacity(capacity); }
@@ -182,4 +198,5 @@ public class CreateEventActivity extends AppCompatActivity {
         }, 12, 00, true);
         dialog.show();
     }
+
 }
