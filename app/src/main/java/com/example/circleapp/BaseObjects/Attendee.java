@@ -22,6 +22,7 @@ public class Attendee implements Parcelable {
     private String token; // for notifications
     private Double locationLatitude; // latitude of location of attendee
     private Double locationLongitude; // longitude of location of attendee
+    private int checkInCount; // Number of times the attendee has checked in
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -59,6 +60,7 @@ public class Attendee implements Parcelable {
         phoneNumber = in.readString();
         locationLatitude = in.readDouble();
         locationLongitude = in.readDouble();
+        checkInCount = in.readInt();
 
         // Read the Uri as a String from the Parcel
         String uriString = in.readString();
@@ -178,6 +180,12 @@ public class Attendee implements Parcelable {
         return locationLongitude;
     }
 
+    /**
+     * Gets the number of times the attendee has checked in.
+     *
+     * @return The number of check-ins
+     */
+    public int getCheckInCount() {return checkInCount;}
 
     /**
      * Sets the first name of the attendee.
@@ -267,6 +275,13 @@ public class Attendee implements Parcelable {
         this.locationLongitude = longitude;
     }
 
+    /**
+     * Sets the number of times the attendee has checked in.
+     *
+     * @param checkInCount The new number of check-ins
+     */
+    public void setCheckInCount(int checkInCount) {this.checkInCount = checkInCount;}
+
     // Parcelable methods
 
     @Override
@@ -291,5 +306,6 @@ public class Attendee implements Parcelable {
         dest.writeString(profilePic != null ? profilePic.toString() : null);
         dest.writeDouble(locationLatitude);
         dest.writeDouble(locationLongitude);
+        dest.writeInt(checkInCount);
     }
 }

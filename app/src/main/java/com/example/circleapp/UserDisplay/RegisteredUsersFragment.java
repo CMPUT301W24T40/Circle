@@ -36,7 +36,7 @@ public class RegisteredUsersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_registered_users, container, false);
         listView = view.findViewById(R.id.list_view);
 
-        adapter = new AttendeeAdapter(getContext(), new ArrayList<>()); // Initialize adapter
+        adapter = new AttendeeAdapter(getContext(), new ArrayList<>(), false); // Initialize adapter
         listView.setAdapter(adapter);
 
         event = getArguments().getParcelable("event");
@@ -48,9 +48,6 @@ public class RegisteredUsersFragment extends Fragment {
             attendeeClicked(attendee);
         });
 
-        // Back button click listener
-        backButton = view.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
 
         attendees = firebaseManager.getRegisteredUserTokens(event.getID());
 

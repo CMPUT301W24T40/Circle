@@ -38,7 +38,7 @@ public class AdminBrowseProfilesFragment extends Fragment {
         notifyButton.setVisibility(View.INVISIBLE);
         mapButton.setVisibility(View.INVISIBLE);
 
-        adapter = new AttendeeAdapter(rootView.getContext(), new ArrayList<>());
+        adapter = new AttendeeAdapter(rootView.getContext(), new ArrayList<>(), false);
         listView.setAdapter(adapter);
 
         loadUsers(); // Load users from Firebase
