@@ -151,6 +151,10 @@ public class FirebaseManager {
         void onCallback(ArrayList<String> urlList);
     }
 
+    public interface CheckInCountCallback {
+        void onCallback(int data);
+    }
+
     // Methods for managing and retrieving user data
 
     /**
@@ -264,6 +268,29 @@ public class FirebaseManager {
         });
 
         return checkedInAttendeesList;
+    }
+    /**
+     * Retrieves check in count for the current event and user from Firestore.
+     *
+     * @param eventID  The ID of the event we want to find the checked-in users for
+     */
+    public void getCheckInCount(String eventID, String userID, final CheckInCountCallback callback) {
+        DocumentReference eventDocRef = eventsRef.document(eventID);
+        CollectionReference checkInsCollection = eventDocRef.collection("checkIns");
+
+        checkInsCollection.whereEqualTo("userID", userID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int count = 0;
+                if (task.getResult() != null) {
+                    count = task.getResult().size();
+                }
+                callback.onCallback(count);
+                Log.d("CheckInCount", "Check-in count for user " + userID + " is " + count);
+
+            } else {
+                Log.d("FirebaseManager", "Error getting check-in count: ", task.getException());
+            }
+        });
     }
 
     /**

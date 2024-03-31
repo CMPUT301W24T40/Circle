@@ -19,6 +19,7 @@ import java.util.ArrayList;
  * Adapter for displaying attendees in a ListView.
  */
 public class AttendeeAdapter extends ArrayAdapter<Attendee> {
+    private final boolean showCheckInCount;
 
     /**
      * Constructor for AttendeeAdapter.
@@ -27,8 +28,9 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
      * @param attendees  The list of attendees
      * @see GuestlistActivity
      */
-    public AttendeeAdapter(Context context, ArrayList<Attendee> attendees) {
+    public AttendeeAdapter(Context context, ArrayList<Attendee> attendees, boolean showCheckInCount) {
         super(context, 0, attendees);
+        this.showCheckInCount = showCheckInCount;
     }
 
     @NonNull
@@ -42,14 +44,19 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
 
         TextView attendeeFirstName = convertView.findViewById(R.id.attendee_fname_title);
         TextView attendeeLastName = convertView.findViewById(R.id.attendee_lname_title);
+        TextView checkInCount = convertView.findViewById(R.id.check_in_count);
 
         if (attendee != null) {
             attendeeFirstName.setText(attendee.getFirstName());
             attendeeLastName.setText(attendee.getLastName());
-            // Set other attendee details if needed
+            if (showCheckInCount) {
+                checkInCount.setText("Checked in " + attendee.getCheckInCount() + " times");
+            } else {
+                checkInCount.setVisibility(View.GONE);
+            }
         }
 
         return convertView;
     }
-
 }
+
