@@ -40,7 +40,7 @@ public class CheckedInUsersFragment extends Fragment {
         listView.setAdapter(adapter);
 
         event = getArguments().getParcelable("event");
-        loadRegisteredUsers(event.getID()); // Load users from Firebase
+        loadCheckedInUsers(event.getID()); // Load users from Firebase
 
         // ListView item click listener
         listView.setOnItemClickListener((parent, view1, position, id) -> {
@@ -83,13 +83,12 @@ public class CheckedInUsersFragment extends Fragment {
         return view;
     }
 
-    private void loadRegisteredUsers(String eventID) {
-        firebaseManager.getRegisteredUsers(users -> {
+    private void loadCheckedInUsers(String eventID) {
+        firebaseManager.getCheckedInAttendees(eventID, users -> {
             adapter.clear();
             adapter.addAll(users);
-        }, eventID);
+        });
     }
-
     private void attendeeClicked(Attendee attendee) {
         Intent intent = new Intent(getContext(), UserDetailsActivity.class);
         intent.putExtra("source", "GuestlistActivity");
