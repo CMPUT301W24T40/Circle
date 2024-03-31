@@ -45,12 +45,15 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         TextView eventName = convertView.findViewById(R.id.event_title);
         TextView eventDescription = convertView.findViewById(R.id.event_description);
-        TextView eventDetails = convertView.findViewById(R.id.details_title);
+        TextView eventDate = convertView.findViewById(R.id.date_display);
+        TextView eventTime = convertView.findViewById(R.id.time_display);
         ImageView eventPoster = convertView.findViewById(R.id.event_poster);
 
         if (event != null) {
             eventName.setText(event.getEventName());
             eventDescription.setText(event.getDescription());
+            eventDate.setText(event.getDate());
+            eventTime.setText(event.getTime());
             // Check if event has a poster URL
             if (event.getEventPosterURL() != null && !event.getEventPosterURL().isEmpty()) {
                 Glide.with(getContext())

@@ -75,7 +75,7 @@ public class CreateEventActivity extends AppCompatActivity {
         capacityPicker = findViewById(R.id.capacity_picker);
 
         capacityPicker.setMinValue(1);
-        capacityPicker.setMaxValue(10);
+        capacityPicker.setMaxValue(1000);
 
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
