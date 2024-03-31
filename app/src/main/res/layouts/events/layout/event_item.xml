@@ -3,53 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="5dp"
+    android:background="@color/pastel_purple">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-
-        <TextView
-            android:id="@+id/event_title"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/event_poster"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Event"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/event_poster"
-            android:layout_width="124dp"
-            android:layout_height="124dp"
-            tools:srcCompat="@tools:sample/avatars" />
+            <TextView
+                android:id="@+id/date_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/event_poster"
+                android:gravity="center|start"
+                android:padding="10dp"
+                android:text="YYYY/MM/DD"
+                android:textSize="15sp"
+                app:drawableLeftCompat="@android:drawable/ic_menu_today" />
 
-        <TextView
-            android:id="@+id/event_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/event_title"
-            android:layout_marginLeft="65dp"
-            android:layout_toRightOf="@id/event_poster"
-            android:text="Event details"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/details_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/event_title"
-            android:layout_marginLeft="2dp"
-            android:layout_toRightOf="@id/event_poster"
-            android:text="Details:"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/time_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/date_display"
+                android:gravity="center|start"
+                android:padding="10dp"
+                android:text="00:00"
+                android:textSize="15sp"
+                app:drawableLeftCompat="@android:drawable/ic_menu_recent_history" />
 
 
-    </RelativeLayout>
+
+            <TextView
+                android:id="@+id/event_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/date_display"
+                android:layout_toEndOf="@id/event_poster"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="0dp"
+                android:text="Event"/>
+
+            <ImageView
+                android:id="@+id/event_poster"
+                android:layout_width="124dp"
+                android:layout_height="124dp"
+                android:padding="5dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/event_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/event_title"
+                android:layout_toRightOf="@id/event_poster"
+                android:text="Event details"
+                android:textSize="15sp"
+                android:paddingStart="10dp"/>
+
+
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>
