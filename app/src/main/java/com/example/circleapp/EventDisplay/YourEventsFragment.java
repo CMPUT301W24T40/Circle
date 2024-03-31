@@ -41,7 +41,7 @@ public class YourEventsFragment extends Fragment {
      *                           saved state as given here
      * @return                   The View for the fragment's UI, or null
      * @see CreatedEventsFragment
-     * @see AttendingEventsFragment
+     * @see RegisteredEventsFragment
      * @see FirebaseManager
      */
     @Nullable
@@ -86,7 +86,7 @@ public class YourEventsFragment extends Fragment {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new AttendingEventsFragment();
+                    return new RegisteredEventsFragment();
                 case 1:
                     return new CreatedEventsFragment();
                 default:

@@ -20,6 +20,9 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to display all existing events in the admin interface (based on data in Firestore).
+ */
 public class AdminBrowseEventsFragment extends Fragment {
     ListView listView;
     Button backButton;
@@ -49,12 +52,11 @@ public class AdminBrowseEventsFragment extends Fragment {
         listView = rootView.findViewById(R.id.list_view);
         backButton = rootView.findViewById(R.id.back_button);
 
-        adapter = new EventAdapter(getContext(), new ArrayList<>()); // Initialize adapter
+        adapter = new EventAdapter(getContext(), new ArrayList<>());
         listView.setAdapter(adapter);
 
-        loadEvents(); // Load events from Firebase
+        loadEvents();
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = (Event) parent.getItemAtPosition(position);
             eventClicked(event);

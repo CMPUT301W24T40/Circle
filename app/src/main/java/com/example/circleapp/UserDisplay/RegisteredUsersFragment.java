@@ -20,8 +20,10 @@ import com.example.circleapp.SendNotificationActivity;
 
 import java.util.ArrayList;
 
+/**
+ * A fragment to display the list of registered users for an event.
+ */
 public class RegisteredUsersFragment extends Fragment {
-    Button backButton;
     ListView listView;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
@@ -30,6 +32,17 @@ public class RegisteredUsersFragment extends Fragment {
     Button notficationButton;
     ArrayList<Attendee> attendees;
 
+    /**
+     * Called to have the fragment instantiate its user interface view. Uses a ListView combined with
+     * an AttendeeAdapter to display the users who have registered for a given event.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return                   Return the View for the fragment's UI, or null.
+     * @see com.example.circleapp.EventDisplay.EventDetailsActivity
+     * @see AttendeeAdapter
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,22 +53,16 @@ public class RegisteredUsersFragment extends Fragment {
         listView.setAdapter(adapter);
 
         event = getArguments().getParcelable("event");
-        loadRegisteredUsers(event.getID()); // Load users from Firebase
+        loadRegisteredUsers(event.getID());
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Attendee attendee = (Attendee) parent.getItemAtPosition(position);
             attendeeClicked(attendee);
         });
 
-
         attendees = firebaseManager.getRegisteredUserTokens(event.getID());
 
-        // for notifications
         notficationButton = view.findViewById(R.id.notify_button);
-        /*
-          Sends user to new activity to write out a notification to send to attendees of event
-         */
         notficationButton.setOnClickListener(v -> {
             ArrayList<String> tokens = new ArrayList<>();
             for (Attendee attendee : attendees) {
@@ -80,6 +87,10 @@ public class RegisteredUsersFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Load registered users for the given event.
+     * @param eventID The ID of the event.
+     */
     private void loadRegisteredUsers(String eventID) {
         firebaseManager.getRegisteredUsers(users -> {
             adapter.clear();
@@ -87,6 +98,10 @@ public class RegisteredUsersFragment extends Fragment {
         }, eventID);
     }
 
+    /**
+     * Handle click on an attendee item.
+     * @param attendee The clicked attendee.
+     */
     private void attendeeClicked(Attendee attendee) {
         Intent intent = new Intent(getContext(), UserDetailsActivity.class);
         intent.putExtra("source", "GuestlistActivity");

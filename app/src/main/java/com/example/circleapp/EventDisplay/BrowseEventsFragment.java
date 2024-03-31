@@ -52,7 +52,6 @@ public class BrowseEventsFragment extends Fragment {
         listView = rootView.findViewById(R.id.list_view);
         addEvent = rootView.findViewById(R.id.add_event_button);
 
-        // Add event button click listener
         addEvent.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             if (exists) {
                 Intent intent = new Intent(rootView.getContext(), CreateEventActivity.class);
@@ -72,12 +71,11 @@ public class BrowseEventsFragment extends Fragment {
             }
         }));
 
-        adapter = new EventAdapter(getContext(), new ArrayList<>()); // Initialize adapter
+        adapter = new EventAdapter(getContext(), new ArrayList<>());
         listView.setAdapter(adapter);
 
-        loadEvents(); // Load events from Firebase
+        loadEvents();
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Event event = (Event) parent.getItemAtPosition(position);
             eventClicked(event);

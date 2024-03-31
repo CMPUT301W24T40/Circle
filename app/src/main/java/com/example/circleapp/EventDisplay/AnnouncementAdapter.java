@@ -15,9 +15,21 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for displaying announcements.
+ */
 public class AnnouncementAdapter extends ArrayAdapter<Announcement> {
 
+    /**
+     * Constructor for AnnouncementAdapter.
+     *
+     * @param context The context
+     * @param announcements  The list of announcements
+     * @see BrowseEventsDetailsActivity
+     * @see EventDetailsActivity
+     */
     public AnnouncementAdapter(Context context, ArrayList<Announcement> announcements){super(context, 0, announcements);}
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -37,6 +49,4 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement> {
 
         return convertView;
     }
-
-
 }

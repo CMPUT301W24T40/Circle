@@ -16,10 +16,11 @@ public class Event implements Parcelable {
     private String time;
     private String description;
     private String capacity;
-    private String eventPosterURL; // Resource ID for the event poster
-    private String checkInID; // Used for reusing QR codes
+    private String eventPosterURL;
+    private String checkInID;
 
     // Constructors
+
     /**
      * Constructs an Event object with specified parameters.
      *
@@ -39,10 +40,16 @@ public class Event implements Parcelable {
         this.description = description;
     }
 
-    // No-argument constructor
+    /**
+     * Constructs an Event object with no parameters.
+     */
     public Event() {}
 
-    // Parcelable constructor
+    /**
+     * Constructs an Event object from a Parcel.
+     *
+     * @param in The Parcel from which to read the Announcement object.
+     */
     protected Event(Parcel in) {
         ID = in.readString();
         eventName = in.readString();
@@ -55,7 +62,9 @@ public class Event implements Parcelable {
         checkInID = in.readString();
     }
 
-    // Parcelable creator
+    /**
+     * Creator constant for Parcelable implementation.
+     */
     public static final Creator<Event> CREATOR = new Creator<Event>() {
         @Override
         public Event createFromParcel(Parcel in) {
@@ -226,6 +235,12 @@ public class Event implements Parcelable {
     public void setCheckInID(String checkInID) {this.checkInID = checkInID;}
 
     // Parcelable methods
+
+    /**
+     * Returns a bitmask indicating the set of special object types contained in this Parcelable instance.
+     *
+     * @return Always returns 0 as this Parcelable object doesn't contain any special object types.
+     */
     @Override
     public int describeContents() {
         return 0;

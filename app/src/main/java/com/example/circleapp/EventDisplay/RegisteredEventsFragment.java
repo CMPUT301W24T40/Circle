@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * This class is used to display a user's registered events.
  */
-public class AttendingEventsFragment extends Fragment {
+public class RegisteredEventsFragment extends Fragment {
     ListView listView;
     EventAdapter adapter;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
@@ -39,7 +39,7 @@ public class AttendingEventsFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_attending_events, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_registered_events, container, false);
 
         listView = rootView.findViewById(R.id.list_view);
 

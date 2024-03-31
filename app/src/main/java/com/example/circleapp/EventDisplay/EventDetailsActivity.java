@@ -34,11 +34,11 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * This class is used to display event details.
+ * This class is used to display details of events the user has registered for or created.
  */
 public class EventDetailsActivity extends AppCompatActivity {
     Event event;
-    FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Button backButton;
     Button generateQRButton;
     Button reuseQRButton;
@@ -58,20 +58,18 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     /**
      * When this Activity is created, a user can view the details of the event they clicked on
-     * (clicked on from either BrowseEventsFragment or YourEventsFragment). Within this page, there
+     * (clicked on from either CreatedEventsFragment or RegisteredEventsFragment). Within this page, there
      * will be a button to generate a QR code that the user can send to other users to share the event
-     * details. If the user clicked on the event from the BrowseEventsFragment, there will also be a
-     * button to register for the event. After confirmation of registration, this event will be added
-     * to the user's registeredEvents sub-collection in Firestore (sub-collection of user document), and
-     * will be displayed on the YourEventsFragment. There is also a back button that will send the user
-     * back to the fragment this activity was launched from.
+     * details. There will also be a list of announcements for the event and a back button that will
+     * send the user back to the fragment this activity was launched from.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      *                           down then this Bundle contains the data it most recently supplied in
      *                           onSaveInstanceState(Bundle)
-     * @see BrowseEventsFragment
-     * @see YourEventsFragment
+     * @see CreatedEventsFragment
+     * @see RegisteredEventsFragment
      * @see GenerateQRActivity
+     * @see AnnouncementAdapter
      */
     @SuppressLint("SetTextI18n")
     @Override
@@ -80,14 +78,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event_details);
         event = getIntent().getParcelableExtra("event");
         assert event != null;
-        String eventId = event.getID(); // Use getID() to access the event's ID
+        String eventId = event.getID();
 
         TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
         listView = findViewById(R.id.announcement_listview);
 
-        // Initialize announcements list
         announcementsList = new ArrayList<>();
-        // Load announcements from Firebase and then set up the ListView and its adapter
         firebaseManager.loadAnnouncements(eventId, announcements -> {
             announcementsList.clear();
             announcementsList.addAll(announcements);
@@ -95,19 +91,18 @@ public class EventDetailsActivity extends AppCompatActivity {
             announcementAdapter = new AnnouncementAdapter(EventDetailsActivity.this, announcementsList);
             listView.setAdapter(announcementAdapter);
 
-            // After loading announcements, check if the list is empty
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
-            } else {
+            }
+            else {
                 noAnnouncementsTextView.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
             }
         });
-        //updates list immediately after adding announcement (from organizer's view)
+
         listView.setAdapter(announcementAdapter);
 
-        // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
         eventLocationTextView = findViewById(R.id.event_details_location);
         eventDateTextView = findViewById(R.id.event_details_date);
@@ -116,7 +111,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventCapacityTextView = findViewById(R.id.event_details_capacity);
         eventPosterImageView = findViewById(R.id.event_details_poster);
 
-        // Set event details
         eventNameTextView.setText(event.getEventName());
         eventLocationTextView.setText(event.getLocation());
         eventDateTextView.setText(event.getDate());
@@ -130,21 +124,14 @@ public class EventDetailsActivity extends AppCompatActivity {
             eventCapacityTextView.setText(event.getCapacity());
         }
 
-
-        // Load event poster image
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
-            Glide.with(this)
-                    .load(eventPosterURL)
-                    .apply(new RequestOptions().placeholder(R.drawable.no_poster))
-                    .into(eventPosterImageView);
-        } else {
-            Glide.with(this)
-                    .load(R.drawable.no_poster)
-                    .into(eventPosterImageView);
+            Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
+        }
+        else {
+            Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
-        // Initialize buttons
         backButton = findViewById(R.id.back_button);
         generateQRButton = findViewById(R.id.generate_qr_button);
         registerButton = findViewById(R.id.register_button);
@@ -172,12 +159,9 @@ public class EventDetailsActivity extends AppCompatActivity {
             addAnnouncementButton.setVisibility(View.VISIBLE);
         }
 
-        // Back button click listener
         backButton.setOnClickListener(v -> finish());
 
-        // Generate QR details button click listener
         generateQRButton.setOnClickListener(v -> {
-            // Create an AlertDialog to ask the user what type of QR code they want to generate
             //TODO: Customize alertdialog box
             new AlertDialog.Builder(this)
                     .setTitle("QR Code Type")
@@ -187,14 +171,12 @@ public class EventDetailsActivity extends AppCompatActivity {
                     .show();
         });
 
-        // Reuse QR button click listener
         reuseQRButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, ReuseQRActivity.class);
             intent.putExtra("event", event);
             startActivity(intent);
         });
 
-        // Register button click listener
         registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
             if (exists) {
@@ -225,34 +207,50 @@ public class EventDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // To allow organizers to modify announcements
         setupAnnouncementInteractionRole();
-
     }
+
+    /**
+     * Sets up interaction for announcements in the event details.
+     * Depending on the source, sets a click listener to show options for a selected announcement.
+     */
     private void setupAnnouncementInteractionRole() {
         String source = getIntent().getStringExtra("source");
 
         if ("CreatedEventsFragment".equals(source)) {
-            // The user is an organizer if they came from CreatedEventsFragment
             listView.setOnItemClickListener((parent, view, position, id) -> {
                 Announcement selectedAnnouncement = announcementsList.get(position);
                 showOptionsDialog(selectedAnnouncement);
             });
         }
     }
+
+    /**
+     * Shows a dialog with options for the given announcement.
+     * Options include editing and deleting the announcement.
+     *
+     * @param announcement The announcement to show options for.
+     */
     private void showOptionsDialog(Announcement announcement) {
         new AlertDialog.Builder(this)
                 .setTitle("Announcement Options")
                 .setItems(new CharSequence[]{"Edit","Delete"}, (dialog, which) -> {
                     if (which == 0) {
                         editAnnouncement(announcement);
-                    } else if (which == 1) {
+                    }
+                    else if (which == 1) {
                         deleteAnnouncement(announcement);
                     }
                 })
                 .show();
     }
 
+    /**
+     * Displays a dialog to edit the content of the announcement.
+     * Updates the announcement on Firebase upon confirmation.
+     *
+     * @param announcement The announcement to be edited.
+     */
     private void editAnnouncement(Announcement announcement) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_announcement);
@@ -286,17 +284,25 @@ public class EventDetailsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Deletes the specified announcement from Firebase.
+     * Updates the UI accordingly upon successful deletion.
+     *
+     * @param announcement The announcement to be deleted.
+     */
     private void deleteAnnouncement(Announcement announcement) {
         firebaseManager.deleteAnnouncement(event.getID(), announcement.getAnnouncementID(), () -> {
-            // onSuccess
             announcementsList.remove(announcement);
             announcementAdapter.notifyDataSetChanged();
             Toast.makeText(EventDetailsActivity.this, "Announcement deleted successfully", Toast.LENGTH_SHORT).show();
-        }, errorMessage -> {
-            // onError
-            Toast.makeText(EventDetailsActivity.this, "Failed to delete announcement: " + errorMessage, Toast.LENGTH_SHORT).show();
-        });
+        }, errorMessage -> Toast.makeText(EventDetailsActivity.this, "Failed to delete announcement: " + errorMessage, Toast.LENGTH_SHORT).show());
     }
+
+    /**
+     * Displays a dialog to add a new announcement.
+     * Adds the announcement to Firebase upon confirmation.
+     * Sends notification to all attendees upon successful addition.
+     */
     private void showAddAnnouncementDialog() {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_add_announcement);
@@ -304,9 +310,8 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         EditText announcementEditText = dialog.findViewById(R.id.edit_text_announcement);
         Button addButton = dialog.findViewById(R.id.button_add_announcement);
-        // for notifications to see who to send the notif too
-        ArrayList<Attendee> attendees = firebaseManager.getRegisteredUserTokens(event.getID());
 
+        ArrayList<Attendee> attendees = firebaseManager.getRegisteredUserTokens(event.getID());
 
         addButton.setOnClickListener(v -> {
             String announcementText = announcementEditText.getText().toString().trim();
@@ -316,17 +321,18 @@ public class EventDetailsActivity extends AppCompatActivity {
                 announcement.setTimestamp(new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date()));
                 announcement.setAnnouncementID(firebaseManager.generateRandomID());
 
-                // Use the event's ID to add the announcement to the correct event in Firebase
                 firebaseManager.addAnnouncement(event.getID(), announcement, task -> {
                     if (task.isSuccessful()) {
                         announcementsList.add(announcement);
                         announcementAdapter.notifyDataSetChanged();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(EventDetailsActivity.this, "Failed to add announcement", Toast.LENGTH_SHORT).show();
                     }
                     dialog.dismiss();
                 });
-            } else {
+            }
+            else {
                 Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
             }
             for (Attendee attendee : attendees) {
@@ -343,7 +349,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     }
 
-    // New method to start GenerateQRActivity with the given qrType
+    /**
+     * Starts the activity to generate QR code for the event with the specified type.
+     *
+     * @param qrType The type of QR code to generate.
+     */
     private void startGenerateQRActivity(String qrType) {
         Intent intent = new Intent(this, GenerateQRActivity.class);
         intent.putExtra("event", event);

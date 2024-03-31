@@ -22,6 +22,9 @@ import com.example.circleapp.Firebase.FirebaseManager;
 
 import java.util.Objects;
 
+/**
+ * This activity allows the user to input temporary user information.
+ */
 public class TempUserInfoActivity extends AppCompatActivity {
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -66,7 +69,6 @@ public class TempUserInfoActivity extends AppCompatActivity {
         });
 
         confirmButton.setOnClickListener(v -> {
-            // after clicking confirm, gets all the user inputs from EditTexts etc.
             String firstName = firstNameEditText.getText().toString();
             String lastName = lastNameEditText.getText().toString();
             String ID = firebaseManager.getPhoneID();
@@ -90,11 +92,17 @@ public class TempUserInfoActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method to launch an intent to select an image from the device's gallery.
+     */
     public void selectImage(){
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickResultLauncher.launch(intent);
     }
 
+    /**
+     * Activity result launcher for handling image selection result.
+     */
     ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {

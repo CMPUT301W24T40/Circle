@@ -17,24 +17,43 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to display all existing images in the admin interface (based on data in Firestore).
+ */
 public class AdminBrowseImagesFragment extends Fragment {
     ListView listView;
     Button backButton;
     ImageManager imageManager = new ImageManager(getActivity());
     ImageAdapter adapter;
+
+    /**
+     * Called to have the fragment instantiate its user interface view. The fragment uses a ListView
+     * in combination with an instance of the ImageAdapter class to display all images retrieved from
+     * the Firebase Cloud Storage. When admin clicks on an image item, it will prompt the admin to either
+     * delete that image or dismiss the message.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views
+     *                           in the fragment
+     * @param container          If non-null, this is the parent view that the fragment's UI should
+     *                           be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here
+     * @return                   The View for the fragment's UI, or null
+     * @see ImageAdapter
+     * @see ImageManager
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_admin_browse_images, container, false);
         listView = rootView.findViewById(R.id.list_view);
         backButton = rootView.findViewById(R.id.back_button);
 
-        adapter = new ImageAdapter(getContext(), new ArrayList<>()); // Initialize adapter
+        adapter = new ImageAdapter(getContext(), new ArrayList<>());
         listView.setAdapter(adapter);
 
         loadPosters();
         loadPFPs();
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Uri image = (Uri) parent.getItemAtPosition(position);
             imageClicked(image.toString());
@@ -49,7 +68,7 @@ public class AdminBrowseImagesFragment extends Fragment {
     }
 
     /**
-     * Loads images from Firebase Storage and updates the ListView.
+     * Loads posters associated with events from Firebase Storage and updates the ListView.
      */
     private void loadPosters() {
         imageManager.getPosters(images -> {
@@ -58,6 +77,9 @@ public class AdminBrowseImagesFragment extends Fragment {
         });
     }
 
+    /**
+     * Loads profile pictures associated with users from Firebase Storage and updates the ListView.
+     */
     private void loadPFPs() {
         imageManager.getPFPs(images -> adapter.addAll(images));
     }

@@ -54,13 +54,13 @@ public class EventAdapter extends ArrayAdapter<Event> {
             eventDescription.setText(event.getDescription());
             eventDate.setText(event.getDate());
             eventTime.setText(event.getTime());
-            // Check if event has a poster URL
+
             if (event.getEventPosterURL() != null && !event.getEventPosterURL().isEmpty()) {
                 Glide.with(getContext())
                         .load(event.getEventPosterURL())
                         .into(eventPoster);
-            } else {
-                // No poster URL, set placeholder
+            }
+            else {
                 eventPoster.setImageResource(R.drawable.no_poster);
             }
         }

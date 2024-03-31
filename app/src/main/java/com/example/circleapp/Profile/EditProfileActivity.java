@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -43,16 +42,11 @@ public class EditProfileActivity extends AppCompatActivity {
      * User can input changes to their profile details upon this Activity being created.
      * Any confirmed changes to their profile will be applied to the user and profile details
      * will be updated accordingly. User's data will be updated on the Firestore database.
-     * Updated user will be sent back to the fragment (ProfileFragment)
-     * that called the activity.
-     * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
-     * @see ProfileFragment
      *
-     * Current issues: Custom profile picture does not show up in editing screen; still allows selection
-     * of profile picture, but when Activity is initially created, profilePicture imageView is set to a
-     * predefined default drawable resource
+     * @param savedInstanceState If the activity is being re-initialized after
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     * @see ProfileFragment
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,6 +152,13 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles the result of an activity launched for a result.
+     *
+     * @param requestCode The request code passed to startActivityForResult().
+     * @param resultCode  The result code returned by the child activity.
+     * @param data        The data returned by the child activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

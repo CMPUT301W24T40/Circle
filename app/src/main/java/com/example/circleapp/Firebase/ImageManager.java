@@ -14,7 +14,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 
 /**
- * This class is used to manage images with Firebase Storage.
+ * This class is used to manage images with Firebase Cloud Storage.
  */
 public class ImageManager {
     private static final int PICK_IMAGE = 1;
@@ -25,14 +25,24 @@ public class ImageManager {
     private final StorageReference storageRef = storage.getReference();
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
-
     // Constructors
 
-    public ImageManager(Activity activity) {  // Leave this constructor
+    /**
+     * Constructs an ImageManager object with specified activity and null ImageView.
+     *
+     * @param activity The activity associated with the ImageManager.
+     */
+    public ImageManager(Activity activity) {
         this.activity = activity;
         this.imageView = null;
     }
 
+    /**
+     * Constructs an ImageManager object with specified activity and ImageView.
+     *
+     * @param activity The activity associated with the ImageManager.
+     * @param imageView The ImageView for displaying images.
+     */
     public ImageManager(Activity activity, ImageView imageView) {
         this.activity = activity;
         this.imageView = imageView;
@@ -40,12 +50,25 @@ public class ImageManager {
 
     // Callback interfaces
 
+    /**
+     * Interface for asynchronous callback when retrieving images.
+     */
     public interface ImagesCallback {
+        /**
+         * Callback method invoked when images are retrieved.
+         *
+         * @param imagesList The list of image URIs.
+         */
         void onCallback(ArrayList<Uri> imagesList);
     }
 
     // Methods associated with Admin
 
+    /**
+     * Retrieves posters from Firebase Cloud Storage.
+     *
+     * @param callback The callback interface for handling the retrieved images.
+     */
     public void getPosters(ImagesCallback callback) {
         ArrayList<Uri> imagesList = new ArrayList<>();
 
@@ -63,6 +86,11 @@ public class ImageManager {
         });
     }
 
+    /**
+     * Retrieves profile pictures from Firebase Cloud Storage.
+     *
+     * @param callback The callback interface for handling the retrieved images.
+     */
     public void getPFPs(ImagesCallback callback) {
         ArrayList<Uri> imagesList = new ArrayList<>();
 
@@ -80,6 +108,11 @@ public class ImageManager {
         });
     }
 
+    /**
+     * Deletes an image from Firebase Cloud Storage.
+     *
+     * @param imageURL The URL of the image to be deleted.
+     */
     public void deleteImage(String imageURL) {
         StorageReference imageRef = storage.getReferenceFromUrl(imageURL);
         imageRef.delete();
@@ -94,9 +127,18 @@ public class ImageManager {
 
     // Methods to manage image selection and upload
 
+    /**
+     * Checks if an ImageView has an image set.
+     *
+     * @return true if an image is set, false otherwise.
+     */
     public boolean hasImage() {
         return imageView.getDrawable() != null;
     }
+
+    /**
+     * Initiates image selection process.
+     */
 
     public void selectImage() {
         Intent intent = new Intent();
@@ -105,6 +147,11 @@ public class ImageManager {
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
+    /**
+     * Uploads a poster image to Firebase storage.
+     *
+     * @param onSuccessListener Listener for a successful upload.
+     */
     public void uploadPosterImage(OnSuccessListener<String> onSuccessListener) {
         if (imageUri != null) {
             StorageReference eventPosterRef = storageRef.child("event_posters/" + System.currentTimeMillis() + ".jpg");
@@ -117,6 +164,11 @@ public class ImageManager {
         }
     }
 
+    /**
+     * Uploads a profile picture to Firebase storage.
+     *
+     * @param onSuccessListener Listener for a successful upload.
+     */
     public void uploadProfilePictureImage(OnSuccessListener<String> onSuccessListener) {
         if (imageUri != null) {
             StorageReference profilePicRef = storageRef.child("profile_pictures/" + System.currentTimeMillis() + ".jpg");
@@ -129,15 +181,20 @@ public class ImageManager {
         }
     }
 
+    /**
+     * Handles the result of image selection activity.
+     *
+     * @param requestCode The request code.
+     * @param resultCode The result code.
+     * @param data The intent data.
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
-        } else {
-        Toast.makeText(
-                activity.getBaseContext(),
-                "Image Not Selected",
-                Toast.LENGTH_SHORT).show();
+        }
+        else {
+        Toast.makeText(activity.getBaseContext(), "Image Not Selected", Toast.LENGTH_SHORT).show();
         }
     }
 }

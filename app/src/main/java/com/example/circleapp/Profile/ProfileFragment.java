@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -54,11 +53,10 @@ public class ProfileFragment extends Fragment {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
-     * View prompts the user to make a profile with details. When user chooses to make
-     * a profile, MakeProfileActivity is called. The profile details from the activity
-     * are displayed here on the view. Choosing to edit the existing profile
-     * starts the EditProfileActivity class. Any updates to the details will be
-     * displayed on the view.
+     * View prompts the user to make a profile with details. When user chooses to make a profile,
+     * MakeProfileActivity is called. The profile details from the activity are displayed here on
+     * the view. Choosing to edit the existing profile starts the EditProfileActivity class. Any
+     * updates to the details will be displayed on the view.
      *
      * @param inflater          The LayoutInflater object that can be used to inflate
      *                          any views in the fragment,

@@ -7,23 +7,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -32,7 +26,6 @@ import com.google.zxing.integration.android.IntentResult;
  */
 public class ScanQRActivity extends AppCompatActivity {
     FusedLocationProviderClient fusedLocationProviderClient;
-    private SharedPreferences sharedPreferences;
     private boolean locationPermissionGranted;
     Location currentLocation;
     FirebaseManager manager;
@@ -50,12 +43,11 @@ public class ScanQRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_your_events);
 
-        sharedPreferences = getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
         locationPermissionGranted = sharedPreferences.getBoolean("location_permission_granted", false);
 
         initiateScan();
 
-        // This is used to handle the back button
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
@@ -65,7 +57,7 @@ public class ScanQRActivity extends AppCompatActivity {
     }
 
     /**
-     * This starts up the camera for scanning a QR code
+     * This starts up the camera for scanning a QR code.
      */
     private void initiateScan() {
         IntentIntegrator integrator = new IntentIntegrator(this);
@@ -76,7 +68,6 @@ public class ScanQRActivity extends AppCompatActivity {
         integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
     }
-
 
     /**
      * This is used to handle the result of the QR code scan. If the QR code is a check-in code,
@@ -146,7 +137,6 @@ public class ScanQRActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    // If the QR code doesn't have a prefix, assume it's a checkInID
                     String checkInID = result.getContents();
                     manager.getEventByCheckInID(checkInID, event -> {
                         if (event != null) {
@@ -187,21 +177,45 @@ public class ScanQRActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Callback interface for operations with a user's location.
+     */
     public interface LocationCallback {
+        /**
+         * Called when a location result is available.
+         * @param location The retrieved location.
+         */
         void onLocationResult(Location location);
 
+        /**
+         * Called when the location is unavailable.
+         */
         void onLocationUnavailable();
     }
 
+    /**
+     * Handles successful location retrieval by checking in the user to the specified event.
+     *
+     * @param eventID The ID of the event to check in to.
+     */
     private void handleLocationSuccess(String eventID) {
         manager.checkInEvent(eventID, currentLocation);
     }
 
+    /**
+     * Handles situation where location is unavailable by attempting to check in the user to the
+     * specified event with null location.
+     *
+     * @param eventID The ID of the event to check in to.
+     */
     private void handleLocationUnavailable(String eventID) {
         manager.checkInEvent(eventID, null);
     }
 
+    /**
+     * Retrieves the current location asynchronously.
+     * @param callback The callback to be invoked when the location is retrieved or unavailable.
+     */
     private void getCurrentLocation(LocationCallback callback) {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
 
@@ -211,14 +225,11 @@ public class ScanQRActivity extends AppCompatActivity {
         }
 
         fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            callback.onLocationResult(location);
-                        } else {
-                            callback.onLocationUnavailable();
-                        }
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        callback.onLocationResult(location);
+                    } else {
+                        callback.onLocationUnavailable();
                     }
                 });
     }
