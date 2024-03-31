@@ -14,6 +14,9 @@ import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
+/**
+ * This class is used to display details of a user.
+ */
 public class UserDetailsActivity extends AppCompatActivity {
     Attendee user;
     TextView firstName;
@@ -28,15 +31,15 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     /**
      *
-     * When this Activity is created, a user can view the details of the user they clicked on
-     * (clicked on from GuestlistActivity). Within this page, there is a back button that will send
-     * the user back to GuestlistActivity.
+     * When this Activity is created, a user can view the details of the user they clicked on. Within
+     * this page, there is a back button that will send the user back to the previous page.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      *                           down then this Bundle contains the data it most recently supplied in
      *                           onSaveInstanceState(Bundle)
      *
      * @see GuestlistActivity
+     * @see com.example.circleapp.Admin.AdminBrowseUsersFragment
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {

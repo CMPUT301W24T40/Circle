@@ -13,6 +13,9 @@ import com.example.circleapp.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+/**
+ * This class is used to display the registered users for a given event.
+ */
 public class GuestlistActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private TabLayout tabLayout;
@@ -25,11 +28,15 @@ public class GuestlistActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         tabLayout = findViewById(R.id.tab_layout);
 
-        // Retrieve the event object from the intent
         Event event = getIntent().getParcelableExtra("event");
         setupViewPager(event);
     }
 
+    /**
+     * Sets up the ViewPager to display tabbed setup for fragments for registered and checked-in users.
+     *
+     * @param event The Event object for which the guest list is displayed.
+     */
     private void setupViewPager(Event event) {
         FragmentStateAdapter adapter = new FragmentStateAdapter(getSupportFragmentManager(), getLifecycle()) {
             @NonNull

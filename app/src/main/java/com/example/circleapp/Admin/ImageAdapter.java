@@ -16,6 +16,9 @@ import com.example.circleapp.R;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for displaying images in a ListView.
+ */
 public class ImageAdapter extends ArrayAdapter<Uri> {
 
     /**
@@ -23,6 +26,7 @@ public class ImageAdapter extends ArrayAdapter<Uri> {
      *
      * @param context The context
      * @param images  The list of images
+     * @see AdminBrowseImagesFragment
      */
     public ImageAdapter(Context context, ArrayList<Uri> images) {
         super(context, 0, images);
@@ -38,10 +42,7 @@ public class ImageAdapter extends ArrayAdapter<Uri> {
         Uri image = getItem(position);
 
         ImageView imageView = convertView.findViewById(R.id.image_item_view);
-
-        Glide.with(getContext())
-                    .load(image)
-                    .into(imageView);
+        Glide.with(getContext()).load(image).into(imageView);
 
         return convertView;
     }

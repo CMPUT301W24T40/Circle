@@ -20,7 +20,10 @@ import com.example.circleapp.UserDisplay.UserDetailsActivity;
 
 import java.util.ArrayList;
 
-public class AdminBrowseProfilesFragment extends Fragment {
+/**
+ * This class is used to display all existing users in the admin interface (based on data in Firestore).
+ */
+public class AdminBrowseUsersFragment extends Fragment {
     ListView listView;
     Button backButton;
     Button notifyButton;
@@ -28,6 +31,23 @@ public class AdminBrowseProfilesFragment extends Fragment {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
 
+    /**
+     * Called to have the fragment instantiate its user interface view. The fragment uses a ListView
+     * in combination with an instance of the AttendeeAdapter class to display all users retrieved from
+     * the Firestore database. When admin clicks on a user item, it will prompt the admin to either
+     * delete that user or view their details.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views
+     *                           in the fragment
+     * @param container          If non-null, this is the parent view that the fragment's UI should
+     *                           be attached to
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here
+     * @return                   The View for the fragment's UI, or null
+     * @see UserDetailsActivity
+     * @see AttendeeAdapter
+     * @see FirebaseManager
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_guestlist_admin, container, false);
@@ -41,9 +61,8 @@ public class AdminBrowseProfilesFragment extends Fragment {
         adapter = new AttendeeAdapter(rootView.getContext(), new ArrayList<>(), false);
         listView.setAdapter(adapter);
 
-        loadUsers(); // Load users from Firebase
+        loadUsers();
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Attendee attendee = (Attendee) parent.getItemAtPosition(position);
             attendeeClicked(attendee);

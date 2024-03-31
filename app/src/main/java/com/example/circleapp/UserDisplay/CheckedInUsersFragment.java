@@ -20,8 +20,10 @@ import com.example.circleapp.SendNotificationActivity;
 
 import java.util.ArrayList;
 
+/**
+ * A fragment to display the list of checked-in users for an event.
+ */
 public class CheckedInUsersFragment extends Fragment {
-    Button backButton;
     ListView listView;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
@@ -30,6 +32,17 @@ public class CheckedInUsersFragment extends Fragment {
     Button notficationButton;
     ArrayList<Attendee> attendees;
 
+    /**
+     * Called to have the fragment instantiate its user interface view. Uses a ListView combined with
+     * an AttendeeAdapter to display the users who have checked in for a given event.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return                   Return the View for the fragment's UI, or null.
+     * @see com.example.circleapp.EventDisplay.EventDetailsActivity
+     * @see AttendeeAdapter
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,22 +53,16 @@ public class CheckedInUsersFragment extends Fragment {
         listView.setAdapter(adapter);
 
         event = getArguments().getParcelable("event");
-        loadCheckedInUsers(event.getID()); // Load users from Firebase
+        loadCheckedInUsers(event.getID());
 
-        // ListView item click listener
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Attendee attendee = (Attendee) parent.getItemAtPosition(position);
             attendeeClicked(attendee);
         });
 
-
         attendees = firebaseManager.getRegisteredUserTokens(event.getID());
 
-        // for notifications
         notficationButton = view.findViewById(R.id.notify_button);
-        /*
-          Sends user to new activity to write out a notification to send to attendees of event
-         */
         notficationButton.setOnClickListener(v -> {
             ArrayList<String> tokens = new ArrayList<>();
             for (Attendee attendee : attendees) {
@@ -80,18 +87,27 @@ public class CheckedInUsersFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Load checked-in users for the given event.
+     * @param eventID The ID of the event.
+     */
     private void loadCheckedInUsers(String eventID) {
         firebaseManager.getCheckedInAttendees(eventID, users -> {
             for (Attendee user : users) {
                 firebaseManager.getCheckInCount(eventID, user.getID(), count -> {
                     user.setCheckInCount(count);
-                    adapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
+                    adapter.notifyDataSetChanged();
                 });
             }
             adapter.clear();
             adapter.addAll(users);
         });
     }
+
+    /**
+     * Handle click on an attendee item.
+     * @param attendee The clicked attendee.
+     */
     private void attendeeClicked(Attendee attendee) {
         Intent intent = new Intent(getContext(), UserDetailsActivity.class);
         intent.putExtra("source", "GuestlistActivity");

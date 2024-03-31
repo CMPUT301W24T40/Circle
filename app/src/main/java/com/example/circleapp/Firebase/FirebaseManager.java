@@ -12,7 +12,6 @@ import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.UserDisplay.CheckedInAttendeesCallback;
-import com.example.circleapp.UserDisplay.MapViewActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,13 +19,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import org.checkerframework.checker.units.qual.N;
-
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,10 +35,10 @@ import java.util.function.Consumer;
  */
 public class FirebaseManager {
     private static FirebaseManager instance;
-    private final CollectionReference usersRef; // A reference to the "users" collection in Firestore
-    private final CollectionReference eventsRef; // A reference to the "events" collection in Firestore
-    private final CollectionReference adminsRef; // A reference to the "events" collection in Firestore
-    private String phoneID;  // A reference to the phone ID of the user currently using the app
+    private final CollectionReference usersRef;
+    private final CollectionReference eventsRef;
+    private final CollectionReference adminsRef;
+    private String phoneID;
     final double NULL_DOUBLE = -999999999;
 
     /**
@@ -147,11 +142,27 @@ public class FirebaseManager {
         void onCallback(Event event);
     }
 
+    /**
+     * Callback interface for Firestore operations with URLs.
+     */
     public interface URLCallback {
+        /**
+         * Callback method to execute with the URL list.
+         *
+         * @param urlList The list of URLS retrieved from Firestore
+         */
         void onCallback(ArrayList<String> urlList);
     }
 
+    /**
+     * Callback interface for Firestore operations with an event's check-in count.
+     */
     public interface CheckInCountCallback {
+        /**
+         * Callback method to execute with the count.
+         *
+         * @param data The # of people checked in for the event, retrieved from Firestore
+         */
         void onCallback(int data);
     }
 
@@ -228,12 +239,12 @@ public class FirebaseManager {
             callback.onCallback(attendeesList);
         });
     }
+
     /**
      * Retrieves registered users tokens for the current event from Firestore.
      *
      * @param eventID  The ID of the event we want to find the registered user tokens for
      */
-
     public ArrayList<Attendee> getRegisteredUserTokens(String eventID) {
         ArrayList<Attendee> attendeesList = new ArrayList<>();
 
@@ -251,7 +262,7 @@ public class FirebaseManager {
      *
      * @param eventID  The ID of the event we want to find the checked-in users for
      */
-    public ArrayList<Attendee> getCheckedInAttendees(String eventID, CheckedInAttendeesCallback callback) {
+    public void getCheckedInAttendees(String eventID, CheckedInAttendeesCallback callback) {
         ArrayList<Attendee> checkedInAttendeesList = new ArrayList<>();
 
         eventsRef.document(eventID).collection("checkedInUsers").get().addOnCompleteListener(task -> {
@@ -261,16 +272,12 @@ public class FirebaseManager {
                     checkedInAttendeesList.add(attendee);
                 }
                 callback.onAttendeesReceived(checkedInAttendeesList);
-            } else {
-                Log.e("Firebase", "Error getting checked-in attendees", task.getException());
-                callback.onAttendeesReceived(new ArrayList<>());
             }
         });
-
-        return checkedInAttendeesList;
     }
+
     /**
-     * Retrieves check in count for the current event and user from Firestore.
+     * Retrieves check-in count for the current event and user from Firestore.
      *
      * @param eventID  The ID of the event we want to find the checked-in users for
      */
@@ -520,10 +527,9 @@ public class FirebaseManager {
     public void checkInEvent(String eventID, @Nullable Location location){
         DocumentReference eventDocRef = eventsRef.document(eventID);
         DocumentReference userDocRef = usersRef.document(phoneID);
+        DocumentReference checkInsRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("checkIns").document();
         CollectionReference checkedInUsersRef = eventDocRef.collection("checkedInUsers");
         CollectionReference userEventsRef = usersRef.document(phoneID).collection("checkedInEvents");
-        // For tracking number of check-ins
-        DocumentReference checkInsRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("checkIns").document();
 
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -533,7 +539,8 @@ public class FirebaseManager {
                     if (location != null) {
                         attendee.setLocationLatitude(location.getLatitude());
                         attendee.setLocationLongitude(location.getLongitude());
-                    } else {
+                    }
+                    else {
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
@@ -592,6 +599,13 @@ public class FirebaseManager {
 
     // Methods for managing announcements
 
+    /**
+     * Adds an announcement to a specified event.
+     *
+     * @param eventId      The ID of the event to which the announcement will be added.
+     * @param announcement The announcement to be added.
+     * @param listener     Listener to be invoked when the operation is complete.
+     */
     public void addAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
         if (announcement.getAnnouncementID() == null || announcement.getAnnouncementID().isEmpty()) {
             announcement.setAnnouncementID(UUID.randomUUID().toString());
@@ -602,6 +616,13 @@ public class FirebaseManager {
                 .set(announcement)
                 .addOnCompleteListener(listener);
     }
+
+    /**
+     * Loads announcements for a specified event.
+     *
+     * @param eventId  The ID of the event for which announcements will be loaded.
+     * @param listener Listener to be invoked when the operation is successful.
+     */
     public void loadAnnouncements(String eventId, OnSuccessListener<List<Announcement>> listener) {
         FirebaseFirestore.getInstance()
                 .collection("events").document(eventId)
@@ -617,6 +638,14 @@ public class FirebaseManager {
                 });
     }
 
+    /**
+     * Deletes an announcement from a specified event.
+     *
+     * @param eventID       The ID of the event from which the announcement will be deleted.
+     * @param announcementID The ID of the announcement to be deleted.
+     * @param onSuccess     Runnable to be executed when the operation is successful.
+     * @param onError       Consumer to handle errors, accepting an error message.
+     */
     public void deleteAnnouncement(String eventID, String announcementID, Runnable onSuccess, Consumer<String> onError) {
         DocumentReference announcementDocRef = FirebaseFirestore.getInstance().collection("events").document(eventID).collection("announcements").document(announcementID);
         announcementDocRef.delete()
@@ -624,6 +653,13 @@ public class FirebaseManager {
                 .addOnFailureListener(e -> onError.accept(e.getMessage()));
     }
 
+    /**
+     * Updates an existing announcement.
+     *
+     * @param eventId      The ID of the event to which the announcement belongs.
+     * @param announcement The updated announcement object.
+     * @param listener     Listener to be invoked when the operation is complete.
+     */
     public void updateAnnouncement(String eventId, Announcement announcement, OnCompleteListener<Void> listener) {
         FirebaseFirestore.getInstance()
                 .collection("events").document(eventId)
@@ -634,6 +670,11 @@ public class FirebaseManager {
 
     // Methods for managing admin creation and abilities
 
+    /**
+     * Checks if the user is an admin.
+     *
+     * @param callback Callback to be invoked with the result of the check.
+     */
     public void isAdmin(UserDocumentCallback callback) {
         DocumentReference adminDocRef = adminsRef.document(phoneID);
         adminDocRef.get().addOnCompleteListener(task -> {
@@ -645,6 +686,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Grants admin privileges if the provided password matches.
+     *
+     * @param password The password to authenticate admin privilege grant.
+     */
     public void becomeAdmin(String password) {
         String adminPassword = "12345";
         if (password.equals(adminPassword)) {
@@ -652,6 +698,9 @@ public class FirebaseManager {
         }
     }
 
+    /**
+     * Adds a new admin to the system.
+     */
     public void addNewAdmin() {
         deleteUser(phoneID);
 
@@ -661,6 +710,11 @@ public class FirebaseManager {
         adminsRef.document(phoneID).set(data);
     }
 
+    /**
+     * Retrieves URLs of event posters.
+     *
+     * @param callback Callback to be invoked with the list of poster URLs.
+     */
     public void getPosterURLs(URLCallback callback) {
         ArrayList<String> urlList = new ArrayList<>();
 
@@ -673,6 +727,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Retrieves URLs of user profile pictures.
+     *
+     * @param callback Callback to be invoked with the list of profile picture URLs.
+     */
     public void getPFPURLs(URLCallback callback) {
         ArrayList<String> urlList = new ArrayList<>();
 
@@ -685,6 +744,11 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Deletes a user from the system.
+     *
+     * @param ID The ID of the user to be deleted.
+     */
     public void deleteUser(String ID) {
         DocumentReference userDocRef = usersRef.document(ID);
         CollectionReference registeredEventsCollection = userDocRef.collection("registeredEvents");
@@ -724,6 +788,11 @@ public class FirebaseManager {
         userDocRef.delete();
     }
 
+    /**
+     * Deletes an event from the system.
+     *
+     * @param ID The ID of the event to be deleted.
+     */
     public void deleteEvent(String ID) {
         DocumentReference eventDocRef = eventsRef.document(ID);
         CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
@@ -753,6 +822,12 @@ public class FirebaseManager {
         eventDocRef.delete();
     }
 
+    /**
+     * Deletes usage of an image URL either as an event poster URL or a user profile picture URL.
+     *
+     * @param URL         The URL of the image to be deleted.
+     * @param isPosterURL Boolean indicating whether the URL is for an event poster.
+     */
     public void deleteImageUsage(String URL, boolean isPosterURL) {
         if (isPosterURL) {
             eventsRef.get().addOnCompleteListener(task -> {

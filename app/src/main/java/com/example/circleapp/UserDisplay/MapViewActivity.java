@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -22,12 +21,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
+/**
+ * This class displays a map view with markers representing checked-in attendees of an event.
+ */
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback {
     Button backButton;
     GoogleMap attendeeMap;
     Event event;
     FirebaseManager firebaseManager;
     ArrayList<Attendee> checkedInAttendees;
+
+    /**
+     * Called when the activity is starting.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,31 +49,27 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         event = getIntent().getParcelableExtra("event");
-        firebaseManager.getCheckedInAttendees(event.getID(), new CheckedInAttendeesCallback() {
-            @Override
-            public void onAttendeesReceived(ArrayList<Attendee> attendees) {
-                checkedInAttendees = attendees;
-                Log.d("mom_attendees", checkedInAttendees.toString());
+        firebaseManager.getCheckedInAttendees(event.getID(), attendees -> {
+            checkedInAttendees = attendees;
+            Log.d("mom_attendees", checkedInAttendees.toString());
 
-                if (checkedInAttendees.isEmpty()) {
-                    Toast.makeText(MapViewActivity.this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
-                } else {
-                    if (attendeeMap != null) {
-                        populateMap();
-                    }
-                }
+            if (checkedInAttendees.isEmpty()) {
+                Toast.makeText(MapViewActivity.this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
+            }
+            else {
+                if (attendeeMap != null) { populateMap(); }
             }
         });
 
         backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        backButton.setOnClickListener(v -> finish());
     }
 
+    /**
+     * Called when the map is ready to be used.
+     *
+     * @param googleMap The GoogleMap object representing the map.
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         attendeeMap = googleMap;
@@ -72,6 +78,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    /**
+     * Populates the map with markers representing checked-in attendees.
+     */
     private void populateMap() {
         for (Attendee attendee : checkedInAttendees) {
             if (attendee.getLocationLatitude() != null && attendee.getLocationLongitude() != null) {

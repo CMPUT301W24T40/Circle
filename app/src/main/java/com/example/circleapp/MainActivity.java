@@ -5,11 +5,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.Manifest;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -34,13 +32,10 @@ import com.example.circleapp.databinding.ActivityMainBinding;
  */
 public class MainActivity extends AppCompatActivity {
 
-    // the permission launcher called by askNotificationPermission method
-    // if Notification perms are denied, user will NOT receive notifs
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                if (isGranted) {
-                    // can post notifs
-                } else {
+                if (isGranted) {}
+                else {
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle("Alert");
                     alertDialog.setMessage("You will not receive any notifications from this app." +
@@ -53,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private SharedPreferences sharedPreferences;
-    ActivityMainBinding binding; // View binding instance
+    ActivityMainBinding binding;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
@@ -86,12 +81,10 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new AdminHomeFragment());
             }
             else {
-                replaceFragment(new BrowseEventsFragment()); // Start with BrowseEventsFragment
+                replaceFragment(new BrowseEventsFragment());
 
                 binding.bottomNavigationView.setVisibility(View.VISIBLE);
-                // Bottom navigation item selection listener
                 binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-                    // Replace fragment based on the selected item
                     if (item.getItemId() == R.id.your_events_item) {
                         replaceFragment(new YourEventsFragment());
                         return true;
@@ -124,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.frame_layout, fragment);
         fragmentTransaction.commit();
     }
+
     /**
      * This method is used to ask the user if they want to be sent notifications from the app.
      */
@@ -139,16 +133,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks if location permission is granted.
+     *
+     * @return {@code true} if location permission is granted, {@code false} otherwise.
+     */
     private boolean isLocationPermissionGranted()  {
         return sharedPreferences.getBoolean("location_permission_granted", false);
     }
 
+    /**
+     * Requests location permission.
+     */
     private void requestLocationPermission() {
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 LOCATION_PERMISSION_REQUEST_CODE);
     }
 
+    /**
+     * Callback for handling the result of requesting permissions.
+     *
+     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
+     * @param permissions  The requested permissions. Never {@code null}.
+     * @param grantResults The grant results for the corresponding permissions which is either
+     *                     {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
+     *                     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never {@code null}.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -157,6 +168,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets the visibility of the navigation bar.
+     *
+     * @param isVisible {@code true} to make the navigation bar visible, {@code false} to hide it.
+     */
     public void setNavBarVisibility(boolean isVisible) {
         if (isVisible) { binding.bottomNavigationView.setVisibility(View.VISIBLE); }
         else { binding.bottomNavigationView.setVisibility(View.GONE); }

@@ -21,9 +21,12 @@ import com.example.circleapp.TempUserInfoActivity;
 
 import java.util.ArrayList;
 
+/**
+ * This class is used to display event details for events launched from the Browse page.
+ */
 public class BrowseEventsDetailsActivity extends AppCompatActivity {
     Event event;
-    FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Button registerButton;
     TextView eventNameTextView;
     TextView eventLocationTextView;
@@ -36,6 +39,18 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
     private AnnouncementAdapter announcementAdapter;
     private ListView listView;
 
+    /**
+     * When this Activity is created, a user can view the details of the event they clicked on
+     * from the BrowseEventsFragment. Within this page, there will be a list of announcements for the
+     * event. There is also a back button that will send the user back to the fragment this activity
+     * was launched from.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut
+     *                           down then this Bundle contains the data it most recently supplied in
+     *                           onSaveInstanceState(Bundle)
+     * @see BrowseEventsFragment
+     * @see AnnouncementAdapter
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,14 +58,12 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
 
         event = getIntent().getParcelableExtra("event");
         assert event != null;
-        String eventId = event.getID(); // Use getID() to access the event's ID
+        String eventId = event.getID();
 
         TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
         listView = findViewById(R.id.announcement_listview);
 
-        // Initialize announcements list
         announcementsList = new ArrayList<>();
-        // Load announcements from Firebase and then set up the ListView and its adapter
         firebaseManager.loadAnnouncements(eventId, announcements -> {
             announcementsList.clear();
             announcementsList.addAll(announcements);
@@ -58,20 +71,18 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
             announcementAdapter = new AnnouncementAdapter(BrowseEventsDetailsActivity.this, announcementsList);
             listView.setAdapter(announcementAdapter);
 
-            // After loading announcements, check if the list is empty
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
-            } else {
+            }
+            else {
                 noAnnouncementsTextView.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
             }
         });
-        //updates list immediately after adding announcement (from organizer's view)
+
         listView.setAdapter(announcementAdapter);
 
-
-        // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
         eventLocationTextView = findViewById(R.id.event_details_location);
         eventDateTextView = findViewById(R.id.event_details_date);
@@ -80,7 +91,6 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
         eventCapacityTextView = findViewById(R.id.event_details_capacity);
         eventPosterImageView = findViewById(R.id.event_details_poster);
 
-        // Set event details
         eventNameTextView.setText(event.getEventName());
         eventLocationTextView.setText(event.getLocation());
         eventDateTextView.setText(event.getDate());
@@ -94,22 +104,16 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
             eventCapacityTextView.setText(event.getCapacity());
         }
 
-        // Load event poster image
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
-            Glide.with(this)
-                    .load(eventPosterURL)
-                    .apply(new RequestOptions().placeholder(R.drawable.no_poster))
-                    .into(eventPosterImageView);
-        } else {
-            Glide.with(this)
-                    .load(R.drawable.no_poster)
-                    .into(eventPosterImageView);
+            Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
+        }
+        else {
+            Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
         registerButton = findViewById(R.id.register_button);
 
-        // Register button click listener
         registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(BrowseEventsDetailsActivity.this);
             if (exists) {

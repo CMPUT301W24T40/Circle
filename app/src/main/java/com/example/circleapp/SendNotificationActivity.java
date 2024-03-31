@@ -6,11 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.example.circleapp.Profile.MakeProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,25 +49,28 @@ public class SendNotificationActivity extends AppCompatActivity {
         notifBody = findViewById(R.id.notif_body);
         notifTitle = findViewById(R.id.notif_title);
         sendNotifButton = findViewById(R.id.send_notif_button);
-        sendNotifButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (notifBody.getText().toString().isEmpty()) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SendNotificationActivity.this);
-                    builder.setMessage("Please write a message to send to your attendees!")
-                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    return;
-                }
-                sendNotification(notifTitle.getText().toString(), notifBody.getText().toString());
-                finish();
+        sendNotifButton.setOnClickListener(v -> {
+            if (notifBody.getText().toString().isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SendNotificationActivity.this);
+                builder.setMessage("Please write a message to send to your attendees!")
+                        .setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                return;
             }
+            sendNotification(notifTitle.getText().toString(), notifBody.getText().toString());
+            finish();
         });
     }
 
+    /**
+     * Sends an announcement notification to a specified token.
+     *
+     * @param token The token of the device to which the notification will be sent.
+     * @param eName The name of the event for which the announcement is being made.
+     */
     public static void sendAnnouncementNotif(String token, String eName) {
-        Log.d("what token", token.toString());
+        Log.d("what token", token);
         JSONObject jsonNotif = new JSONObject();
         JSONObject wholeObject = new JSONObject();
         try {
@@ -87,14 +87,12 @@ public class SendNotificationActivity extends AppCompatActivity {
     /**
      * This method creates a JSONobject that is the notification message
      * to be sent out to attendees
-     * @param title
-     *          The title of the notification
-     * @param body
-     *          The body of the notification, what's in it
+     * @param title     The title of the notification
+     * @param body      The body of the notification, what's in it
      */
     private void sendNotification(String title, String body) {
         for (String token : tokens) {
-            Log.d("what token", token.toString());
+            Log.d("what token", token);
             JSONObject jsonNotif = new JSONObject();
             JSONObject wholeObject = new JSONObject();
             try {
@@ -111,9 +109,8 @@ public class SendNotificationActivity extends AppCompatActivity {
 
     /**
      * This method calls the API OkhttpClient used to be able to
-     * send the message to the attendee
-     * @param jsonObject
-     *          This is the jsonObject that will be the notification
+     * send the message to the attendee.
+     * @param jsonObject This is the jsonObject that will be the notification
      */
     private static void callApi(JSONObject jsonObject) {
         MediaType JSON = MediaType.get("application/json; charset=utf-8");
@@ -127,15 +124,10 @@ public class SendNotificationActivity extends AppCompatActivity {
                 .build();
         client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-
-            }
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {}
 
             @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-
-            }
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {}
         });
-
     }
 }

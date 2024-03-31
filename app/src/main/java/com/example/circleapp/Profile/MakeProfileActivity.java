@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -35,15 +34,15 @@ public class MakeProfileActivity extends AppCompatActivity {
     ImageManager imageManager;
 
     /**
-     * When this Activity is created, a user can add their details to make
-     * a profile on the app. Details include name, email, phone number, option for
-     * geolocation, and profile pic. After confirmation, user profile is created
-     * and added to Firestore database to keep track of the user. The user is put into
-     * a Bundle and sent back to the fragment (ProfileFragment) that started the activity.
+     * When this Activity is created, a user can add their details to make a profile on the app.
+     * Details include name, email, phone number, geolocation, links, and profile pic. After
+     * confirmation, user profile is created and added to Firestore database to keep track of the user.
+     * The user is put into a Bundle and sent back to the fragment (ProfileFragment) that started the
+     * activity.
      *
      * @param savedInstanceState If the activity is being re-initialized after
-     *     previously being shut down then this Bundle contains the data it most
-     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *                           previously being shut down then this Bundle contains the data it most
+     *                           recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
      * @see ProfileFragment
      */
     @Override
@@ -78,7 +77,6 @@ public class MakeProfileActivity extends AppCompatActivity {
         });
 
         confirmButton.setOnClickListener(v -> {
-            // after clicking confirm, gets all the user inputs from EditTexts etc.
             String firstName = firstNameEditText.getText().toString();
             String lastName = lastNameEditText.getText().toString();
             String phoneNumber = phoneNumberEditText.getText().toString();
@@ -98,7 +96,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
             user.setLocationLatitude(null);
             user.setLocationLongitude(null);
-            // for notifications, getting the token to send it to particular device
+
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
@@ -119,19 +117,24 @@ public class MakeProfileActivity extends AppCompatActivity {
                 finish();
             });
 
-            // Stuffs the Attendee (user) object into a Bundle and then an Intent to be sent back to the fragment
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             Intent intent = new Intent();
             intent.putExtras(bundle);
 
-            // Letting the fragment know it has results or not in this case it ALWAYS will, for now just to test
             setResult(Activity.RESULT_OK, intent);
             finish();
         });
 
     }
 
+    /**
+     * Handles the result of an activity launched for a result.
+     *
+     * @param requestCode The request code passed to startActivityForResult().
+     * @param resultCode  The result code returned by the child activity.
+     * @param data        The data returned by the child activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

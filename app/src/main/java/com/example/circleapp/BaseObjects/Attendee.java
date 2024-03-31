@@ -1,6 +1,5 @@
 package com.example.circleapp.BaseObjects;
 
-import android.location.Location;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,21 +7,21 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 /**
- * This class represents an attendee of an event.
+ * This class represents an attendee object.
  */
 public class Attendee implements Parcelable {
-    private String ID; // Unique identifier for the attendee
-    private String firstName; // First name of the attendee
-    private String lastName; // Last name of the attendee
-    private String email; // Email address of the attendee
-    private String phoneNumber; // Phone number of the attendee
-    private Uri profilePic; // URI to the profile picture of the attendee
+    private String ID;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phoneNumber;
+    private Uri profilePic;
     private String homepage;
-    private boolean hasProfile; // Indicates if the user has a profile or not
-    private String token; // for notifications
-    private Double locationLatitude; // latitude of location of attendee
-    private Double locationLongitude; // longitude of location of attendee
-    private int checkInCount; // Number of times the attendee has checked in
+    private boolean hasProfile;
+    private String token;
+    private Double locationLatitude;
+    private Double locationLongitude;
+    private int checkInCount;
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -45,12 +44,16 @@ public class Attendee implements Parcelable {
         this.homepage = homepage;
     }
 
-    // to avoid proguard error
-    public Attendee() {
-        // ahhhhh
-    }
+    /**
+     * Constructs an Attendee object with no parameters.
+     */
+    public Attendee() {}
 
-    // Parcelable constructor
+    /**
+     * Constructs an Attendee object from a Parcel.
+     *
+     * @param in The Parcel from which to read the Announcement object.
+     */
     protected Attendee(Parcel in) {
         ID = in.readString();
         firstName = in.readString();
@@ -62,13 +65,15 @@ public class Attendee implements Parcelable {
         locationLongitude = in.readDouble();
         checkInCount = in.readInt();
 
-        // Read the Uri as a String from the Parcel
         String uriString = in.readString();
         if (uriString != null) {
             profilePic = Uri.parse(uriString);
         }
     }
 
+    /**
+     * Creator constant for Parcelable implementation.
+     */
     public static final Creator<Attendee> CREATOR = new Creator<Attendee>() {
         @Override
         public Attendee createFromParcel(Parcel in) {
@@ -284,6 +289,11 @@ public class Attendee implements Parcelable {
 
     // Parcelable methods
 
+    /**
+     * Returns a bitmask indicating the set of special object types contained in this Parcelable instance.
+     *
+     * @return Always returns 0 as this Parcelable object doesn't contain any special object types.
+     */
     @Override
     public int describeContents() {
         return 0;
