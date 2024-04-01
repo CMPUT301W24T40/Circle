@@ -854,4 +854,19 @@ public class FirebaseManager {
             });
         }
     }
+
+    // start tracking check-ins for an event
+    public void trackCheckIns(String eventId, Consumer<Integer> onAttendanceCountUpdated) {
+        DocumentReference eventDocRef = eventsRef.document(eventId);
+        eventDocRef.collection("checkedInUsers")
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w("FirebaseManager", "Listen failed.", e);
+                        return;
+                    }
+                    int currentCount = value != null ? value.size() : 0;
+                    onAttendanceCountUpdated.accept(currentCount);
+                });
+    }
+
 }

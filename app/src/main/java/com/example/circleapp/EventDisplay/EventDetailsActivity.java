@@ -56,6 +56,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private AnnouncementAdapter announcementAdapter;
     private ListView listView;
 
+    private TextView currentAttendeesTextView;
+
     /**
      * When this Activity is created, a user can view the details of the event they clicked on
      * (clicked on from either CreatedEventsFragment or RegisteredEventsFragment). Within this page, there
@@ -79,6 +81,18 @@ public class EventDetailsActivity extends AppCompatActivity {
         event = getIntent().getParcelableExtra("event");
         assert event != null;
         String eventId = event.getID();
+
+        currentAttendeesTextView = findViewById(R.id.current_attendees_textview);
+
+        // Determine if the current user is an organizer (For real time attendance)
+        String source = getIntent().getStringExtra("source");
+        if ("CreatedEventsFragment".equals(source)) {
+            // start tracking and showing attendee count
+            FirebaseManager.getInstance().trackCheckIns(eventId, this::updateAttendeeCount);
+        } else {
+            currentAttendeesTextView.setVisibility(View.GONE);
+        }
+
 
         TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
         listView = findViewById(R.id.announcement_listview);
@@ -141,8 +155,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         addAnnouncementButton.setOnClickListener(v -> showAddAnnouncementDialog());
 
         // Set visibility of register, guest list, and QR buttons based on source
-        String source = getIntent().getStringExtra("source");
-
         registerButton.setVisibility(View.GONE);
         if ("BrowseEventsFragment".equals(source)) {
             registerButton.setVisibility(View.VISIBLE);
@@ -359,5 +371,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         intent.putExtra("event", event);
         intent.putExtra("qrType", qrType);
         startActivity(intent);
+    }
+    //For real-time attendance
+    private void updateAttendeeCount(Integer count) {
+        runOnUiThread(() -> currentAttendeesTextView.setText("Current Attendees: " + count));
     }
 }

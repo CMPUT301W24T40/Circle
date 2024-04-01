@@ -82,6 +82,19 @@
             tools:srcCompat="@tools:sample/avatars" />
 
     </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/current_attendees_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/rectangular_background"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-30dp"
+        android:layout_marginEnd="19dp"
+        android:text="Current Attendees: 0"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/announcements_title"
         android:layout_width="wrap_content"
