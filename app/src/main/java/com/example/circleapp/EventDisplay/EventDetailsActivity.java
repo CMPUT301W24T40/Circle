@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,6 +28,7 @@ import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
 import com.example.circleapp.SendNotificationActivity;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,6 +57,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     private ListView listView;
 
     private TextView currentAttendeesTextView;
+
+    public static int previousCount;
 
     /**
      * When this Activity is created, a user can view the details of the event they clicked on
@@ -336,5 +340,17 @@ public class EventDetailsActivity extends AppCompatActivity {
     //For real-time attendance
     private void updateAttendeeCount(Integer count) {
         runOnUiThread(() -> currentAttendeesTextView.setText(count.toString()));
+        if ((count % 10 == 0) && count != previousCount) {
+            FirebaseMessaging.getInstance().getToken()
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.w("tag", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+                        String token = task.getResult();
+                        SendNotificationActivity.sendMilestoneNotif(token, event.getEventName(), count);
+                    });
+        }
+        previousCount = count;
     }
 }
