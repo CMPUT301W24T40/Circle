@@ -39,10 +39,8 @@ import java.util.Locale;
 public class EventDetailsActivity extends AppCompatActivity {
     Event event;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
-    Button backButton;
     Button generateQRButton;
     Button reuseQRButton;
-    Button registerButton;
     Button guestlistButton;
     Button addAnnouncementButton;
     TextView eventNameTextView;
@@ -146,19 +144,11 @@ public class EventDetailsActivity extends AppCompatActivity {
             Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
-        backButton = findViewById(R.id.back_button);
         generateQRButton = findViewById(R.id.generate_qr_button);
-        registerButton = findViewById(R.id.register_button);
         guestlistButton = findViewById(R.id.guestlist_button);
         reuseQRButton = findViewById(R.id.reuse_qr_button);
         addAnnouncementButton = findViewById(R.id.add_announcement_button);
         addAnnouncementButton.setOnClickListener(v -> showAddAnnouncementDialog());
-
-        // Set visibility of register, guest list, and QR buttons based on source
-        registerButton.setVisibility(View.GONE);
-        if ("BrowseEventsFragment".equals(source)) {
-            registerButton.setVisibility(View.VISIBLE);
-        }
 
         guestlistButton.setVisibility(View.GONE);
         generateQRButton.setVisibility(View.GONE);
@@ -171,7 +161,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             addAnnouncementButton.setVisibility(View.VISIBLE);
         }
 
-        backButton.setOnClickListener(v -> finish());
 
         generateQRButton.setOnClickListener(v -> {
             //TODO: Customize alertdialog box
@@ -188,29 +177,6 @@ public class EventDetailsActivity extends AppCompatActivity {
             intent.putExtra("event", event);
             startActivity(intent);
         });
-
-        registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(EventDetailsActivity.this);
-            if (exists) {
-                builder.setTitle("Confirmation");
-                builder.setMessage("Are you sure you want to register?");
-                builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event, this));
-                builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-            else {
-                builder.setTitle("Details needed");
-                builder.setMessage("Before creating an event, we need some details from you");
-                builder.setPositiveButton("Let's go!", (dialog, which) -> {
-                    Intent intent = new Intent(this, TempUserInfoActivity.class);
-                    startActivity(intent);
-                });
-                builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            }
-        }));
 
         guestlistButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, GuestlistActivity.class);

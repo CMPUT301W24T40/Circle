@@ -80,6 +80,9 @@
         <activity
             android:name=".SendNotificationActivity"
             android:exported="false" />
+        <activity
+            android:name=".EventDisplay.AttendingEventsDetailsActivity"
+            android:exported="false"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"
