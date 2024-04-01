@@ -84,6 +84,21 @@ public class SendNotificationActivity extends AppCompatActivity {
         callApi(wholeObject);
     }
 
+    public static void sendMilestoneNotif(String token, String eName, int milestone) {
+        Log.d("what token", token);
+        JSONObject jsonNotif = new JSONObject();
+        JSONObject wholeObject = new JSONObject();
+        try {
+            jsonNotif.put("title", "Milestone!");
+            jsonNotif.put("body", "For: " + eName + ". You've reached " + String.valueOf(milestone) + " checked-in guests. Congratulations!");
+            wholeObject.put("to", token);
+            wholeObject.put("notification", jsonNotif);
+        } catch (JSONException e) {
+            Log.d("log", e.toString());
+        }
+        callApi(wholeObject);
+    }
+
     /**
      * This method creates a JSONobject that is the notification message
      * to be sent out to attendees
