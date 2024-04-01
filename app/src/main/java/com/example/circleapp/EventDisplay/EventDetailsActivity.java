@@ -106,8 +106,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 noAnnouncementsTextView.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
             }
@@ -131,16 +130,14 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         if (event.getCapacity().equalsIgnoreCase("-1")) {
             eventCapacityTextView.setText("Not specified");
-        }
-        else {
+        } else {
             eventCapacityTextView.setText(event.getCapacity());
         }
 
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
             Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
-        }
-        else {
+        } else {
             Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
@@ -212,11 +209,10 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void showOptionsDialog(Announcement announcement) {
         new AlertDialog.Builder(this)
                 .setTitle("Announcement Options")
-                .setItems(new CharSequence[]{"Edit","Delete"}, (dialog, which) -> {
+                .setItems(new CharSequence[]{"Edit", "Delete"}, (dialog, which) -> {
                     if (which == 0) {
                         editAnnouncement(announcement);
-                    }
-                    else if (which == 1) {
+                    } else if (which == 1) {
                         deleteAnnouncement(announcement);
                     }
                 })
@@ -303,14 +299,12 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         announcementsList.add(announcement);
                         announcementAdapter.notifyDataSetChanged();
-                    }
-                    else {
+                    } else {
                         Toast.makeText(EventDetailsActivity.this, "Failed to add announcement", Toast.LENGTH_SHORT).show();
                     }
                     dialog.dismiss();
                 });
-            }
-            else {
+            } else {
                 Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
             }
             for (Attendee attendee : attendees) {
@@ -338,8 +332,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         intent.putExtra("qrType", qrType);
         startActivity(intent);
     }
+
     //For real-time attendance
     private void updateAttendeeCount(Integer count) {
-        runOnUiThread(() -> currentAttendeesTextView.setText("Current Attendees: " + count));
+        runOnUiThread(() -> currentAttendeesTextView.setText(count.toString()));
     }
 }
