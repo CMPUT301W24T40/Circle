@@ -72,8 +72,7 @@ public class RegisteredEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
-        intent.putExtra("source", "AttendingEventsFragment");
+        Intent intent = new Intent(getContext(), AttendingEventsDetailsActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);
     }
