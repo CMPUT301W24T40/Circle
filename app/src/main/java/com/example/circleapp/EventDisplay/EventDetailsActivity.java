@@ -340,7 +340,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     //For real-time attendance
     private void updateAttendeeCount(Integer count) {
         runOnUiThread(() -> currentAttendeesTextView.setText(count.toString()));
-        if ((count % 10 == 0) && count != previousCount) {
+        if ((count % 10 == 0) && count != previousCount && count != 0) {
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
