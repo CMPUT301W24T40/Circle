@@ -308,7 +308,7 @@ public class FirebaseManager {
     public void addNewUser(Attendee user) {
         checkUserExists(exists -> {
             if (exists) {
-                editUser(user);
+                editUser(user, null);
             }
             else {
                 HashMap<String, Object> data = new HashMap<>();
@@ -336,7 +336,7 @@ public class FirebaseManager {
      *
      * @param user The user to edit
      */
-    public void editUser(Attendee user) {
+    public void editUser(Attendee user, @Nullable Runnable onComplete) {
         DocumentReference userDocRef = usersRef.document(phoneID);
 
         userDocRef.get().addOnCompleteListener(task -> {
@@ -361,9 +361,17 @@ public class FirebaseManager {
                         updates.put("locationLongitude", user.getLocationLongitude());
                     }
 
+                    if (onComplete == null) {
+                        userDocRef.update(updates)
+                                .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
+                    } else {
+                        userDocRef.update(updates)
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("Firestore", "Document successfully updated!");
+                                    onComplete.run();
+                                });
+                    }
 
-                    userDocRef.update(updates)
-                            .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
                 }
             }
         });
@@ -580,27 +588,46 @@ public class FirebaseManager {
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
-                    editUser(attendee);
+                    editUser(attendee, () -> {
+                        userDocRef.get().addOnSuccessListener(updatedDocument -> {
+                            checkedInUsersRef.document(phoneID).set(updatedDocument.getData())
+                                    .addOnSuccessListener(aVoid -> {
+                                        performCheckIn(eventDocRef, userEventsRef, checkInsRef, location);
+                                    });
+                        });
+                    });
                 }
             }
         });
+    }
 
-        Map<String, Object> checkIn = new HashMap<>();
-        checkIn.put("userID", phoneID);
-        checkIn.put("timestamp", FieldValue.serverTimestamp());
-        if (location != null) {
-            checkIn.put("locationLatitude", location.getLatitude());
-            checkIn.put("locationLongitude", location.getLongitude());
-        } else {
-            checkIn.put("locationLatitude", null);
-            checkIn.put("locationLongitude", null);
-        }
+    private void performCheckIn(DocumentReference eventDocRef, CollectionReference userEventsRef, DocumentReference checkInsRef, @Nullable Location location) {
+        eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Map<String, Object> eventData = documentSnapshot.getData();
+                if (eventData != null) {
+                    userEventsRef.document(eventDocRef.getId()).set(eventData)
+                            .addOnSuccessListener(aVoid -> {
+                                Map<String, Object> checkInData = new HashMap<>();
+                                checkInData.put("userID", phoneID);
+                                checkInData.put("timestamp", FieldValue.serverTimestamp());
+                                if (location != null) {
+                                    checkInData.put("locationLatitude", location.getLatitude());
+                                    checkInData.put("locationLongitude", location.getLongitude());
+                                } else {
+                                    checkInData.put("locationLatitude", null);
+                                    checkInData.put("locationLongitude", null);
+                                }
 
-        eventDocRef.get().addOnSuccessListener(documentSnapshot -> userEventsRef.document(eventID).set(Objects.requireNonNull(documentSnapshot.getData())));
-        userDocRef.get().addOnSuccessListener(documentSnapshot -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(documentSnapshot.getData())));
-        checkInsRef.set(checkIn)
-                .addOnSuccessListener(aVoid -> Log.d("Check-in", "Check-in successful"))
-                .addOnFailureListener(e -> Log.w("Check-in", "Error checking in", e));
+                                checkInsRef.set(checkInData)
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            Log.d("Check-in", "Check-in successful");
+                                        })
+                                        .addOnFailureListener(e -> Log.w("Check-in", "Error checking in", e));
+                            });
+                }
+            }
+        });
     }
 
     /**

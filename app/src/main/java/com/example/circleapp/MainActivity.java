@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private SharedPreferences sharedPreferences;
     ActivityMainBinding binding;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
@@ -65,14 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        sharedPreferences = getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
-
-        if (!isLocationPermissionGranted()) {
-            requestLocationPermission();
-        }
-
-        Log.d("Permission", String.valueOf(sharedPreferences.getBoolean("location_permission_granted", false)));
 
         firebaseManager.setPhoneID(this);
 
@@ -130,41 +120,6 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
             }
-        }
-    }
-
-    /**
-     * Checks if location permission is granted.
-     *
-     * @return {@code true} if location permission is granted, {@code false} otherwise.
-     */
-    private boolean isLocationPermissionGranted()  {
-        return sharedPreferences.getBoolean("location_permission_granted", false);
-    }
-
-    /**
-     * Requests location permission.
-     */
-    private void requestLocationPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                LOCATION_PERMISSION_REQUEST_CODE);
-    }
-
-    /**
-     * Callback for handling the result of requesting permissions.
-     *
-     * @param requestCode  The request code passed in {@link #requestPermissions(String[], int)}.
-     * @param permissions  The requested permissions. Never {@code null}.
-     * @param grantResults The grant results for the corresponding permissions which is either
-     *                     {@link android.content.pm.PackageManager#PERMISSION_GRANTED}
-     *                     or {@link android.content.pm.PackageManager#PERMISSION_DENIED}. Never {@code null}.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            sharedPreferences.edit().putBoolean("location_permission_granted", true).apply();
         }
     }
 

@@ -132,7 +132,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d("my token", token);
                         user.settoken(token);
                         user.sethasProfile(true);
-                        firebaseManager.editUser(user);
+                        firebaseManager.editUser(user, null);
                     });
 
             imageManager.uploadProfilePictureImage(selectedImage -> {
