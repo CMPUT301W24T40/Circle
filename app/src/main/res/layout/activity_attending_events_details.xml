@@ -148,6 +148,15 @@
             android:layout_below="@id/announcement_listview"
             android:layout_marginTop="8dp"/>
 
+        <Button
+            android:id="@+id/register_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/no_announcements_textview"
+            android:text="@string/register" />
+
 
     </RelativeLayout>
 

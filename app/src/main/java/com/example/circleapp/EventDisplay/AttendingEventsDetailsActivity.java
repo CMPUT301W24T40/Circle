@@ -1,12 +1,14 @@
 package com.example.circleapp.EventDisplay;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -101,5 +103,25 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
                     .load(R.drawable.no_poster)
                     .into(eventPosterImageView);
         }
+
+
+        // Unregister from an event
+        Button unregisterButton = findViewById(R.id.register_button);
+
+        unregisterButton.setText("Unregister");
+        unregisterButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(AttendingEventsDetailsActivity.this);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Are you sure you want to unregister?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                firebaseManager.unregisterEvent(event, this);
+                finish();
+            });
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
     }
 }
+
+

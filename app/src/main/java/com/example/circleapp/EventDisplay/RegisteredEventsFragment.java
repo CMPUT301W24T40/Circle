@@ -57,6 +57,16 @@ public class RegisteredEventsFragment extends Fragment {
     }
 
     /**
+     * Ensure the list of events is updated, when the user returns to the fragment.
+     * Mainly for when a user unregisters from an event.
+     */
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadRegisteredEvents();
+    }
+
+    /**
      * Load registered events.
      */
     private void loadRegisteredEvents() {
