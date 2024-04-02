@@ -74,8 +74,7 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 noAnnouncementsTextView.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
             }
@@ -99,32 +98,49 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
 
         if (event.getCapacity().equalsIgnoreCase("-1")) {
             eventCapacityTextView.setText("Not specified");
-        }
-        else {
+        } else {
             eventCapacityTextView.setText(event.getCapacity());
         }
 
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
             Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
-        }
-        else {
+        } else {
             Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
         registerButton = findViewById(R.id.register_button);
 
+        firebaseManager.isUserRegistered(event.getID(), firebaseManager.getPhoneID(), isRegistered -> {
+            if (isRegistered) {
+                setUnregisterButton();
+            } else {
+                setRegisterButton();
+            }
+        });
+    }
+
+    /**
+     * This method is used to set the register button to the "Register" state. When the user clicks
+     * on this button, they will be prompted to confirm their registration for the event. If they
+     * confirm, they will be registered for the event and the button will change to the "Unregister"
+     * state.
+     */
+    private void setRegisterButton() {
+        registerButton.setText("Register");
         registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(BrowseEventsDetailsActivity.this);
             if (exists) {
                 builder.setTitle("Confirmation");
                 builder.setMessage("Are you sure you want to register?");
-                builder.setPositiveButton("Yes", (dialog, which) -> firebaseManager.registerEvent(event, this));
+                builder.setPositiveButton("Yes", (dialog, which) -> {
+                    firebaseManager.registerEvent(event, this);
+                    setUnregisterButton();
+                });
                 builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
                 AlertDialog dialog = builder.create();
                 dialog.show();
-            }
-            else {
+            } else {
                 builder.setTitle("Details needed");
                 builder.setMessage("Before registering for an event, we need some details from you");
                 builder.setPositiveButton("Let's go!", (dialog, which) -> {
@@ -137,4 +153,28 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
             }
         }));
     }
+
+    /**
+     * This method is used to set the register button to the "Unregister" state. When the user clicks
+     * on this button, they will be prompted to confirm their unregistration for the event. If they
+     * confirm, they will be unregistered for the event and the button will change to the "Register"
+     * state.
+     */
+    private void setUnregisterButton() {
+        registerButton.setText("Unregister");
+        registerButton.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(BrowseEventsDetailsActivity.this);
+            builder.setTitle("Confirmation");
+            builder.setMessage("Are you sure you want to unregister?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                firebaseManager.unregisterEvent(event, this);
+                setRegisterButton();
+            });
+            builder.setNegativeButton("No", (dialog, which) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+    }
 }
+
+

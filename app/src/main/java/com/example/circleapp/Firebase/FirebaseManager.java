@@ -518,6 +518,42 @@ public class FirebaseManager {
             }
         });
     }
+/**
+     * Checks if a user is registered for a specific event.
+     *
+     * @param userID The ID of the user to check registration for.
+     * @param eventID The ID of the event to check registration for.
+     */
+    public void isUserRegistered(String eventID, String userID, UserDocumentCallback callback) {
+        DocumentReference eventDocRef = eventsRef.document(eventID);
+        CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+
+        registeredUsersCollection.document(userID).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                boolean exists = document.exists();
+                callback.onCallback(exists);
+            }
+        });
+    }
+
+    /**
+     * Unregisters a user from a specific event.
+     *
+     * @param context The context of the activity/fragment that is initiating this method.
+     * @param event The event to unregister from
+     */
+    public void unregisterEvent(Event event, Context context) {
+        DocumentReference eventDocRef = eventsRef.document(event.getID());
+        CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+        DocumentReference userEventDocRef = usersRef.document(phoneID).collection("registeredEvents").document(event.getID());
+
+        registeredUsersCollection.document(phoneID).delete()
+                .addOnSuccessListener(aVoid -> userEventDocRef.delete()
+                        .addOnSuccessListener(aVoid2 -> Toast.makeText(context, "You've successfully unregistered from this event!", Toast.LENGTH_LONG).show())
+                        .addOnFailureListener(e -> Toast.makeText(context, "Failed to unregister from this event!", Toast.LENGTH_LONG).show()))
+                .addOnFailureListener(e -> Toast.makeText(context, "Failed to unregister from this event!", Toast.LENGTH_LONG).show());
+    }
 
     /**
      * Checks in a user for a specific event.
