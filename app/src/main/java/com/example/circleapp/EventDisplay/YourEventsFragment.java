@@ -1,14 +1,20 @@
 package com.example.circleapp.EventDisplay;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
@@ -22,7 +28,11 @@ import com.google.android.material.tabs.TabLayoutMediator;
 /**
  * This class is used to display a user's registered events.
  */
-public class YourEventsFragment extends Fragment {
+public class YourEventsFragment extends Fragment implements ActivityCompat.OnRequestPermissionsResultCallback {
+    private SharedPreferences sharedPreferences;
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted ->
+                    sharedPreferences.edit().putBoolean("location_permission_granted", isGranted).apply());
 
     /**
      * Called to have the fragment instantiate its user interface view. The fragment uses a TabLayout
@@ -66,6 +76,12 @@ public class YourEventsFragment extends Fragment {
                     }
                 }).attach();
 
+        sharedPreferences = requireContext().getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
+
+        if (!isLocationPermissionGranted()) {
+            requestLocationPermission();
+        }
+
         // Scan button click listener
         scanButton.setOnClickListener(v -> {
             Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
@@ -73,6 +89,22 @@ public class YourEventsFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /**
+     * Checks if location permission is granted.
+     *
+     * @return {@code true} if location permission is granted, {@code false} otherwise.
+     */
+    private boolean isLocationPermissionGranted() {
+        return sharedPreferences.getBoolean("location_permission_granted", false);
+    }
+
+    /**
+     * Requests location permission.
+     */
+    private void requestLocationPermission() {
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     private static class EventsPagerAdapter extends FragmentStateAdapter {

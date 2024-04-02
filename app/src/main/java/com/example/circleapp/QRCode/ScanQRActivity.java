@@ -7,17 +7,21 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -217,20 +221,25 @@ public class ScanQRActivity extends AppCompatActivity {
      * @param callback The callback to be invoked when the location is retrieved or unavailable.
      */
     private void getCurrentLocation(LocationCallback callback) {
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            callback.onLocationUnavailable();
-            return;
+        if (ContextCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
+        } else {
+                Log.d("location","poo");
+                callback.onLocationUnavailable();
+                return;
         }
 
-        fusedLocationProviderClient.getLastLocation()
-                .addOnSuccessListener(location -> {
-                    if (location != null) {
-                        callback.onLocationResult(location);
-                    } else {
-                        callback.onLocationUnavailable();
-                    }
-                });
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                Log.d("location", String.valueOf(location));
+                if (location != null) {
+                    callback.onLocationResult(location);
+                } else {
+                    callback.onLocationUnavailable();
+                }
+            }
+        });
     }
 }

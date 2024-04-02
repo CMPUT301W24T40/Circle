@@ -83,7 +83,9 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
      */
     private void populateMap() {
         for (Attendee attendee : checkedInAttendees) {
+            Log.d("oo", attendee.getFirstName());
             if (attendee.getLocationLatitude() != null && attendee.getLocationLongitude() != null) {
+                Log.d("valid", attendee.getFirstName());
                 LatLng location = new LatLng(attendee.getLocationLatitude(), attendee.getLocationLongitude());
                 attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
                 attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
