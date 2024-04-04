@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -356,6 +357,10 @@ public class FirebaseManager {
                             && (user.getLocationLongitude() == null)) {
                         updates.put("locationLatitude", null);
                         updates.put("locationLongitude", null);
+                    } else if ((user.getLocationLatitude() == NULL_DOUBLE)
+                            && (user.getLocationLongitude() == NULL_DOUBLE)) {
+                        updates.put("locationLatitude", user.getLocationLatitude());
+                        updates.put("locationLongitude", user.getLocationLongitude());
                     } else {
                         updates.put("locationLatitude", user.getLocationLatitude());
                         updates.put("locationLongitude", user.getLocationLongitude());
@@ -606,10 +611,12 @@ public class FirebaseManager {
                 if (document.exists()) {
                     Attendee attendee = document.toObject(Attendee.class);
                     if (location != null) {
+                        assert attendee != null;
                         attendee.setLocationLatitude(location.getLatitude());
                         attendee.setLocationLongitude(location.getLongitude());
                     }
                     else {
+                        assert attendee != null;
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
