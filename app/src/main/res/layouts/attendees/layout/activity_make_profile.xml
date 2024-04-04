@@ -1,112 +1,138 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/make_my_profile"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".Profile.MakeProfileActivity">
+
+    <TextView
+        android:id="@+id/edit_profile_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="Your Profile"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_profile_text"
+        android:layout_toEndOf="@id/circular_background"
+        android:layout_marginStart="10dp"
+        android:text="First Name"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/fname_edit"
         android:layout_width="216dp"
-        android:layout_height="51dp"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="16dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/first"
+        android:layout_toEndOf="@id/circular_background"
+        android:layout_marginStart="10dp"
         android:layout_marginBottom="28dp"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="@string/first_name"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/lname_edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_profile_text"
-        app:layout_constraintVertical_bias="0.126" />
+        android:hint="ex. John"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/last"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/fname_edit"
+        android:layout_toEndOf="@id/circular_background"
+        android:layout_marginStart="10dp"
+        android:text="Last Name"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/lname_edit"
         android:layout_width="216dp"
-        android:layout_height="51dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_height="48dp"
+        android:layout_below="@id/last"
+        android:layout_toEndOf="@id/circular_background"
+        android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="@string/last_name"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/edit_number"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:hint="ex. Doe"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/telephone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lname_edit"
+        android:layout_marginTop="30dp"
+        android:text="Phone Number"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edit_number"
-        android:layout_width="347dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/telephone"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="@string/phone_number"
+        android:hint="ex. 1234567890"
         android:inputType="phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.29"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circular_background" />
+        android:digits="0123456789"
+        android:maxLength="10"/>
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_number"
+        android:layout_marginTop="20dp"
+        android:text="Email"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edit_email"
-        android:layout_width="347dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/email"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.281"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_number" />
+        android:hint="ex. iseeyou@gmail.com"
+        android:inputType="textEmailAddress" />
+
+    <TextView
+        android:id="@+id/homepage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_email"
+        android:layout_marginTop="20dp"
+        android:text="Homepage"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/edit_homepage"
-        android:layout_width="347dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="28dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@id/homepage"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="Homepage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.281"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_email" />
-
-    <TextView
-        android:id="@+id/edit_profile_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Making a profile"
-        android:textAlignment="center"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.036" />
+        android:hint="ex. myblog.com"
+        android:inputType="textUri"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/circular_background"
         android:layout_width="140dp"
         android:layout_height="140dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="96dp"
+        android:layout_below="@id/edit_profile_text"
         android:backgroundTint="@color/pastel_purple"
+        android:layout_marginTop="10dp"
         app:cardCornerRadius="70dp"
         app:strokeWidth="5dp"
-        app:strokeColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.066"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:strokeColor="@color/black">
 
         <ImageView
             android:id="@+id/edit_pfp"
@@ -120,12 +146,9 @@
         android:id="@+id/confirm_edit_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="161dp"
-        android:layout_marginEnd="162dp"
-        android:layout_marginBottom="64dp"
-        android:text="Confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_below="@id/edit_homepage"
+        android:layout_marginTop="20dp"
+        android:layout_centerInParent="true"
+        android:text="Confirm" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

@@ -28,27 +28,25 @@
 
             <TextView
                 android:id="@+id/attendee_fname_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/profile_picture"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:paddingTop="10dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingBottom="10dp"
-                android:paddingTop="0dp"
                 android:text="First Name"/>
 
             <TextView
                 android:id="@+id/attendee_lname_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/attendee_fname_title"
+                android:layout_below="@id/attendee_fname_title"
+                android:layout_toEndOf="@id/profile_picture"
+                android:paddingStart="10dp"
                 android:text="Last Name"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/check_in_count"
@@ -57,8 +55,7 @@
                 android:layout_below="@id/attendee_lname_title"
                 android:layout_toEndOf="@id/profile_picture"
                 android:textSize="15sp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
+                android:padding="10dp"
                 android:text="Checked in 0 times"/>
 
         </RelativeLayout>

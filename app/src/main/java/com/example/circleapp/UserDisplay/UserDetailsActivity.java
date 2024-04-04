@@ -24,8 +24,6 @@ public class UserDetailsActivity extends AppCompatActivity {
     TextView email;
     TextView phoneNumber;
     TextView homepage;
-    CheckBox geolocation;
-    Button backButton;
     ImageView profilePic;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
@@ -52,9 +50,7 @@ public class UserDetailsActivity extends AppCompatActivity {
         email = findViewById(R.id.email);
         phoneNumber = findViewById(R.id.phone_number);
         homepage = findViewById(R.id.homepage);
-        geolocation = findViewById(R.id.edit_geolocation);
         profilePic = findViewById(R.id.edit_pfp);
-        backButton = findViewById(R.id.back_button);
 
         Log.d("Has profile", " = " + ((user.hasProfile()) ? "true" : "false"));
 
@@ -79,7 +75,5 @@ public class UserDetailsActivity extends AppCompatActivity {
                 }
             }
         });
-
-        backButton.setOnClickListener(v -> finish());
     }
 }

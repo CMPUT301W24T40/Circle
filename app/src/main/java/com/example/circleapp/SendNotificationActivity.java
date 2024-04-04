@@ -75,7 +75,7 @@ public class SendNotificationActivity extends AppCompatActivity {
         JSONObject wholeObject = new JSONObject();
         try {
             jsonNotif.put("title", "Announcement");
-            jsonNotif.put("body", "Posted for: " + eName + ". Check out the event page!");
+            jsonNotif.put("body", "Posted for: " + eName + "- Check out the event page!");
             wholeObject.put("to", token);
             wholeObject.put("notification", jsonNotif);
         } catch (JSONException e) {
@@ -90,7 +90,7 @@ public class SendNotificationActivity extends AppCompatActivity {
         JSONObject wholeObject = new JSONObject();
         try {
             jsonNotif.put("title", "Milestone!");
-            jsonNotif.put("body", "For: " + eName + ". You've reached " + String.valueOf(milestone) + " checked-in guests. Congratulations!");
+            jsonNotif.put("body", "For: " + eName + "- You've reached" + String.valueOf(milestone) + "checked-in guests. Congratulations!");
             wholeObject.put("to", token);
             wholeObject.put("notification", jsonNotif);
         } catch (JSONException e) {
@@ -111,7 +111,7 @@ public class SendNotificationActivity extends AppCompatActivity {
             JSONObject jsonNotif = new JSONObject();
             JSONObject wholeObject = new JSONObject();
             try {
-                jsonNotif.put("title", eventName + ": " + title);
+                jsonNotif.put("title", eventName + "- " + title);
                 jsonNotif.put("body", body);
                 wholeObject.put("to", token);
                 wholeObject.put("notification", jsonNotif);
