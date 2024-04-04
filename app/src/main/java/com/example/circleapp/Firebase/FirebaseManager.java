@@ -364,6 +364,7 @@ public class FirebaseManager {
                     if (onComplete == null) {
                         userDocRef.update(updates)
                                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
+                        updateRegisteredUser(updates);
                     } else {
                         userDocRef.update(updates)
                                 .addOnSuccessListener(aVoid -> {
@@ -371,8 +372,32 @@ public class FirebaseManager {
                                     onComplete.run();
                                 });
                     }
-
                 }
+            }
+        });
+    }
+
+    /**
+     * When a user edits their profile, this function is used to
+     * update their information for the events they're registered in.
+     *
+     * @param updates The updated information passed by editUser()
+     */
+    public void updateRegisteredUser(Map<String, Object> updates) {
+        getRegisteredEvents(eventsList -> {
+            for (Event event : eventsList) {
+                DocumentReference eventDocRef = eventsRef.document(event.getID());
+                CollectionReference registeredUsersCollection = eventDocRef.collection("registeredUsers");
+
+                registeredUsersCollection.get().addOnCompleteListener(task -> {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        if (document.getId().equals(phoneID)) {
+                            DocumentReference userDocRef = registeredUsersCollection.document(phoneID);
+
+                            userDocRef.update(updates);
+                        }
+                    }
+                });
             }
         });
     }
@@ -588,14 +613,8 @@ public class FirebaseManager {
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
-                    editUser(attendee, () -> {
-                        userDocRef.get().addOnSuccessListener(updatedDocument -> {
-                            checkedInUsersRef.document(phoneID).set(updatedDocument.getData())
-                                    .addOnSuccessListener(aVoid -> {
-                                        performCheckIn(eventDocRef, userEventsRef, checkInsRef, location);
-                                    });
-                        });
-                    });
+                    editUser(attendee, () -> userDocRef.get().addOnSuccessListener(updatedDocument -> checkedInUsersRef.document(phoneID).set(updatedDocument.getData())
+                            .addOnSuccessListener(aVoid -> performCheckIn(eventDocRef, userEventsRef, checkInsRef, location))));
                 }
             }
         });
@@ -620,9 +639,7 @@ public class FirebaseManager {
                                 }
 
                                 checkInsRef.set(checkInData)
-                                        .addOnSuccessListener(aVoid1 -> {
-                                            Log.d("Check-in", "Check-in successful");
-                                        })
+                                        .addOnSuccessListener(aVoid1 -> Log.d("Check-in", "Check-in successful"))
                                         .addOnFailureListener(e -> Log.w("Check-in", "Error checking in", e));
                             });
                 }
