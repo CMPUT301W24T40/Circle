@@ -99,10 +99,8 @@ public class ProfileFragment extends Fragment {
                 homepage.setText(sharedPreferences.getString("user_homepage", null));
 
                 String pfpString = sharedPreferences.getString("user_profile_pic", null);
-
                 if (pfpString != null) {
-                    Uri uri = Uri.parse(pfpString);
-                    profilePic.setImageURI(uri);
+                    Glide.with(ProfileFragment.this).load(Uri.parse(pfpString)).apply(RequestOptions.circleCropTransform()).into(profilePic);
                 }
                 else {
                     char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);
@@ -121,6 +119,7 @@ public class ProfileFragment extends Fragment {
                         Bundle bundle = data.getExtras();
                         assert bundle != null;
                         ourUser = bundle.getParcelable("user");
+                        String userPFP = bundle.getString("userPFP", null);
 
                         makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
                         makeProfileLayout.setVisibility(View.INVISIBLE);
@@ -140,9 +139,9 @@ public class ProfileFragment extends Fragment {
                         phoneNumber.setText(ourUser.getPhoneNumber());
                         homepage.setText(ourUser.getHomepage());
 
-                        if (ourUser.getProfilePic() != null) {
-                            Glide.with(ProfileFragment.this).load(ourUser.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                            editor.putString("user_profile_pic", ourUser.getProfilePic().toString());
+                        if (userPFP != null) {
+                            Glide.with(ProfileFragment.this).load(Uri.parse(userPFP)).apply(RequestOptions.circleCropTransform()).into(profilePic);
+                            editor.putString("user_profile_pic", userPFP);
                         }
                         else {
                             char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
