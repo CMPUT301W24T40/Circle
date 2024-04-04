@@ -352,8 +352,8 @@ public class FirebaseManager {
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));
                     updates.put("token", user.getToken());
-                    if ((user.getLocationLatitude() == NULL_DOUBLE || user.getLocationLatitude() == null)
-                            && (user.getLocationLongitude() == NULL_DOUBLE || user.getLocationLongitude() == null)) {
+                    if ((user.getLocationLatitude() == null)
+                            && (user.getLocationLongitude() == null)) {
                         updates.put("locationLatitude", null);
                         updates.put("locationLongitude", null);
                     } else {
