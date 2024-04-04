@@ -234,7 +234,8 @@ public class Attendee implements Parcelable {
      * @param profilePic The new URI to the profile picture
      */
     public void setprofilePic(String profilePic) {
-        this.profilePic = Uri.parse(profilePic);
+        if (profilePic != null) { this.profilePic = Uri.parse(profilePic); }
+        else { this.profilePic = null; }
     }
 
     /**
@@ -314,8 +315,8 @@ public class Attendee implements Parcelable {
         dest.writeString(homepage);
         dest.writeString(phoneNumber);
         dest.writeString(profilePic != null ? profilePic.toString() : null);
-        dest.writeDouble(locationLatitude);
-        dest.writeDouble(locationLongitude);
+        // dest.writeDouble(locationLatitude);
+        // dest.writeDouble(locationLongitude);
         dest.writeInt(checkInCount);
     }
 }
