@@ -32,6 +32,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     ImageView profilePic;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
+    final double NULL_DOUBLE = -999999999;
 
     /**
      * When this Activity is created, a user can add their details to make a profile on the app.
@@ -94,8 +95,8 @@ public class MakeProfileActivity extends AppCompatActivity {
             }
 
             Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
-            user.setLocationLatitude(null);
-            user.setLocationLongitude(null);
+            user.setLocationLatitude(NULL_DOUBLE);
+            user.setLocationLongitude(NULL_DOUBLE);
 
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {

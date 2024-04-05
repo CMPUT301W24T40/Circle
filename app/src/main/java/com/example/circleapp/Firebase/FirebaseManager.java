@@ -353,14 +353,10 @@ public class FirebaseManager {
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", String.valueOf(user.hasProfile()));
                     updates.put("token", user.getToken());
-                    if ((user.getLocationLatitude() == null)
-                            && (user.getLocationLongitude() == null)) {
+                    if ((user.getLocationLatitude() == NULL_DOUBLE)
+                            && (user.getLocationLongitude() == NULL_DOUBLE)) {
                         updates.put("locationLatitude", null);
                         updates.put("locationLongitude", null);
-                    } else if ((user.getLocationLatitude() == NULL_DOUBLE)
-                            && (user.getLocationLongitude() == NULL_DOUBLE)) {
-                        updates.put("locationLatitude", user.getLocationLatitude());
-                        updates.put("locationLongitude", user.getLocationLongitude());
                     } else {
                         updates.put("locationLatitude", user.getLocationLatitude());
                         updates.put("locationLongitude", user.getLocationLongitude());

@@ -39,6 +39,7 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
+    final double NULL_DOUBLE = -999999999;
 
     /**
      * User can input changes to their profile details upon this Activity being created.
@@ -124,6 +125,8 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setphoneNumber(phoneNumber);
             user.setemail(email);
             user.sethomepage(homepage);
+            user.setLocationLatitude(NULL_DOUBLE);
+            user.setLocationLongitude(NULL_DOUBLE);
             FirebaseMessaging.getInstance().getToken()
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
