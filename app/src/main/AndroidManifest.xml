@@ -83,6 +83,9 @@
         <activity
             android:name=".EventDisplay.AttendingEventsDetailsActivity"
             android:exported="false"/>
+        <activity android:name=".EventDisplay.FullScreenImageActivity"
+            android:theme="@style/TranslucentTheme">
+        </activity>
 
         <provider
             android:name="androidx.core.content.FileProvider"

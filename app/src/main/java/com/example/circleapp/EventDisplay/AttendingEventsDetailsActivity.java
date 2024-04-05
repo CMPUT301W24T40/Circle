@@ -1,6 +1,7 @@
 package com.example.circleapp.EventDisplay;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -103,6 +104,12 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
                     .load(R.drawable.no_poster)
                     .into(eventPosterImageView);
         }
+
+        eventPosterImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(AttendingEventsDetailsActivity.this, FullScreenImageActivity.class);
+            intent.putExtra("image_url", event.getEventPosterURL());
+            startActivity(intent);
+        });
 
 
         // Unregister from an event
