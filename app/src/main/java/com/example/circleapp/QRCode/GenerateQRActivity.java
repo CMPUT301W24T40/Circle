@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.circleapp.BaseObjects.Event;
 import com.example.circleapp.R;
@@ -40,6 +42,8 @@ public class GenerateQRActivity extends AppCompatActivity{
         setContentView(R.layout.activity_generate_qr);
 
         ImageView qrImage = findViewById(R.id.qrImage);
+        TextView qrInfo = findViewById(R.id.qr_info);
+
 
         Event event = getIntent().getParcelableExtra("event");
         String qrType = getIntent().getStringExtra("qrType");
@@ -47,6 +51,8 @@ public class GenerateQRActivity extends AppCompatActivity{
         String eventID;
         if (event != null) {
             eventID = event.getID();
+            String qrText = event.getEventName() + ": " + qrType;
+            qrInfo.setText(qrText);
         }
         else {
             eventID = "No event ID";
@@ -55,6 +61,13 @@ public class GenerateQRActivity extends AppCompatActivity{
         qrImage.setImageBitmap(qrBitmap);
 
         Button shareQRbutton = findViewById(R.id.share_QR_button);
+
+        // Check if qrType is "event details"
+        if (qrType != null && qrType.equals("details")) {
+            shareQRbutton.setVisibility(View.VISIBLE);
+        } else {
+            shareQRbutton.setVisibility(View.GONE);
+        }
 
         shareQRbutton.setOnClickListener(v -> shareQRImage(qrBitmap));
 
