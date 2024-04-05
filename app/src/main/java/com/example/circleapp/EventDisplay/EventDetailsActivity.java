@@ -145,6 +145,12 @@ public class EventDetailsActivity extends AppCompatActivity {
             Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
+        eventPosterImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(EventDetailsActivity.this, FullScreenImageActivity.class);
+            intent.putExtra("image_url", event.getEventPosterURL());
+            startActivity(intent);
+        });
+
         generateQRButton = findViewById(R.id.generate_qr_button);
         guestlistButton = findViewById(R.id.guestlist_button);
         reuseQRButton = findViewById(R.id.reuse_qr_button);

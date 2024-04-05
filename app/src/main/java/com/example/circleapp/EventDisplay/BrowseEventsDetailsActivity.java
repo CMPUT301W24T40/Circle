@@ -109,6 +109,12 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
             Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
 
+        eventPosterImageView.setOnClickListener(v -> {
+            Intent intent = new Intent(BrowseEventsDetailsActivity.this, FullScreenImageActivity.class);
+            intent.putExtra("image_url", event.getEventPosterURL());
+            startActivity(intent);
+        });
+
         registerButton = findViewById(R.id.register_button);
 
         firebaseManager.isUserRegistered(event.getID(), firebaseManager.getPhoneID(), isRegistered -> {
