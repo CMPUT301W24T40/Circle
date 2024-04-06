@@ -3,7 +3,6 @@ package com.example.circleapp.QRCode;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -14,12 +13,12 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.circleapp.EventDisplay.EventDetailsActivity;
+import com.example.circleapp.EventDisplay.BrowseEventsDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
+import com.example.circleapp.TempUserInfoActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -28,10 +27,13 @@ import com.google.zxing.integration.android.IntentResult;
  * This is a class used for scanning QR codes.
  */
 public class ScanQRActivity extends AppCompatActivity {
-    FusedLocationProviderClient fusedLocationProviderClient;
+    private static final String CHECK_IN = "check-in";
+    private static final String DETAILS = "details";
+    private static final String LOCATION_PERMISSION = "LocationPermission";
+    private static final String LOCATION_PERMISSION_GRANTED = "location_permission_granted";
+
     private boolean locationPermissionGranted;
-    Location currentLocation;
-    FirebaseManager manager;
+    private FirebaseManager manager;
 
     /**
      * When the Activity is created, the ability to scan QR codes is initiated,
@@ -46,17 +48,11 @@ public class ScanQRActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_your_events);
 
-        SharedPreferences sharedPreferences = getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
-        locationPermissionGranted = sharedPreferences.getBoolean("location_permission_granted", false);
+        locationPermissionGranted = getSharedPreferences(LOCATION_PERMISSION, Context.MODE_PRIVATE)
+                .getBoolean(LOCATION_PERMISSION_GRANTED, false);
 
         initiateScan();
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                finish();
-            }
-        });
+        setupOnBackPressedCallback();
     }
 
     /**
@@ -70,6 +66,15 @@ public class ScanQRActivity extends AppCompatActivity {
         integrator.setBeepEnabled(false);
         integrator.setBarcodeImageEnabled(true);
         integrator.initiateScan();
+    }
+
+    private void setupOnBackPressedCallback() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                finish();
+            }
+        });
     }
 
     /**
@@ -87,159 +92,123 @@ public class ScanQRActivity extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         manager = FirebaseManager.getInstance();
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Try Again", Toast.LENGTH_LONG).show();
-                finish();
-            } else {
-                String[] parts = result.getContents().split("~");
-                if (parts.length == 2) {
-                    String qrType = parts[0];
-                    String eventID = parts[1];
-                    if (qrType.equals("check-in")) {
-                        manager.getEvent(eventID, event -> {
-                            if (event != null) {
-                                manager.checkUserExists(exists -> {
-                                    if (exists) {
-                                        if (locationPermissionGranted) {
-                                            getCurrentLocation(new LocationCallback() {
-                                                @Override
-                                                public void onLocationResult(Location location) {
-                                                    currentLocation = location;
-                                                    handleLocationSuccess(eventID);
-                                                }
 
-                                                @Override
-                                                public void onLocationUnavailable() {
-                                                    Toast.makeText(ScanQRActivity.this, "Location is unavailable", Toast.LENGTH_SHORT).show();
-                                                    handleLocationUnavailable(eventID);
-                                                }
-                                            });
-                                        } else {
-                                            handleLocationUnavailable(eventID);
-                                        }
-                                        Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
-                                    }
-                                    finish();
-                                });
-                            } else {
-                                Toast.makeText(this, "No event found with this check-in ID", Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        });
-                    } else if (qrType.equals("details")) {
-                        manager.getEvent(eventID, event -> {
-                            Intent intent = new Intent(this, EventDetailsActivity.class);
-                            intent.putExtra("event", event);
-                            startActivity(intent);
-                            finish();
-                        });
-                    }
-                } else {
-                    String checkInID = result.getContents();
-                    manager.getEventByCheckInID(checkInID, event -> {
-                        if (event != null) {
-                            manager.checkUserExists(exists -> {
-                                if (exists) {
-                                    if (locationPermissionGranted) {
-                                        getCurrentLocation(new LocationCallback() {
-                                            @Override
-                                            public void onLocationResult(Location location) {
-                                                currentLocation = location;
-                                                handleLocationSuccess(event.getID());
-                                            }
+        if (result == null || result.getContents() == null) {
+            showToastAndFinish("Try Again");
+            return;
+        }
 
-                                            @Override
-                                            public void onLocationUnavailable() {
-                                                Toast.makeText(ScanQRActivity.this, "Location is unavailable", Toast.LENGTH_SHORT).show();
-                                                handleLocationUnavailable(event.getID());
-                                            }
-                                        });
-                                    } else {
-                                        handleLocationUnavailable(event.getID());
-                                    }
-                                    Toast.makeText(this, "Checking in to event: " + event.getEventName(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(this, "User does not exist", Toast.LENGTH_LONG).show();
-                                }
-                                finish();
-                            });
-                        } else {
-                            Toast.makeText(this, "No event found with this check-in ID", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                    });
-                }
-            }
+        handleScanResult(result);
+    }
+
+    private void handleScanResult(IntentResult result) {
+        String[] parts = result.getContents().split("~");
+        String qrType = parts[0];
+        String eventID = parts[1];
+
+        if (CHECK_IN.equals(qrType)) {
+            handleCheckInScan(eventID);
+        } else if (DETAILS.equals(qrType)) {
+            handleDetailsScan(eventID);
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            handleCheckInIDScan(result.getContents());
         }
     }
 
-    /**
-     * Callback interface for operations with a user's location.
-     */
-    public interface LocationCallback {
-        /**
-         * Called when a location result is available.
-         * @param location The retrieved location.
-         */
-        void onLocationResult(Location location);
+    private void handleCheckInScan(String eventID) {
+        manager.getEvent(eventID, event -> {
+            if (event == null) {
+                showToastAndFinish("No event found with this check-in ID");
+                return;
+            }
 
-        /**
-         * Called when the location is unavailable.
-         */
-        void onLocationUnavailable();
+            manager.checkUserExists(exists -> {
+                if (!exists) {
+                    startTempUserInfoActivity();
+                    return;
+                }
+
+                if (locationPermissionGranted) {
+                    getCurrentLocation(eventID);
+                } else {
+                    checkInEventWithUnavailableLocation(eventID);
+                }
+
+                showToastAndFinish("Checking in to event: " + event.getEventName());
+            });
+        });
     }
 
-    /**
-     * Handles successful location retrieval by checking in the user to the specified event.
-     *
-     * @param eventID The ID of the event to check in to.
-     */
-    private void handleLocationSuccess(String eventID) {
-        manager.checkInEvent(eventID, currentLocation);
+    private void handleDetailsScan(String eventID) {
+        manager.getEvent(eventID, event -> {
+            Intent intent = new Intent(this, BrowseEventsDetailsActivity.class);
+            intent.putExtra("event", event);
+            startActivity(intent);
+            finish();
+        });
     }
 
-    /**
-     * Handles situation where location is unavailable by attempting to check in the user to the
-     * specified event with null location.
-     *
-     * @param eventID The ID of the event to check in to.
-     */
-    private void handleLocationUnavailable(String eventID) {
-        manager.checkInEvent(eventID, null);
+    private void handleCheckInIDScan(String checkInID) {
+        manager.getEventByCheckInID(checkInID, event -> {
+            if (event == null) {
+                showToastAndFinish("No event found with this check-in ID");
+                return;
+            }
+
+            manager.checkUserExists(exists -> {
+                if (!exists) {
+                    showToastAndFinish("User does not exist");
+                    return;
+                }
+
+                if (locationPermissionGranted) {
+                    getCurrentLocation(event.getID());
+                } else {
+                    checkInEventWithUnavailableLocation(event.getID());
+                }
+
+                showToastAndFinish("Checking in to event: " + event.getEventName());
+            });
+        });
     }
 
-    /**
-     * Retrieves the current location asynchronously.
-     * @param callback The callback to be invoked when the location is retrieved or unavailable.
-     */
-    private void getCurrentLocation(LocationCallback callback) {
+    private void startTempUserInfoActivity() {
+        Intent intent = new Intent(ScanQRActivity.this, TempUserInfoActivity.class);
+        startActivity(intent);
+        showToastAndFinish("User does not exist");
+    }
+
+    private void getCurrentLocation(String eventID) {
+        FusedLocationProviderClient fusedLocationProviderClient;
         if (ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-        ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
         } else {
-                Log.d("location","poo");
-                callback.onLocationUnavailable();
-                return;
+            Log.d("location","poo");
+            checkInEventWithUnavailableLocation(eventID);
+            return;
         }
 
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                Log.d("location", String.valueOf(location));
-                if (location != null) {
-                    callback.onLocationResult(location);
-                } else {
-                    callback.onLocationUnavailable();
-                }
+        task.addOnSuccessListener(location -> {
+            Log.d("location", String.valueOf(location));
+            if (location != null) {
+                manager.checkInEvent(eventID, location);
+            } else {
+                checkInEventWithUnavailableLocation(eventID);
             }
         });
+    }
+
+    private void checkInEventWithUnavailableLocation(String eventID) {
+        manager.checkInEvent(eventID, null);
+    }
+
+    private void showToastAndFinish(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        finish();
     }
 }
