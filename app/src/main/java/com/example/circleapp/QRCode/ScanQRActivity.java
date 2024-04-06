@@ -7,14 +7,18 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.circleapp.EventDisplay.BrowseEventsDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,6 +33,7 @@ import com.google.zxing.integration.android.IntentResult;
 public class ScanQRActivity extends AppCompatActivity {
     private static final String CHECK_IN = "check-in";
     private static final String DETAILS = "details";
+    private static final String ADMIN = "admin";
     private static final String LOCATION_PERMISSION = "LocationPermission";
     private static final String LOCATION_PERMISSION_GRANTED = "location_permission_granted";
 
@@ -113,6 +118,8 @@ public class ScanQRActivity extends AppCompatActivity {
             handleCheckInScan(eventID);
         } else if (DETAILS.equals(qrType)) {
             handleDetailsScan(eventID);
+        } else if (ADMIN.equals(qrType)) {
+            handleAdminScan();
         } else {
             handleCheckInIDScan(result.getContents());
         }
@@ -172,6 +179,37 @@ public class ScanQRActivity extends AppCompatActivity {
 
                 showToastAndFinish("Checking in to event: " + event.getEventName());
             });
+        });
+    }
+
+    private void handleAdminScan() {
+        runOnUiThread(() -> {
+            View pwordView = getLayoutInflater().inflate(R.layout.admin_password_entry, null);
+            EditText userInput = pwordView.findViewById(R.id.password_entry);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(ScanQRActivity.this);
+            builder.setView(pwordView).setTitle("Ascension");
+            builder.setMessage("To become an admin, enter the secret password:");
+            builder.setPositiveButton("Enter", (dialog, which) -> {
+                String password = userInput.getText().toString();
+                manager.becomeAdmin(password);
+
+                manager.isAdmin(exists -> {
+                    if (exists) {
+                        Intent intent = new Intent(ScanQRActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        showToastAndFinish("Failed to become admin");
+                    }
+                });
+            });
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+                dialog.dismiss();
+                finish();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
     }
 

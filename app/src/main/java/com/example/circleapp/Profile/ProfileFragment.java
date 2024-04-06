@@ -2,7 +2,6 @@ package com.example.circleapp.Profile;
 
 import static android.app.Activity.RESULT_OK;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,15 +18,11 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
-import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
 
 /**
@@ -42,7 +36,6 @@ public class ProfileFragment extends Fragment {
     TextView homepage;
     Button makeProfile;
     Button editProfile;
-    Button becomeAdmin;
     ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
@@ -82,7 +75,6 @@ public class ProfileFragment extends Fragment {
         homepage = view.findViewById(R.id.homepage);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
-        becomeAdmin = view.findViewById(R.id.become_admin_button);
         profilePic = view.findViewById(R.id.edit_pfp);
 
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
@@ -163,32 +155,6 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
             intent.putExtra("user", ourUser);
             launcher.launch(intent);
-        });
-
-        becomeAdmin.setOnClickListener(v -> {
-            View pwordView = inflater.inflate(R.layout.admin_password_entry, container, false);
-            EditText userInput = pwordView.findViewById(R.id.password_entry);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-            builder.setView(pwordView).setTitle("Ascension");
-            builder.setMessage("To become an admin, enter the secret password:");
-            builder.setPositiveButton("Enter", (dialog, which) -> {
-                String password = userInput.getText().toString();
-                firebaseManager.becomeAdmin(password);
-
-                firebaseManager.isAdmin(exists -> {
-                    ((MainActivity) getActivity()).setNavBarVisibility(false);
-
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
-                    fragmentTransaction.commit();
-                });
-            });
-            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-            AlertDialog dialog = builder.create();
-
-            dialog.show();
         });
 
         return view;
