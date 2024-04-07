@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -90,15 +92,7 @@ public class ProfileFragment extends Fragment {
                 email.setText(sharedPreferences.getString("user_email", null));
                 homepage.setText(sharedPreferences.getString("user_homepage", null));
 
-                String pfpString = sharedPreferences.getString("user_profile_pic", null);
-                if (pfpString != null) {
-                    Glide.with(ProfileFragment.this).load(Uri.parse(pfpString)).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                }
-                else {
-                    char firstLetter = firstName.getText().toString().toLowerCase().charAt(0);
-                    int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
-                    profilePic.setImageResource(defaultImageResource);
-                }
+                loadProfileImage();
             }
         });
 
@@ -111,7 +105,6 @@ public class ProfileFragment extends Fragment {
                         Bundle bundle = data.getExtras();
                         assert bundle != null;
                         ourUser = bundle.getParcelable("user");
-                        String userPFP = bundle.getString("userPFP", null);
 
                         makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
                         makeProfileLayout.setVisibility(View.INVISIBLE);
@@ -131,9 +124,10 @@ public class ProfileFragment extends Fragment {
                         phoneNumber.setText(ourUser.getPhoneNumber());
                         homepage.setText(ourUser.getHomepage());
 
+                        Uri userPFP = ourUser.getProfilePic();
                         if (userPFP != null) {
-                            Glide.with(ProfileFragment.this).load(Uri.parse(userPFP)).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                            editor.putString("user_profile_pic", userPFP);
+                            Glide.with(ProfileFragment.this).load(userPFP).into(profilePic);
+                            editor.putString("user_profile_pic", userPFP.toString());
                         }
                         else {
                             char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
@@ -158,5 +152,29 @@ public class ProfileFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        userProfileLayout = view.findViewById(R.id.user_profile_layout);
+        if (userProfileLayout.getVisibility() == View.VISIBLE) {
+            loadProfileImage();
+        }
+    }
+
+    private void loadProfileImage() {
+        if (isAdded() && getActivity() != null) {
+            String pfpString = sharedPreferences.getString("user_profile_pic", null);
+            if (pfpString != null) {
+                Glide.with(ProfileFragment.this).load(Uri.parse(pfpString)).into(profilePic);
+            } else {
+                String userFirstName = sharedPreferences.getString("user_first_name", null);
+                char firstLetter = userFirstName.toLowerCase().charAt(0);
+                int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
+                profilePic.setImageResource(defaultImageResource);
+            }
+        }
     }
 }

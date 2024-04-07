@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -33,6 +34,9 @@ public class MakeProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     final double NULL_DOUBLE = -999999999;
+    Uri selectedImageUri;
+    Attendee user;
+    private static final int PICK_IMAGE = 1;
 
     /**
      * When this Activity is created, a user can add their details to make a profile on the app.
@@ -94,7 +98,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            Attendee user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
+            user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
             user.setLocationLatitude(NULL_DOUBLE);
             user.setLocationLongitude(NULL_DOUBLE);
 
@@ -108,17 +112,19 @@ public class MakeProfileActivity extends AppCompatActivity {
                         Log.d("my token", token);
                         user.settoken(token);
                         user.sethasProfile(true);
-
-                        if (imageManager.hasImage()) {
-                            imageManager.uploadProfilePictureImage(downloadURL -> {
-                                user.setprofilePic(downloadURL);
-                                finishActivity(user, downloadURL);
-                            });
-                        }
-                        else {
-                            finishActivity(user, null);
-                        }
                     });
+
+            if (selectedImageUri != null) {
+                imageManager.uploadProfilePictureImage(selectedImageUri);
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         });
     }
 
@@ -132,26 +138,9 @@ public class MakeProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imageManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Completes the MakeProfileActivity by adding the user to the database
-     * and optionally passing a download URL for a profile picture.
-     *
-     * @param user        The user to be added to the database.
-     * @param downloadURL The download URL of the profile picture (null if no picture was selected).
-     */
-    private void finishActivity(Attendee user, String downloadURL) {
-        firebaseManager.addNewUser(user);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", user);
-        if (downloadURL != null) { bundle.putString("userPFP", downloadURL); }
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
+            user.setprofilePic(String.valueOf(selectedImageUri));
+        }
     }
 }

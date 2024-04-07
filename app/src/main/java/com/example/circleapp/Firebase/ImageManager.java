@@ -3,11 +3,20 @@ package com.example.circleapp.Firebase;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -40,7 +49,7 @@ public class ImageManager {
     /**
      * Constructs an ImageManager object with specified activity and ImageView.
      *
-     * @param activity The activity associated with the ImageManager.
+     * @param activity  The activity associated with the ImageManager.
      * @param imageView The ImageView for displaying images.
      */
     public ImageManager(Activity activity, ImageView imageView) {
@@ -133,13 +142,13 @@ public class ImageManager {
      * @return true if an image is set, false otherwise.
      */
     public boolean hasImage() {
+        Log.d("image", String.valueOf(imageView.getDrawable()));
         return imageView.getDrawable() != null;
     }
 
     /**
      * Initiates image selection process.
      */
-
     public void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -167,17 +176,19 @@ public class ImageManager {
     /**
      * Uploads a profile picture to Firebase storage.
      *
-     * @param onSuccessListener Listener for a successful upload.
+     * @param imageUri uri of image to be uploaded
      */
-    public void uploadProfilePictureImage(OnSuccessListener<String> onSuccessListener) {
+    public void uploadProfilePictureImage(Uri imageUri) {
         if (imageUri != null) {
             StorageReference profilePicRef = storageRef.child("profile_pictures/" + System.currentTimeMillis() + ".jpg");
             profilePicRef.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         String downloadUrl = uri.toString();
                         Log.d("ImageManager", "Image uploaded, download URL: " + downloadUrl);
-                        onSuccessListener.onSuccess(downloadUrl);
-                    }));
+                    }))
+                    .addOnFailureListener(exception -> {
+                        Log.e("ImageManager", "Image Upload Failed", exception);
+                    });
         }
     }
 
@@ -188,13 +199,15 @@ public class ImageManager {
      * @param resultCode The result code.
      * @param data The intent data.
      */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public Uri onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             imageView.setImageURI(imageUri);
+            return imageUri;
         }
         else {
         Toast.makeText(activity.getBaseContext(), "Image Not Selected", Toast.LENGTH_SHORT).show();
+        return null;
         }
     }
 }
