@@ -61,14 +61,18 @@ public class Attendee implements Parcelable {
         email = in.readString();
         homepage = in.readString();
         phoneNumber = in.readString();
-        locationLatitude = in.readDouble();
-        locationLongitude = in.readDouble();
-        checkInCount = in.readInt();
 
         String uriString = in.readString();
         if (uriString != null) {
             profilePic = Uri.parse(uriString);
+        } else {
+            profilePic = null;
         }
+
+        locationLatitude = in.readDouble();
+        locationLongitude = in.readDouble();
+        checkInCount = in.readInt();
+
     }
 
     /**

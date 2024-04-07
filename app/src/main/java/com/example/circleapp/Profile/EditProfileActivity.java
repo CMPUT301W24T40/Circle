@@ -1,5 +1,7 @@
 package com.example.circleapp.Profile;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,7 +42,9 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
+    Uri selectedImageUri;
     final double NULL_DOUBLE = -999999999;
+    private static final int PICK_IMAGE = 1;
 
     /**
      * User can input changes to their profile details upon this Activity being created.
@@ -87,7 +92,7 @@ public class EditProfileActivity extends AppCompatActivity {
             profilePic.setImageResource(defaultImageResource);
         }
         else {
-            Glide.with(this).load(user.getProfilePic()).apply(RequestOptions.circleCropTransform()).into(profilePic);
+            Glide.with(this).load(user.getProfilePic()).into(profilePic);
         }
 
         imageManager = new ImageManager(this, profilePic);
@@ -137,17 +142,19 @@ public class EditProfileActivity extends AppCompatActivity {
                         Log.d("my token", token);
                         user.settoken(token);
                         user.sethasProfile(true);
-
-                        if (imageManager.hasImage()) {
-                            imageManager.uploadProfilePictureImage(downloadURL -> {
-                                user.setprofilePic(downloadURL);
-                                finishActivity(user, downloadURL);
-                            });
-                        }
-                        else {
-                            finishActivity(user, null);
-                        }
                     });
+
+            if (selectedImageUri != null) {
+                imageManager.uploadProfilePictureImage(selectedImageUri);
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("user", user);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         });
     }
 
@@ -161,26 +168,9 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        imageManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Completes the MakeProfileActivity by adding the user to the database
-     * and optionally passing a download URL for a profile picture.
-     *
-     * @param user        The user to be added to the database.
-     * @param downloadURL The download URL of the profile picture (null if no picture was selected).
-     */
-    private void finishActivity(Attendee user, String downloadURL) {
-        firebaseManager.editUser(user, null);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("user", user);
-        if (downloadURL != null) { bundle.putString("userPFP", downloadURL); }
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-
-        setResult(Activity.RESULT_OK, intent);
-        finish();
-    }
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
+            user.setprofilePic(String.valueOf(selectedImageUri));
+        }
+     }
 }
