@@ -148,6 +148,8 @@ public class EditProfileActivity extends AppCompatActivity {
                 imageManager.uploadProfilePictureImage(selectedImageUri);
             }
 
+            firebaseManager.editUser(user, null);
+
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             Intent intent = new Intent();

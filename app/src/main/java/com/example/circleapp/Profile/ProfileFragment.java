@@ -82,7 +82,7 @@ public class ProfileFragment extends Fragment {
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
             if (exists) {
                 makeProfileLayout = view.findViewById(R.id.startup_profile_layout);
-                makeProfileLayout.setVisibility(View.INVISIBLE);
+                makeProfileLayout.setVisibility(View.GONE);
                 userProfileLayout = view.findViewById(R.id.user_profile_layout);
                 userProfileLayout.setVisibility(View.VISIBLE);
 

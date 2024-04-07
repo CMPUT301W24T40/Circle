@@ -118,6 +118,8 @@ public class MakeProfileActivity extends AppCompatActivity {
                 imageManager.uploadProfilePictureImage(selectedImageUri);
             }
 
+            firebaseManager.addNewUser(user);
+
             Bundle bundle = new Bundle();
             bundle.putParcelable("user", user);
             Intent intent = new Intent();
