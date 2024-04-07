@@ -143,17 +143,9 @@
             android:id="@+id/edit_profile_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/become_admin_button"
-            android:layout_marginTop="15dp"
-            android:text="Edit Profile" />
-
-        <Button
-            android:id="@+id/become_admin_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_below="@id/homepage"
             android:layout_marginTop="50dp"
-            android:text="Become an admin" />
+            android:text="Edit Profile" />
 
         <TextView
             android:id="@+id/homepage_title"
