@@ -2,6 +2,12 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="EditProfileActivityTest">
+        <State />
+      </entry>
+      <entry key="EventDetailsActivityTest">
+        <State />
+      </entry>
       <entry key="GuestlistActivityTest">
         <State />
       </entry>
