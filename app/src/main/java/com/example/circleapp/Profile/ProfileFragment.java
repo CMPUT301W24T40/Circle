@@ -18,6 +18,7 @@ import com.example.circleapp.R;
  * This class is used to display the profile of a user.
  */
 public class ProfileFragment extends Fragment {
+    public static boolean ProfileMade;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,13 +44,11 @@ public class ProfileFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
-            if (exists) {
-                navigateToUserProfileFragment();
-            } else {
-                navigateToStartupProfileFragment();
-            }
-        });
+        if (ProfileMade) {
+            navigateToUserProfileFragment();
+        } else {
+            navigateToStartupProfileFragment();
+        }
     }
 
     private void navigateToUserProfileFragment() {
