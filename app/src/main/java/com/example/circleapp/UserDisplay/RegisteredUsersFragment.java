@@ -76,14 +76,6 @@ public class RegisteredUsersFragment extends Fragment {
             startActivity(intent);
         });
 
-        mapButton = view.findViewById(R.id.map_button);
-
-        mapButton.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), MapViewActivity.class);
-            intent.putExtra("event", event);
-            startActivity(intent);
-        });
-
         return view;
     }
 

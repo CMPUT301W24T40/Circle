@@ -46,7 +46,7 @@ public class CheckedInUsersFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_registered_users, container, false);
+        View view = inflater.inflate(R.layout.fragment_checked_in_users, container, false);
         listView = view.findViewById(R.id.list_view);
 
         adapter = new AttendeeAdapter(getContext(), new ArrayList<>(), true);
