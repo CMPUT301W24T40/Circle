@@ -324,8 +324,15 @@ public class FirebaseManager {
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", user.getHasProfile());
                 data.put("token", user.getToken());
-                data.put("locationLatitude", user.getLocationLatitude());
-                data.put("locationLongitude", user.getLocationLongitude());
+
+                if ((user.getLocationLatitude() == NULL_DOUBLE)
+                        && (user.getLocationLongitude() == NULL_DOUBLE)) {
+                    data.put("locationLatitude", null);
+                    data.put("locationLongitude", null);
+                } else {
+                    data.put("locationLatitude", user.getLocationLatitude());
+                    data.put("locationLongitude", user.getLocationLongitude());
+                }
 
                 usersRef.document(phoneID).set(data);
                 usersRef.document(phoneID).collection("registeredEvents");
