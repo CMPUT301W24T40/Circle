@@ -34,6 +34,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     final double NULL_DOUBLE = -999999999;
+    private static final int PICK_PROFILE_IMAGE = 123;
     Uri selectedImageUri;
     Attendee user;
     public static final int PICK_IMAGE = 1;
@@ -77,7 +78,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectImage();
+                        imageManager.selectProfilePicImage();
                         break;
                     case 1:
                         break;
@@ -150,11 +151,16 @@ public class MakeProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
             selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
             if (user != null) {
                 user.setprofilePic(String.valueOf(selectedImageUri));
             }
+
+            getBaseContext().getContentResolver().takePersistableUriPermission(
+                    selectedImageUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+            );
         }
     }
 }

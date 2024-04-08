@@ -74,7 +74,7 @@ public class CreateEventActivity extends AppCompatActivity {
         timePicker.setOnClickListener(v -> openTimeDialog());
 
         imageManager = new ImageManager(this, eventPoster);
-        eventPoster.setOnClickListener(v -> imageManager.selectImage());
+        eventPoster.setOnClickListener(v -> imageManager.selectPosterImage());
 
         confirmButton.setOnClickListener(v -> {
             String eventName = eventNameEditText.getText().toString();
