@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * This class represents an attendee object.
@@ -22,6 +23,8 @@ public class Attendee implements Parcelable {
     private Double locationLatitude;
     private Double locationLongitude;
     private int checkInCount;
+    final double NULL_DOUBLE = -999999999;
+
 
     /**
      * Constructs an Attendee object with specified parameters.
@@ -272,8 +275,12 @@ public class Attendee implements Parcelable {
      *
      * @param latitude The new latitude
      */
-    public void setLocationLatitude(Double latitude) {
-        this.locationLatitude = latitude;
+    public void setLocationLatitude(@Nullable Double latitude) {
+        if (latitude == null) {
+            this.locationLatitude = NULL_DOUBLE;
+        } else {
+            this.locationLatitude = latitude;
+        }
     }
 
     /**
@@ -281,8 +288,12 @@ public class Attendee implements Parcelable {
      *
      * @param longitude The new longitude
      */
-    public void setLocationLongitude(Double longitude) {
-        this.locationLongitude = longitude;
+    public void setLocationLongitude(@Nullable Double longitude) {
+        if (longitude == null) {
+            this.locationLongitude = NULL_DOUBLE;
+        } else {
+            this.locationLongitude = longitude;
+        }
     }
 
     /**

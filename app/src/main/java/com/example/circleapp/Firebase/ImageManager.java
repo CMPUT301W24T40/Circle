@@ -156,7 +156,7 @@ public class ImageManager {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
-        activity.startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+        activity.startActivityForResult(intent, PICK_PROFILE_IMAGE);
     }
 
     /**
