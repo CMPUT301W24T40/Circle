@@ -58,5 +58,6 @@ public class GenerateQRActivityTest {
             onView(withId(R.id.share_QR_button)).perform(click());
 
         }
+
     }
 }

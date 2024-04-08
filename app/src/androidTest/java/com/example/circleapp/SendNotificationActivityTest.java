@@ -54,4 +54,5 @@ public class SendNotificationActivityTest {
         // Verify AlertDialog is displayed
         onView(withText("Please write a message to send to your attendees!")).check(matches(isDisplayed()));
     }
+
 }
