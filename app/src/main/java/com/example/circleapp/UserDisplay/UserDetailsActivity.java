@@ -1,15 +1,12 @@
 package com.example.circleapp.UserDisplay;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
@@ -52,8 +49,6 @@ public class UserDetailsActivity extends AppCompatActivity {
         homepage = findViewById(R.id.homepage);
         profilePic = findViewById(R.id.edit_pfp);
 
-        Log.d("Has profile", " = " + ((user.hasProfile()) ? "true" : "false"));
-
         firebaseManager.checkProfileExists(user.getID(), exists -> {
             if (exists) {
                 firstName.setText(user.getFirstName());
@@ -62,12 +57,21 @@ public class UserDetailsActivity extends AppCompatActivity {
                 email.setText(user.getEmail());
                 homepage.setText(user.getHomepage());
 
-                String pfpString = user.getProfilePic().toString();
-
-                if (user.getProfilePic() != null) {
-                    Uri uri = Uri.parse(pfpString);
-                    profilePic.setImageURI(uri);
+                if (user.getProfilePic() != null) { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
+                else {
+                    char firstLetter = user.getFirstName().toLowerCase().charAt(0);
+                    int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
+                    profilePic.setImageResource(defaultImageResource);
                 }
+            }
+            else {
+                firstName.setText(user.getFirstName());
+                lastName.setText("Unavailable");
+                phoneNumber.setText("Unavailable");
+                email.setText("Unavailable");
+                homepage.setText("Unavailable");
+
+                if (user.getProfilePic() != null) { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
                 else {
                     char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                     int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());

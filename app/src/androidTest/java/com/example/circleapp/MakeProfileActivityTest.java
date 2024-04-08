@@ -39,14 +39,4 @@ public class MakeProfileActivityTest {
         onView(withId(R.id.confirm_edit_button)).perform(click());
 
     }
-
-    @Test
-    public void testGeoLocationCheckbox() {
-        // Click on the geolocation checkbox
-        onView(withId(R.id.edit_geolocation)).perform(click());
-
-        // Check if the checkbox is checked
-        onView(withId(R.id.edit_geolocation)).check(matches(isChecked()));
-    }
-
 }

@@ -2,21 +2,13 @@ package com.example.circleapp.Firebase;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -122,7 +114,7 @@ public class ImageManager {
      *
      * @param imageURL The URL of the image to be deleted.
      */
-    public void deleteImage(String imageURL) {
+    public void deleteImage(String imageURL, Context context) {
         StorageReference imageRef = storage.getReferenceFromUrl(imageURL);
         imageRef.delete();
 
@@ -131,6 +123,9 @@ public class ImageManager {
         }
         else if (imageURL.contains("event_posters")) {
             firebaseManager.deleteImageUsage(imageURL, true);
+        }
+        else if (imageURL.contains("default")) {
+            Toast.makeText(context, "Cannot delete a default image", Toast.LENGTH_SHORT).show();
         }
     }
 

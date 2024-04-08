@@ -20,11 +20,14 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
 
 /**
@@ -38,6 +41,7 @@ public class ProfileFragment extends Fragment {
     TextView homepage;
     Button makeProfile;
     Button editProfile;
+    Button adminView;
     ImageView profilePic;
     RelativeLayout makeProfileLayout;
     RelativeLayout userProfileLayout;
@@ -77,6 +81,7 @@ public class ProfileFragment extends Fragment {
         homepage = view.findViewById(R.id.homepage);
         makeProfile = view.findViewById(R.id.add_profile_details);
         editProfile = view.findViewById(R.id.edit_profile_button);
+        adminView = view.findViewById(R.id.admin_view_button);
         profilePic = view.findViewById(R.id.edit_pfp);
 
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
@@ -149,6 +154,20 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
             intent.putExtra("user", ourUser);
             launcher.launch(intent);
+        });
+
+        firebaseManager.isAdmin(exists -> {
+            if (exists) {
+                adminView.setVisibility(View.VISIBLE);
+                adminView.setOnClickListener(v -> {
+                    ((MainActivity) getActivity()).setNavBarVisibility(false);
+
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
+                    fragmentTransaction.commit();
+                });
+            }
         });
 
         return view;

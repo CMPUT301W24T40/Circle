@@ -27,7 +27,6 @@ import java.util.Objects;
  */
 public class TempUserInfoActivity extends AppCompatActivity {
     EditText firstNameEditText;
-    EditText lastNameEditText;
     Button confirmButton;
     ImageView profilePic;
     Uri selectedImageUri;
@@ -47,7 +46,6 @@ public class TempUserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tempuserinfo);
 
         firstNameEditText = findViewById(R.id.fname_edit);
-        lastNameEditText = findViewById(R.id.lname_edit);
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
 
@@ -70,7 +68,6 @@ public class TempUserInfoActivity extends AppCompatActivity {
 
         confirmButton.setOnClickListener(v -> {
             String firstName = firstNameEditText.getText().toString();
-            String lastName = lastNameEditText.getText().toString();
             String ID = firebaseManager.getPhoneID();
 
             if (firstName.isEmpty()) {
@@ -82,7 +79,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
                 return;
             }
 
-            Attendee user = new Attendee(ID, firstName, lastName, null, null, null, selectedImageUri);
+            Attendee user = new Attendee(ID, firstName, null, null, null, null, selectedImageUri);
             user.sethasProfile(false);
 
             firebaseManager.addNewUser(user);
