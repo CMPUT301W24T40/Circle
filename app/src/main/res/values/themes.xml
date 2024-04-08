@@ -34,4 +34,10 @@
         <item name="android:windowEnterAnimation">@anim/zoom_in</item>
         <item name="android:windowExitAnimation">@anim/zoom_out</item>
     </style>
+    <style name="Theme.CircleApp.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#6200EE</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/circle_logo</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="postSplashScreenTheme">@style/Theme.CircleApp</item>
+    </style>
 </resources>
