@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 
 import android.content.Intent;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -46,18 +47,17 @@ public class GenerateQRActivityTest {
 
     @Test
     public void testQRCodeSharing() {
-        // Create a new event
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), GenerateQRActivity.class);
         Event event = new Event();
         event.setID("testEventID");
-
-        // Create an intent with the event as an extra
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), GenerateQRActivity.class);
         intent.putExtra("event", event);
+        intent.putExtra("qrType", "details"); // makes the share button visible
 
-        // Launch the activity with the intent
-        scenarioRule.getScenario().onActivity(activity -> activity.startActivity(intent));
+        try (ActivityScenario<GenerateQRActivity> scenario = ActivityScenario.launch(intent)) {
 
-        // Click on the share button
-        onView(withId(R.id.share_QR_button)).perform(click());
+            onView(withId(R.id.share_QR_button)).perform(click());
+
+        }
+
     }
 }
