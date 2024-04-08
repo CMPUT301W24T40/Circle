@@ -25,7 +25,7 @@
                 android:layout_toEndOf="@id/event_poster"
                 android:gravity="center|start"
                 android:padding="10dp"
-                android:text="YYYY/MM/DD"
+                android:text="@string/yyyy_mm_dd"
                 android:textSize="15sp"
                 app:drawableLeftCompat="@android:drawable/ic_menu_today" />
 
@@ -36,7 +36,7 @@
                 android:layout_toEndOf="@id/date_display"
                 android:gravity="center|start"
                 android:padding="10dp"
-                android:text="00:00"
+                android:text="@string/_00_00"
                 android:textSize="15sp"
                 app:drawableLeftCompat="@android:drawable/ic_menu_recent_history" />
 
@@ -54,7 +54,7 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="5dp"
                 android:paddingTop="0dp"
-                android:text="Event"/>
+                android:text="@string/event"/>
 
             <ImageView
                 android:id="@+id/event_poster"
@@ -68,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/event_title"
-                android:layout_toRightOf="@id/event_poster"
-                android:text="Event details"
+                android:layout_toEndOf="@id/event_poster"
+                android:text="@string/event_details"
                 android:textSize="15sp"
                 android:padding="10dp"/>
 

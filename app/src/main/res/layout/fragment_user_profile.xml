@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:padding="10dp"
         android:layout_height="wrap_content"
-        android:text="My Profile"
+        android:text="@string/my_profile"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold" />
@@ -28,7 +28,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
-        android:text="First Name"
+        android:text="@string/first_name"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -40,7 +40,7 @@
         android:layout_toEndOf="@id/circular_background"
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
-        android:text="First"
+        android:text="@string/first"
         android:textSize="20sp" />
 
     <TextView
@@ -52,8 +52,7 @@
         android:layout_toEndOf="@id/circular_background"
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
-        android:inputType="text"
-        android:text="Last Name"
+        android:text="@string/last_name"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -65,7 +64,7 @@
         android:layout_toEndOf="@id/circular_background"
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
-        android:text="Last"
+        android:text="@string/last"
         android:textSize="20sp" />
 
     <TextView
@@ -75,7 +74,7 @@
         android:layout_below="@id/circular_background"
         android:layout_marginTop="22dp"
         android:backgroundTint="@color/black"
-        android:text="Phone Number"
+        android:text="@string/phone_number"
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible" />
@@ -86,7 +85,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/pn_title"
         android:backgroundTint="@color/black"
-        android:text="XXX-XXX-XXXX"
+        android:text="@string/xxx_xxx_xxxx"
         android:textSize="20sp" />
 
     <TextView
@@ -96,7 +95,7 @@
         android:layout_below="@id/phone_number"
         android:layout_marginTop="30dp"
         android:backgroundTint="@color/black"
-        android:text="Email"
+        android:text="@string/email"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -106,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/email_title"
         android:backgroundTint="@color/black"
-        android:text="android@user.com"
+        android:text="@string/android_user_com"
         android:textSize="20sp" />
 
     <com.google.android.material.card.MaterialCardView
@@ -129,21 +128,13 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <Button
-        android:id="@+id/edit_profile_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/homepage"
-        android:layout_marginTop="50dp"
-        android:text="Edit Profile" />
-
     <TextView
         android:id="@+id/homepage_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/email"
         android:layout_marginTop="30dp"
-        android:text="Homepage"
+        android:text="@string/homepage"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -153,9 +144,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/homepage_title"
         android:autoLink="web"
-        android:text="https://www.google.ca"
+        android:text="@string/https_www_google_ca"
         android:textColor="#000000"
         android:textColorLink="@color/purple_500"
         android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/edit_profile_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/homepage"
+        android:layout_marginTop="50dp"
+        android:text="@string/edit_profile" />
+
+    <Button
+        android:id="@+id/admin_view_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/edit_profile_button"
+        android:layout_marginTop="50dp"
+        android:text="@string/admin_view"
+        android:visibility="invisible" />
 
 </RelativeLayout>

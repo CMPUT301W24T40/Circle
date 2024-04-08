@@ -21,7 +21,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * This class is used for when a user wants to make profile
- * a.k.a. add their details
+ * a.k.a. add their details.
  */
 public class MakeProfileActivity extends AppCompatActivity {
     EditText firstNameEditText;
@@ -125,9 +125,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             user.setHasProfile(true);
             ProfileFragment.ProfileMade = true;
 
-            if (selectedImageUri != null) {
-                imageManager.uploadProfilePictureImage(selectedImageUri);
-            }
+            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
 
             firebaseManager.addNewUser(user);
 

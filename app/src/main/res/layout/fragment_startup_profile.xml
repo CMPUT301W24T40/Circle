@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
-        android:text="Make A Profile"
+        android:text="@string/make_a_profile"
         android:textAlignment="center"
         android:textColor="#6C5F5F"
         android:textSize="40sp"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
         android:layout_below="@id/make_a_profile"
-        android:text="Add your profile details here to let others know who's attending their events!"
+        android:text="@string/add_your_profile_details_here_to_let_others_know_who_s_attending_their_events"
         android:textAlignment="center"
         android:textColor="#756C6C"
         android:textSize="30sp" />
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/make_pf_description"
         android:layout_centerInParent="true"
-        android:text="Add Details"
+        android:text="@string/add_details"
         android:textSize="15sp" />
 
 </RelativeLayout>

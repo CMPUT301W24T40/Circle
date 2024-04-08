@@ -103,12 +103,9 @@ public class MainActivity extends AppCompatActivity {
     private void askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED) {
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // empty for now can be filled later, just education UI about what having notifs on means
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
+                    PackageManager.PERMISSION_GRANTED) {}
+            else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {}
+            else { requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS); }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.example.circleapp.UserDisplay;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,8 +49,6 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
         TextView checkInCount = convertView.findViewById(R.id.check_in_count);
         ImageView profilePicture = convertView.findViewById(R.id.profile_picture);
 
-        Log.d("name", attendee.getProfilePic().toString());
-
         if (attendee != null) {
             attendeeFirstName.setText(attendee.getFirstName());
             attendeeLastName.setText(attendee.getLastName());
@@ -59,23 +56,24 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
             if (attendee.getProfilePic() != null) {
                 if (!attendee.getProfilePic().toString().equals("null")) {
                     Glide.with(getContext()).load(attendee.getProfilePic()).into(profilePicture);
-                } else {
+                }
+                else {
                     char firstLetter = attendee.getFirstName().toLowerCase().charAt(0);
                     int defaultImageResource = getContext().getResources().getIdentifier(firstLetter + "", "drawable", getContext().getPackageName());
                     profilePicture.setImageResource(defaultImageResource);
                 }
-            } else {
+            }
+            else {
                 char firstLetter = attendee.getFirstName().toLowerCase().charAt(0);
                 int defaultImageResource = getContext().getResources().getIdentifier(firstLetter + "", "drawable", getContext().getPackageName());
                 profilePicture.setImageResource(defaultImageResource);
             }
 
             if (showCheckInCount) {
-                checkInCount.setText("Checked in " + attendee.getCheckInCount() + " times");
+                String text = "Checked in " + attendee.getCheckInCount() + " times";
+                checkInCount.setText(text);
             }
-            else {
-                checkInCount.setVisibility(View.GONE);
-            }
+            else { checkInCount.setVisibility(View.GONE); }
         }
 
         return convertView;

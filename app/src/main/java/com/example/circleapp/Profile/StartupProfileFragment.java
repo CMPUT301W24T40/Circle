@@ -10,28 +10,19 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link StartupProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A fragment for handling startup profile details.
  */
 public class StartupProfileFragment extends Fragment {
     Button makeProfile;
@@ -40,6 +31,22 @@ public class StartupProfileFragment extends Fragment {
     ActivityResultLauncher<Intent> launcher;
     static Attendee ourUser;
 
+    /**
+     * View prompts the user to make a profile with details. When user chooses to make a profile,
+     * MakeProfileActivity is called. The profile details from the activity are packed into a bundle
+     * and sent back to the previous fragment.
+     *
+     * @param inflater          The LayoutInflater object that can be used to inflate
+     *                          any views in the fragment,
+     * @param container         If non-null, this is the parent view that the fragment's
+     *                          UI should be attached to.  The fragment should not add the view itself,
+     *                          but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
+     *                           saved state as given here.
+     * @return                  Returns the View shown to the user.
+     * @see MakeProfileActivity
+     * @see ProfileFragment
+     */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,6 +66,7 @@ public class StartupProfileFragment extends Fragment {
                         assert bundle != null;
                         ourUser = bundle.getParcelable("user");
 
+                        assert ourUser != null;
                         editor.putString("user_first_name", ourUser.getFirstName());
                         editor.putString("user_last_name", ourUser.getLastName());
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
@@ -67,15 +75,11 @@ public class StartupProfileFragment extends Fragment {
                         editor.apply();
 
                         Uri userPFP = ourUser.getProfilePic();
-                        if (userPFP != null) {
-                            editor.putString("user_profile_pic", userPFP.toString());
-                        }
-                        else {
-                            editor.putString("user_profile_pic", null);
-                        }
+                        if (userPFP != null) { editor.putString("user_profile_pic", userPFP.toString()); }
+                        else { editor.putString("user_profile_pic", null); }
                         editor.commit();
 
-                        navigateBackToProfileFragment();
+                        requireActivity().getSupportFragmentManager().popBackStack();
                     }
                 }
         );
@@ -88,10 +92,4 @@ public class StartupProfileFragment extends Fragment {
 
         return view;
     }
-
-    // Method to navigate back to ProfileFragment
-    private void navigateBackToProfileFragment() {
-        requireActivity().getSupportFragmentManager().popBackStack();
-    }
-
 }

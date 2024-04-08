@@ -56,13 +56,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
             eventTime.setText(event.getTime());
 
             if (event.getEventPosterURL() != null && !event.getEventPosterURL().isEmpty()) {
-                Glide.with(getContext())
-                        .load(event.getEventPosterURL())
-                        .into(eventPoster);
+                Glide.with(getContext()).load(event.getEventPosterURL()).into(eventPoster);
             }
-            else {
-                eventPoster.setImageResource(R.drawable.no_poster);
-            }
+            else { eventPoster.setImageResource(R.drawable.no_poster); }
         }
 
         return convertView;

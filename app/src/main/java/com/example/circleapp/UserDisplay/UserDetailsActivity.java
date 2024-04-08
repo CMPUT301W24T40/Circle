@@ -60,7 +60,8 @@ public class UserDetailsActivity extends AppCompatActivity {
                 if (user.getProfilePic() != null) {
                     if (!user.getProfilePic().toString().equals("null")) {
                         Glide.with(this).load(user.getProfilePic()).into(profilePic);
-                    } else {
+                    }
+                    else {
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                         int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
                         profilePic.setImageResource(defaultImageResource);
@@ -74,10 +75,10 @@ public class UserDetailsActivity extends AppCompatActivity {
             }
             else {
                 firstName.setText(user.getFirstName());
-                lastName.setText("Unavailable");
-                phoneNumber.setText("Unavailable");
-                email.setText("Unavailable");
-                homepage.setText("Unavailable");
+                lastName.setText(R.string.unavailable);
+                phoneNumber.setText(R.string.unavailable);
+                email.setText(R.string.unavailable);
+                homepage.setText(R.string.unavailable);
 
                 if (user.getProfilePic() != null) { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
                 else {

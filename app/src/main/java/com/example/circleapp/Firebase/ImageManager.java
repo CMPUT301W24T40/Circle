@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class is used to manage images with Firebase Cloud Storage.
@@ -137,13 +138,10 @@ public class ImageManager {
      *
      * @return true if an image is set, false otherwise.
      */
-    public boolean hasImage() {
-        Log.d("image", String.valueOf(imageView.getDrawable()));
-        return imageView.getDrawable() != null;
-    }
+    public boolean hasImage() { return Objects.requireNonNull(imageView).getDrawable() != null; }
 
     /**
-     * Initiates image selection process.
+     * Initiates image selection process for an event poster.
      */
     public void selectPosterImage() {
         Intent intent = new Intent();
@@ -152,6 +150,9 @@ public class ImageManager {
         activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_POSTER_IMAGE);
     }
 
+    /**
+     * Initiates image selection process for a user PFP.
+     */
     public void selectProfilePicImage() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -189,9 +190,7 @@ public class ImageManager {
                         String downloadUrl = uri.toString();
                         Log.d("ImageManager", "Image uploaded, download URL: " + downloadUrl);
                     }))
-                    .addOnFailureListener(exception -> {
-                        Log.e("ImageManager", "Image Upload Failed", exception);
-                    });
+                    .addOnFailureListener(exception -> Log.e("ImageManager", "Image Upload Failed", exception));
         }
     }
 
@@ -205,12 +204,12 @@ public class ImageManager {
     public Uri onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_POSTER_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
-            imageView.setImageURI(imageUri);
-
+            Objects.requireNonNull(imageView).setImageURI(imageUri);
             return imageUri;
-        } else if (requestCode == PICK_PROFILE_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
+        }
+        else if (requestCode == PICK_PROFILE_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
             imageUri = data.getData();
-            imageView.setImageURI(imageUri);
+            Objects.requireNonNull(imageView).setImageURI(imageUri);
 
             activity.getBaseContext().getContentResolver().takePersistableUriPermission(
                     imageUri,

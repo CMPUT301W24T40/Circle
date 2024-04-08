@@ -13,47 +13,46 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.BaseObjects.Attendee;
-import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.MainActivity;
 import com.example.circleapp.R;
 
+import java.util.Objects;
+
 /**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
+ * This class displays a user's profile information.
  */
 public class UserProfileFragment extends Fragment {
-
     TextView firstName;
     TextView lastName;
     TextView email;
     TextView phoneNumber;
     TextView homepage;
-    Button makeProfile;
     Button editProfile;
+    Button adminView;
     ImageView profilePic;
-    RelativeLayout userProfileLayout;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     ActivityResultLauncher<Intent> launcher;
     static Attendee ourUser;
-    FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
-     * View prompts the user to make a profile with details. When user chooses to make a profile,
-     * MakeProfileActivity is called. The profile details from the activity are displayed here on
-     * the view. Choosing to edit the existing profile starts the EditProfileActivity class. Any
-     * updates to the details will be displayed on the view.
+     * This fragment is instantiated from the ProfileFragment class if the user has made a profile.
+     * It will display their details, including name, phone number, email, profile picture, and
+     * homepage. Users can also edit their profile information by pressing the "Edit Profile" button,
+     * and if they have gained admin capabilities, there is a button to switch to the admin interface.
      *
      * @param inflater          The LayoutInflater object that can be used to inflate
      *                          any views in the fragment,
@@ -63,8 +62,9 @@ public class UserProfileFragment extends Fragment {
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
      *                           saved state as given here.
      * @return                  Returns the View shown to the user.
-     * @see MakeProfileActivity
-     * @see EditProfileActivity
+     * @see ProfileFragment
+     * @see AdminHomeFragment
+     * @see MainActivity
      */
     @Nullable
     @Override
@@ -98,6 +98,7 @@ public class UserProfileFragment extends Fragment {
                         assert bundle != null;
                         ourUser = bundle.getParcelable("user");
 
+                        assert ourUser != null;
                         editor.putString("user_first_name", ourUser.getFirstName());
                         editor.putString("user_last_name", ourUser.getLastName());
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
@@ -133,13 +134,25 @@ public class UserProfileFragment extends Fragment {
             launcher.launch(intent);
         });
 
+        if (ProfileFragment.isAdmin) {
+            adminView = view.findViewById(R.id.admin_view_button);
+            adminView.setVisibility(View.VISIBLE);
+            adminView.setOnClickListener(v -> {
+                ((MainActivity) requireActivity()).setNavBarVisibility(false);
+
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
+                fragmentTransaction.commit();
+            });
+        }
+
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         loadProfileImage();
     }
 
@@ -150,7 +163,7 @@ public class UserProfileFragment extends Fragment {
                 Glide.with(UserProfileFragment.this).load(Uri.parse(pfpString)).into(profilePic);
             } else {
                 String userFirstName = sharedPreferences.getString("user_first_name", null);
-                char firstLetter = userFirstName.toLowerCase().charAt(0);
+                char firstLetter = Objects.requireNonNull(userFirstName).toLowerCase().charAt(0);
                 int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
                 profilePic.setImageResource(defaultImageResource);
             }

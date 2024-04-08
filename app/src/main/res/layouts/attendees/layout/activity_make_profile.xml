@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="15dp"
-        android:text="Your Profile"
+        android:text="@string/your_profile"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -26,7 +26,7 @@
         android:layout_below="@id/edit_profile_text"
         android:layout_toEndOf="@id/circular_background"
         android:layout_marginStart="10dp"
-        android:text="First Name"
+        android:text="@string/first_name"
         android:textStyle="bold"/>
 
     <EditText
@@ -39,7 +39,7 @@
         android:layout_marginBottom="28dp"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="ex. John"
+        android:hint="@string/ex_john"
         android:inputType="textPersonName" />
 
     <TextView
@@ -49,7 +49,7 @@
         android:layout_below="@id/fname_edit"
         android:layout_toEndOf="@id/circular_background"
         android:layout_marginStart="10dp"
-        android:text="Last Name"
+        android:text="@string/last_name"
         android:textStyle="bold"/>
 
     <EditText
@@ -61,7 +61,7 @@
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="ex. Doe"
+        android:hint="@string/ex_doe"
         android:inputType="textPersonName" />
 
     <TextView
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/lname_edit"
         android:layout_marginTop="30dp"
-        android:text="Phone Number"
+        android:text="@string/phone_number"
         android:textStyle="bold"/>
 
     <EditText
@@ -80,7 +80,7 @@
         android:layout_below="@id/telephone"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="ex. 1234567890"
+        android:hint="@string/ex_1234567890"
         android:inputType="phone"
         android:digits="0123456789"
         android:maxLength="10"/>
@@ -91,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_number"
         android:layout_marginTop="20dp"
-        android:text="Email"
+        android:text="@string/email"
         android:textStyle="bold"/>
 
     <EditText
@@ -101,7 +101,7 @@
         android:layout_below="@id/email"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="ex. iseeyou@gmail.com"
+        android:hint="@string/ex_iseeyou_gmail_com"
         android:inputType="textEmailAddress" />
 
     <TextView
@@ -110,7 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/edit_email"
         android:layout_marginTop="20dp"
-        android:text="Homepage"
+        android:text="@string/homepage"
         android:textStyle="bold"/>
 
     <EditText
@@ -120,7 +120,7 @@
         android:layout_below="@id/homepage"
         android:backgroundTint="@color/black"
         android:ems="10"
-        android:hint="ex. myblog.com"
+        android:hint="@string/ex_myblog_com"
         android:inputType="textUri"/>
 
     <com.google.android.material.card.MaterialCardView
@@ -149,6 +149,6 @@
         android:layout_below="@id/edit_homepage"
         android:layout_marginTop="20dp"
         android:layout_centerInParent="true"
-        android:text="Confirm" />
+        android:text="@string/confirm" />
 
 </RelativeLayout>

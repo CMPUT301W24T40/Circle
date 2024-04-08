@@ -63,7 +63,7 @@ public class AdminBrowseEventsFragment extends Fragment {
         });
 
         backButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.popBackStack();
         });
 

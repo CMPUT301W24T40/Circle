@@ -16,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:text="Map View" />
+        android:text="@string/map_view" />
 
     <Button
         android:id="@+id/notify_button"
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:text="Notify attendees"/>
+        android:text="@string/notify_attendees"/>
 
 </RelativeLayout>

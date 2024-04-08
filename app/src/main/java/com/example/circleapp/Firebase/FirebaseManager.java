@@ -1,5 +1,6 @@
 package com.example.circleapp.Firebase;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
 import android.provider.Settings;
@@ -80,6 +81,7 @@ public class FirebaseManager {
      *
      * @param context   Context of the activity/fragment that is initiating this method.
      */
+    @SuppressLint("HardwareIds")
     public void setPhoneID(Context context) {
         this.phoneID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
@@ -616,13 +618,12 @@ public class FirebaseManager {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     Attendee attendee = document.toObject(Attendee.class);
+                    assert attendee != null;
                     if (location != null) {
-                        assert attendee != null;
                         attendee.setLocationLatitude(location.getLatitude());
                         attendee.setLocationLongitude(location.getLongitude());
                     }
                     else {
-                        assert attendee != null;
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
@@ -633,6 +634,14 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     * Performs a check-in for a user at a specified event.
+     *
+     * @param eventDocRef    Reference to the document of the event to check into.
+     * @param userEventsRef  Reference to the collection of user events.
+     * @param checkInsRef    Reference to the document where the check-in data will be stored.
+     * @param location       Nullable location of the user at the time of check-in.
+     */
     private void performCheckIn(DocumentReference eventDocRef, CollectionReference userEventsRef, DocumentReference checkInsRef, @Nullable Location location) {
         eventDocRef.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
@@ -691,7 +700,12 @@ public class FirebaseManager {
     }
 
     /**
+     * Tracks the number of check-ins for a specific event and updates the attendance count accordingly.
      *
+     * @param eventId                  The unique identifier of the event to track check-ins for.
+     * @param onAttendanceCountUpdated A Consumer functional interface to handle updates to the
+     *                                 attendance count. It accepts an Integer parameter representing
+     *                                 the current count of attendees.
      */
     public void trackCheckIns(String eventId, Consumer<Integer> onAttendanceCountUpdated) {
         DocumentReference eventDocRef = eventsRef.document(eventId);
@@ -802,9 +816,7 @@ public class FirebaseManager {
      */
     public void becomeAdmin(String password) {
         String adminPassword = "12345";
-        if (password.equals(adminPassword)) {
-            addNewAdmin();
-        }
+        if (password.equals(adminPassword)) { addNewAdmin(); }
     }
 
     /**
@@ -827,7 +839,7 @@ public class FirebaseManager {
 
         eventsRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
-                String posterURL = (document.getString("eventPosterURL").startsWith("https")) ? document.getString("eventPosterURL") : null;
+                String posterURL = (Objects.requireNonNull(document.getString("eventPosterURL")).startsWith("https")) ? document.getString("eventPosterURL") : null;
                 if (posterURL != null) { urlList.add(posterURL); }
             }
             callback.onCallback(urlList);
@@ -844,7 +856,7 @@ public class FirebaseManager {
 
         usersRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
-                String pfpURL = (document.getString("profilePic").startsWith("https")) ? document.getString("profilePic") : null;
+                String pfpURL = (Objects.requireNonNull(document.getString("profilePic")).startsWith("https")) ? document.getString("profilePic") : null;
                 if (pfpURL != null) { urlList.add(pfpURL); }
             }
             callback.onCallback(urlList);
@@ -942,7 +954,7 @@ public class FirebaseManager {
                     DocumentReference eventDocRef = eventsRef.document(document.getId());
                     String eventPosterURL = document.getString("eventPosterURL");
 
-                    if (eventPosterURL.equals(URL)) {
+                    if (Objects.equals(eventPosterURL, URL)) {
                         eventDocRef.update("eventPosterURL", "https://firebasestorage.googleapis.com/v0/b/circleapp-2e84b.appspot.com/o/default_pics%2Fdefault_event_poster.webp?alt=media&token=e3a687a5-8ca8-4f25-9fbd-a9be6631ee0c");
                     }
                 }
@@ -954,9 +966,7 @@ public class FirebaseManager {
                     DocumentReference userDocRef = usersRef.document(document.getId());
                     String pfpURL = document.getString("profilePic");
 
-                    if (pfpURL.equals(URL)) {
-                        userDocRef.update("profilePic", "null");
-                    }
+                    if (Objects.equals(pfpURL, URL)) { userDocRef.update("profilePic", "null"); }
                 }
             });
         }

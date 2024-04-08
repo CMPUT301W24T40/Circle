@@ -54,20 +54,15 @@ public class GenerateQRActivity extends AppCompatActivity{
             String qrText = event.getEventName() + ": " + qrType;
             qrInfo.setText(qrText);
         }
-        else {
-            eventID = "No event ID";
-        }
+        else { eventID = "No event ID"; }
+
         Bitmap qrBitmap = generateQRCode(eventID, qrType);
         qrImage.setImageBitmap(qrBitmap);
 
         Button shareQRbutton = findViewById(R.id.share_QR_button);
 
-        // Check if qrType is "event details"
-        if (qrType != null && qrType.equals("details")) {
-            shareQRbutton.setVisibility(View.VISIBLE);
-        } else {
-            shareQRbutton.setVisibility(View.GONE);
-        }
+        if (qrType != null && qrType.equals("details")) { shareQRbutton.setVisibility(View.VISIBLE); }
+        else { shareQRbutton.setVisibility(View.GONE); }
 
         shareQRbutton.setOnClickListener(v -> shareQRImage(qrBitmap));
 
@@ -90,7 +85,7 @@ public class GenerateQRActivity extends AppCompatActivity{
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
-                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF); // Black and White colors
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
                 }
             }
             return bmp;
@@ -112,7 +107,7 @@ public class GenerateQRActivity extends AppCompatActivity{
             File cachePath = new File(getCacheDir(), "images");
             cachePath.mkdirs();
             File file = new File(cachePath, "QR_Image.png");
-            FileOutputStream stream = new FileOutputStream(file); // Overwrites this image every time
+            FileOutputStream stream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
             stream.close();
 
@@ -121,14 +116,13 @@ public class GenerateQRActivity extends AppCompatActivity{
             if (contentUri != null) {
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Temporarily grant read permission
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 shareIntent.setDataAndType(contentUri, getContentResolver().getType(contentUri));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri);
                 startActivity(Intent.createChooser(shareIntent, "Share QR Code"));
             }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+        catch (Exception e) { throw new RuntimeException(e); }
     }
 }

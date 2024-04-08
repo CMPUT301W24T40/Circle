@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 public class AttendingEventsDetailsActivity extends AppCompatActivity {
     Event event;
-    FirebaseManager firebaseManager = FirebaseManager.getInstance(); // FirebaseManager instance
+    FirebaseManager firebaseManager = FirebaseManager.getInstance();
     TextView eventNameTextView;
     TextView eventLocationTextView;
     TextView eventDateTextView;
@@ -30,6 +30,7 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
     TextView eventDescriptionTextView;
     TextView eventCapacityTextView;
     ImageView eventPosterImageView;
+    Button unregisterButton;
     private ArrayList<Announcement> announcementsList;
     private AnnouncementAdapter announcementAdapter;
     private ListView listView;
@@ -41,14 +42,12 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
 
         event = getIntent().getParcelableExtra("event");
         assert event != null;
-        String eventId = event.getID(); // Use getID() to access the event's ID
+        String eventId = event.getID();
 
         TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
         listView = findViewById(R.id.announcement_listview);
 
-        // Initialize announcements list
         announcementsList = new ArrayList<>();
-        // Load announcements from Firebase and then set up the ListView and its adapter
         firebaseManager.loadAnnouncements(eventId, announcements -> {
             announcementsList.clear();
             announcementsList.addAll(announcements);
@@ -56,7 +55,6 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
             announcementAdapter = new AnnouncementAdapter(AttendingEventsDetailsActivity.this, announcementsList);
             listView.setAdapter(announcementAdapter);
 
-            // After loading announcements, check if the list is empty
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
@@ -65,10 +63,8 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
                 listView.setVisibility(View.VISIBLE);
             }
         });
-        //updates list immediately after adding announcement (from organizer's view)
         listView.setAdapter(announcementAdapter);
 
-        // Initialize views
         eventNameTextView = findViewById(R.id.event_details_name);
         eventLocationTextView = findViewById(R.id.event_details_location);
         eventDateTextView = findViewById(R.id.event_details_date);
@@ -77,33 +73,20 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
         eventCapacityTextView = findViewById(R.id.event_details_capacity);
         eventPosterImageView = findViewById(R.id.event_details_poster);
 
-        // Set event details
         eventNameTextView.setText(event.getEventName());
         eventLocationTextView.setText(event.getLocation());
         eventDateTextView.setText(event.getDate());
         eventTimeTextView.setText(event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
 
-        if (event.getCapacity().equalsIgnoreCase("-1")) {
-            eventCapacityTextView.setText("Not specified");
-        }
-        else {
-            eventCapacityTextView.setText(event.getCapacity());
-        }
+        if (event.getCapacity().equalsIgnoreCase("-1")) { eventCapacityTextView.setText(R.string.not_specified); }
+        else { eventCapacityTextView.setText(event.getCapacity()); }
 
-
-        // Load event poster image
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
-            Glide.with(this)
-                    .load(eventPosterURL)
-                    .apply(new RequestOptions().placeholder(R.drawable.no_poster))
-                    .into(eventPosterImageView);
-        } else {
-            Glide.with(this)
-                    .load(R.drawable.no_poster)
-                    .into(eventPosterImageView);
+            Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
         }
+        else { Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView); }
 
         eventPosterImageView.setOnClickListener(v -> {
             Intent intent = new Intent(AttendingEventsDetailsActivity.this, FullScreenImageActivity.class);
@@ -111,11 +94,8 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-
-        // Unregister from an event
-        Button unregisterButton = findViewById(R.id.register_button);
-
-        unregisterButton.setText("Unregister");
+        unregisterButton = findViewById(R.id.register_button);
+        unregisterButton.setText(R.string.unregister);
         unregisterButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(AttendingEventsDetailsActivity.this);
             builder.setTitle("Confirmation");
@@ -130,5 +110,3 @@ public class AttendingEventsDetailsActivity extends AppCompatActivity {
         });
     }
 }
-
-
