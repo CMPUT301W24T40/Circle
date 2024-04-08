@@ -52,10 +52,18 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
         if (attendee != null) {
             attendeeFirstName.setText(attendee.getFirstName());
             attendeeLastName.setText(attendee.getLastName());
-            Glide.with(getContext()).load(attendee.getProfilePic()).into(profilePicture);
+
+            if (attendee.getProfilePic() != null) { Glide.with(getContext()).load(attendee.getProfilePic()).into(profilePicture); }
+            else {
+                char firstLetter = attendee.getFirstName().toLowerCase().charAt(0);
+                int defaultImageResource = getContext().getResources().getIdentifier(firstLetter + "", "drawable", getContext().getPackageName());
+                profilePicture.setImageResource(defaultImageResource);
+            }
+
             if (showCheckInCount) {
                 checkInCount.setText("Checked in " + attendee.getCheckInCount() + " times");
-            } else {
+            }
+            else {
                 checkInCount.setVisibility(View.GONE);
             }
         }

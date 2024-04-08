@@ -93,7 +93,7 @@ public class AdminBrowseImagesFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Select one of the following options:");
         builder.setPositiveButton("Delete image", (dialog, which) -> {
-            imageManager.deleteImage(image);
+            imageManager.deleteImage(image, getContext());
             dialog.dismiss();
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());

@@ -66,33 +66,26 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseManager.setPhoneID(this);
 
-        firebaseManager.isAdmin(exists -> {
-            if (exists) {
-                replaceFragment(new AdminHomeFragment());
+        replaceFragment(new BrowseEventsFragment());
+
+        binding.bottomNavigationView.setVisibility(View.VISIBLE);
+        binding.bottomNavigationView.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.your_events_item) {
+                replaceFragment(new YourEventsFragment());
+                return true;
             }
-            else {
+
+            if (item.getItemId() == R.id.browse_events_item) {
                 replaceFragment(new BrowseEventsFragment());
-
-                binding.bottomNavigationView.setVisibility(View.VISIBLE);
-                binding.bottomNavigationView.setOnItemSelectedListener(item -> {
-                    if (item.getItemId() == R.id.your_events_item) {
-                        replaceFragment(new YourEventsFragment());
-                        return true;
-                    }
-
-                    if (item.getItemId() == R.id.browse_events_item) {
-                        replaceFragment(new BrowseEventsFragment());
-                        return true;
-                    }
-
-                    if (item.getItemId() == R.id.profile_item) {
-                        replaceFragment(new ProfileFragment());
-                        return true;
-                    }
-
-                    return false;
-                });
+                return true;
             }
+
+            if (item.getItemId() == R.id.profile_item) {
+                replaceFragment(new ProfileFragment());
+                return true;
+            }
+
+            return false;
         });
     }
 

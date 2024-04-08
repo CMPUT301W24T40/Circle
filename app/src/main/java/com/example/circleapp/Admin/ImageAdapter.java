@@ -2,11 +2,13 @@ package com.example.circleapp.Admin;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,6 +42,11 @@ public class ImageAdapter extends ArrayAdapter<Uri> {
         }
 
         Uri image = getItem(position);
+        String imageType = image.toString();
+
+        TextView imageTypeView = convertView.findViewById(R.id.image_type_title);
+        if (imageType.contains("profile_pictures")) { imageTypeView.setText("Profile Picture"); }
+        else if (imageType.contains("event_posters") || imageType.contains("default_event")) { imageTypeView.setText("Event Poster"); }
 
         ImageView imageView = convertView.findViewById(R.id.image_item_view);
         Glide.with(getContext()).load(image).into(imageView);

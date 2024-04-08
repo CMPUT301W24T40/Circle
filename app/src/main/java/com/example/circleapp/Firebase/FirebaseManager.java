@@ -680,6 +680,22 @@ public class FirebaseManager {
         });
     }
 
+    /**
+     *
+     */
+    public void trackCheckIns(String eventId, Consumer<Integer> onAttendanceCountUpdated) {
+        DocumentReference eventDocRef = eventsRef.document(eventId);
+        eventDocRef.collection("checkedInUsers")
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w("FirebaseManager", "Listen failed.", e);
+                        return;
+                    }
+                    int currentCount = value != null ? value.size() : 0;
+                    onAttendanceCountUpdated.accept(currentCount);
+                });
+    }
+
     // Methods for managing announcements
 
     /**
@@ -785,8 +801,6 @@ public class FirebaseManager {
      * Adds a new admin to the system.
      */
     public void addNewAdmin() {
-        deleteUser(phoneID);
-
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", phoneID);
 
@@ -937,19 +951,4 @@ public class FirebaseManager {
             });
         }
     }
-
-    // start tracking check-ins for an event
-    public void trackCheckIns(String eventId, Consumer<Integer> onAttendanceCountUpdated) {
-        DocumentReference eventDocRef = eventsRef.document(eventId);
-        eventDocRef.collection("checkedInUsers")
-                .addSnapshotListener((value, e) -> {
-                    if (e != null) {
-                        Log.w("FirebaseManager", "Listen failed.", e);
-                        return;
-                    }
-                    int currentCount = value != null ? value.size() : 0;
-                    onAttendanceCountUpdated.accept(currentCount);
-                });
-    }
-
 }
