@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class displays a map view with markers representing checked-in attendees of an event.
@@ -46,19 +47,17 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         firebaseManager = FirebaseManager.getInstance();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        Objects.requireNonNull(mapFragment).getMapAsync(this);
 
         event = getIntent().getParcelableExtra("event");
-        firebaseManager.getCheckedInAttendees(event.getID(), attendees -> {
+        firebaseManager.getCheckedInAttendees(Objects.requireNonNull(event).getID(), attendees -> {
             checkedInAttendees = attendees;
             Log.d("mom_attendees", checkedInAttendees.toString());
 
             if (checkedInAttendees.isEmpty()) {
                 Toast.makeText(MapViewActivity.this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
             }
-            else {
-                if (attendeeMap != null) { populateMap(); }
-            }
+            else if (attendeeMap != null) { populateMap(); }
         });
 
         backButton = findViewById(R.id.back_button);
@@ -73,9 +72,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         attendeeMap = googleMap;
-        if (checkedInAttendees != null && !checkedInAttendees.isEmpty()) {
-            populateMap();
-        }
+        if (checkedInAttendees != null && !checkedInAttendees.isEmpty()) { populateMap(); }
     }
 
     /**

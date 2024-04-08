@@ -116,14 +116,13 @@ public class ScanQRActivity extends AppCompatActivity {
         if (CHECK_IN.equals(qrType)) {
             String eventID = parts.length > 1 ? parts[1] : "";
             handleCheckInScan(eventID);
-        } else if (DETAILS.equals(qrType)) {
+        }
+        else if (DETAILS.equals(qrType)) {
             String eventID = parts.length > 1 ? parts[1] : "";
             handleDetailsScan(eventID);
-        } else if (ADMIN.equals(qrType)) {
-            handleAdminScan();
-        } else {
-            handleCheckInIDScan(result.getContents());
         }
+        else if (ADMIN.equals(qrType)) { handleAdminScan(); }
+        else { handleCheckInIDScan(result.getContents()); }
     }
 
     private void handleCheckInScan(String eventID) {
@@ -139,11 +138,8 @@ public class ScanQRActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (locationPermissionGranted) {
-                    getCurrentLocation(eventID);
-                } else {
-                    checkInEventWithUnavailableLocation(eventID);
-                }
+                if (locationPermissionGranted) { getCurrentLocation(eventID); }
+                else { checkInEventWithUnavailableLocation(eventID); }
 
                 showToastAndFinish("Checking in to event: " + event.getEventName());
             });
@@ -172,11 +168,8 @@ public class ScanQRActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (locationPermissionGranted) {
-                    getCurrentLocation(event.getID());
-                } else {
-                    checkInEventWithUnavailableLocation(event.getID());
-                }
+                if (locationPermissionGranted) { getCurrentLocation(event.getID()); }
+                else { checkInEventWithUnavailableLocation(event.getID()); }
 
                 showToastAndFinish("Checking in to event: " + event.getEventName());
             });
@@ -200,9 +193,8 @@ public class ScanQRActivity extends AppCompatActivity {
                         Intent intent = new Intent(ScanQRActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                    } else {
-                        showToastAndFinish("Failed to become admin");
                     }
+                    else { showToastAndFinish("Failed to become admin"); }
                 });
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> {
@@ -225,7 +217,8 @@ public class ScanQRActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ScanQRActivity.this);
-        } else {
+        }
+        else {
             Log.d("location","poo");
             checkInEventWithUnavailableLocation(eventID);
             return;
@@ -234,11 +227,8 @@ public class ScanQRActivity extends AppCompatActivity {
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(location -> {
             Log.d("location", String.valueOf(location));
-            if (location != null) {
-                manager.checkInEvent(eventID, location);
-            } else {
-                checkInEventWithUnavailableLocation(eventID);
-            }
+            if (location != null) { manager.checkInEvent(eventID, location); }
+            else { checkInEventWithUnavailableLocation(eventID); }
         });
     }
 

@@ -19,6 +19,7 @@ import com.example.circleapp.R;
 import com.example.circleapp.SendNotificationActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A fragment to display the list of registered users for an event.
@@ -28,7 +29,6 @@ public class RegisteredUsersFragment extends Fragment {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     AttendeeAdapter adapter;
     Event event;
-    Button mapButton;
     Button notficationButton;
     ArrayList<Attendee> attendees;
 
@@ -52,8 +52,8 @@ public class RegisteredUsersFragment extends Fragment {
         adapter = new AttendeeAdapter(getContext(), new ArrayList<>(), false); // Initialize adapter
         listView.setAdapter(adapter);
 
-        event = getArguments().getParcelable("event");
-        loadRegisteredUsers(event.getID());
+        event = requireArguments().getParcelable("event");
+        loadRegisteredUsers(Objects.requireNonNull(event).getID());
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Attendee attendee = (Attendee) parent.getItemAtPosition(position);

@@ -204,9 +204,7 @@ public class Attendee implements Parcelable {
      *
      * @param name The new first name
      */
-    public void setfirstName(String name) {
-        this.firstName = name;
-    }
+    public void setfirstName(String name) { this.firstName = name; }
 
     /**
      * Sets the last name of the attendee.
@@ -222,9 +220,7 @@ public class Attendee implements Parcelable {
      *
      * @param email The new email address
      */
-    public void setemail(String email) {
-        this.email = email;
-    }
+    public void setemail(String email) { this.email = email; }
 
     /**
      * Sets the phone number of the attendee.
@@ -250,9 +246,7 @@ public class Attendee implements Parcelable {
      *
      * @param homepage The new homepage URL
      */
-    public void sethomepage(String homepage){
-        this.homepage = homepage;
-    }
+    public void sethomepage(String homepage){ this.homepage = homepage; }
 
     /**
      * Sets whether the user has a profile or not.
@@ -276,11 +270,8 @@ public class Attendee implements Parcelable {
      * @param latitude The new latitude
      */
     public void setLocationLatitude(@Nullable Double latitude) {
-        if (latitude == null) {
-            this.locationLatitude = NULL_DOUBLE;
-        } else {
-            this.locationLatitude = latitude;
-        }
+        if (latitude == null) { this.locationLatitude = NULL_DOUBLE; }
+        else { this.locationLatitude = latitude; }
     }
 
     /**
@@ -289,11 +280,8 @@ public class Attendee implements Parcelable {
      * @param longitude The new longitude
      */
     public void setLocationLongitude(@Nullable Double longitude) {
-        if (longitude == null) {
-            this.locationLongitude = NULL_DOUBLE;
-        } else {
-            this.locationLongitude = longitude;
-        }
+        if (longitude == null) { this.locationLongitude = NULL_DOUBLE; }
+        else { this.locationLongitude = longitude; }
     }
 
     /**

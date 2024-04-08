@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,7 +10,7 @@
         android:id="@+id/notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send attendees of your event a notification!"
+        android:text="@string/send_attendees_of_your_event_a_notification"
         android:textSize="20sp"
         android:padding="10dp"/>
 
@@ -20,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/notification"
-        android:text="Title"
+        android:text="@string/title"
         android:textSize="20sp"
         android:textStyle="bold"/>
 
@@ -32,7 +31,7 @@
         android:background="@drawable/edittext_border"
         android:ems="10"
         android:padding="10dp"
-        android:hint="max. 50 chars"
+        android:hint="@string/max_50_chars"
         android:inputType="text"
         android:maxLength="50" />
 
@@ -41,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/notif_title"
-        android:text="A title to let attendees know what you are notifying them about."
+        android:text="@string/a_title_to_let_attendees_know_what_you_are_notifying_them_about"
         android:textSize="15sp"/>
 
     <TextView
@@ -49,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_description"
-        android:text="Body"
+        android:text="@string/body"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginTop="20dp"/>
@@ -63,7 +62,7 @@
         android:background="@drawable/edittext_border"
         android:ems="10"
         android:padding="10dp"
-        android:hint="max. 200 chars"
+        android:hint="@string/max_200_chars"
         android:inputType="textMultiLine"
         android:maxLength="200" />
 
@@ -72,7 +71,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/notif_body"
-        android:text="Write what you are going to let your attendees know."/>
+        android:text="@string/write_what_you_are_going_to_let_your_attendees_know"/>
 
 
     <Button
@@ -81,6 +80,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/body_description"
         android:layout_marginTop="20dp"
-        android:text="Send" />
+        android:text="@string/send" />
 
 </RelativeLayout>

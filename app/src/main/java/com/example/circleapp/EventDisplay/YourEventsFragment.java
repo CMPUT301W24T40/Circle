@@ -78,11 +78,8 @@ public class YourEventsFragment extends Fragment implements ActivityCompat.OnReq
 
         sharedPreferences = requireContext().getSharedPreferences("LocationPermission", Context.MODE_PRIVATE);
 
-        if (!isLocationPermissionGranted()) {
-            requestLocationPermission();
-        }
+        if (!isLocationPermissionGranted()) { requestLocationPermission(); }
 
-        // Scan button click listener
         scanButton.setOnClickListener(v -> {
             Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
             startActivity(intent);
@@ -107,12 +104,26 @@ public class YourEventsFragment extends Fragment implements ActivityCompat.OnReq
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
+    /**
+     * A PagerAdapter for managing the fragments in the Your Events.
+     */
     private static class EventsPagerAdapter extends FragmentStateAdapter {
 
+        /**
+         * Constructs a new EventsPagerAdapter.
+         *
+         * @param fragment The parent fragment that will host this adapter.
+         */
         EventsPagerAdapter(Fragment fragment) {
             super(fragment);
         }
 
+        /**
+         * Called to instantiate the fragment for the given position.
+         *
+         * @param position The position of the fragment in the ViewPager.
+         * @return         Fragment associated with the specified position.
+         */
         @NonNull
         @Override
         public Fragment createFragment(int position) {
@@ -126,6 +137,11 @@ public class YourEventsFragment extends Fragment implements ActivityCompat.OnReq
             }
         }
 
+        /**
+         * Gets the number of items in the data set represented by this adapter.
+         *
+         * @return The total number of items in this adapter.
+         */
         @Override
         public int getItemCount() {
             return 2;

@@ -60,7 +60,7 @@ public class AdminBrowseImagesFragment extends Fragment {
         });
 
         backButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
             fragmentManager.popBackStack();
         });
 

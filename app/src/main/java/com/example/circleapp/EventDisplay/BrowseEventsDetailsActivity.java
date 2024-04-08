@@ -96,18 +96,14 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
         eventTimeTextView.setText(event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
 
-        if (event.getCapacity().equalsIgnoreCase("-1")) {
-            eventCapacityTextView.setText("Not specified");
-        } else {
-            eventCapacityTextView.setText(event.getCapacity());
-        }
+        if (event.getCapacity().equalsIgnoreCase("-1")) { eventCapacityTextView.setText(R.string.not_specified); }
+        else { eventCapacityTextView.setText(event.getCapacity()); }
 
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
             Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
-        } else {
-            Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
+        else { Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView); }
 
         eventPosterImageView.setOnClickListener(v -> {
             Intent intent = new Intent(BrowseEventsDetailsActivity.this, FullScreenImageActivity.class);
@@ -118,11 +114,8 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
         registerButton = findViewById(R.id.register_button);
 
         firebaseManager.isUserRegistered(event.getID(), firebaseManager.getPhoneID(), isRegistered -> {
-            if (isRegistered) {
-                setUnregisterButton();
-            } else {
-                setRegisterButton();
-            }
+            if (isRegistered) { setUnregisterButton(); }
+            else { setRegisterButton(); }
         });
     }
 
@@ -133,7 +126,7 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
      * state.
      */
     private void setRegisterButton() {
-        registerButton.setText("Register");
+        registerButton.setText(R.string.register);
         registerButton.setOnClickListener(v -> firebaseManager.checkUserExists(exists -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(BrowseEventsDetailsActivity.this);
             if (exists) {
@@ -167,7 +160,7 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
      * state.
      */
     private void setUnregisterButton() {
-        registerButton.setText("Unregister");
+        registerButton.setText(R.string.unregister);
         registerButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(BrowseEventsDetailsActivity.this);
             builder.setTitle("Confirmation");
@@ -182,5 +175,3 @@ public class BrowseEventsDetailsActivity extends AppCompatActivity {
         });
     }
 }
-
-

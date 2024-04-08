@@ -25,7 +25,6 @@ import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.QRCode.GenerateQRActivity;
 import com.example.circleapp.QRCode.ReuseQRActivity;
 import com.example.circleapp.R;
-import com.example.circleapp.TempUserInfoActivity;
 import com.example.circleapp.UserDisplay.GuestlistActivity;
 import com.example.circleapp.SendNotificationActivity;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -55,9 +54,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private ArrayList<Announcement> announcementsList;
     private AnnouncementAdapter announcementAdapter;
     private ListView listView;
-
     private TextView currentAttendeesTextView;
-
     public static int previousCount;
 
     /**
@@ -86,15 +83,11 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         currentAttendeesTextView = findViewById(R.id.current_attendees_textview);
 
-        // Determine if the current user is an organizer (For real time attendance)
         String source = getIntent().getStringExtra("source");
         if ("CreatedEventsFragment".equals(source)) {
-            // start tracking and showing attendee count
             FirebaseManager.getInstance().trackCheckIns(eventId, this::updateAttendeeCount);
-        } else {
-            currentAttendeesTextView.setVisibility(View.GONE);
         }
-
+        else { currentAttendeesTextView.setVisibility(View.GONE); }
 
         TextView noAnnouncementsTextView = findViewById(R.id.no_announcements_textview);
         listView = findViewById(R.id.announcement_listview);
@@ -110,7 +103,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             if (announcementsList.isEmpty()) {
                 noAnnouncementsTextView.setVisibility(View.VISIBLE);
                 listView.setVisibility(View.GONE);
-            } else {
+            }
+            else {
                 noAnnouncementsTextView.setVisibility(View.GONE);
                 listView.setVisibility(View.VISIBLE);
             }
@@ -132,18 +126,14 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventTimeTextView.setText(event.getTime());
         eventDescriptionTextView.setText(event.getDescription());
 
-        if (event.getCapacity().equalsIgnoreCase("-1")) {
-            eventCapacityTextView.setText("Not specified");
-        } else {
-            eventCapacityTextView.setText(event.getCapacity());
-        }
+        if (event.getCapacity().equalsIgnoreCase("-1")) { eventCapacityTextView.setText(R.string.not_specified); }
+        else { eventCapacityTextView.setText(event.getCapacity()); }
 
         String eventPosterURL = event.getEventPosterURL();
         if (eventPosterURL != null && !eventPosterURL.isEmpty()) {
             Glide.with(this).load(eventPosterURL).apply(new RequestOptions().placeholder(R.drawable.no_poster)).into(eventPosterImageView);
-        } else {
-            Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView);
         }
+        else { Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView); }
 
         eventPosterImageView.setOnClickListener(v -> {
             Intent intent = new Intent(EventDetailsActivity.this, FullScreenImageActivity.class);
@@ -343,7 +333,12 @@ public class EventDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //For real-time attendance
+    /**
+     * Updates the attendee count and sends milestone notifications if applicable.
+     *
+     * @param count The new attendee count to update.
+     */
+    @SuppressLint("SetTextI18n")
     private void updateAttendeeCount(Integer count) {
         runOnUiThread(() -> currentAttendeesTextView.setText(count.toString()));
         if ((count % 10 == 0) && count != previousCount && count != 0) {

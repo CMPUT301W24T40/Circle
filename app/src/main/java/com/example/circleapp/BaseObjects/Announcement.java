@@ -3,10 +3,6 @@ package com.example.circleapp.BaseObjects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * This class represents an announcement object.
  */
@@ -17,21 +13,6 @@ public class Announcement implements Parcelable {
     private String timestamp;
 
     // Constructors
-
-    /**
-     * Constructs an Announcement object with specified parameters.
-     *
-     * @param ID         Unique identifier for the announcement
-     * @param title      Title of the announcement
-     * @param content    Content of the announcement
-     * @param timestamp  Timestamp of the announcement
-     */
-    public Announcement(String ID, String title, String content, String timestamp) {
-        this.ID = ID;
-        this.title = title;
-        this.content = content;
-        this.timestamp = timestamp;
-    }
 
     /**
      * Constructs an Announcement object with no parameters.
@@ -74,15 +55,6 @@ public class Announcement implements Parcelable {
      */
     public String getAnnouncementID() {
         return ID;
-    }
-
-    /**
-     * Gets the title of the announcement.
-     *
-     * @return The title of the announcement.
-     */
-    public String getTitle() {
-        return title;
     }
 
     /**
@@ -137,16 +109,6 @@ public class Announcement implements Parcelable {
      */
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    /**
-     * Generates a timestamp string using the current date and time.
-     *
-     * @return The generated timestamp string.
-     */
-    private String generateTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return sdf.format(new Date());
     }
 
     // Parcelable methods

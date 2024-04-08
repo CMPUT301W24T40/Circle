@@ -19,6 +19,7 @@ import com.example.circleapp.R;
 import com.example.circleapp.SendNotificationActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * A fragment to display the list of checked-in users for an event.
@@ -52,8 +53,8 @@ public class CheckedInUsersFragment extends Fragment {
         adapter = new AttendeeAdapter(getContext(), new ArrayList<>(), true);
         listView.setAdapter(adapter);
 
-        event = getArguments().getParcelable("event");
-        loadCheckedInUsers(event.getID());
+        event = requireArguments().getParcelable("event");
+        loadCheckedInUsers(Objects.requireNonNull(event).getID());
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
             Attendee attendee = (Attendee) parent.getItemAtPosition(position);

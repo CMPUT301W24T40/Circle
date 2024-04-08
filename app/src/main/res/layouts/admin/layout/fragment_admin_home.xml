@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="120dp"
         android:layout_marginTop="200dp"
-        android:text="Browse Profiles" />
+        android:text="@string/browse_profiles" />
 
     <Button
         android:id="@+id/browse_events_button"
@@ -32,7 +32,7 @@
         android:layout_below="@id/browse_users_button"
         android:layout_marginStart="120dp"
         android:layout_marginTop="100dp"
-        android:text="Browse Events" />
+        android:text="@string/browse_events" />
 
     <Button
         android:id="@+id/browse_images_button"
@@ -41,6 +41,6 @@
         android:layout_below="@id/browse_events_button"
         android:layout_marginStart="120dp"
         android:layout_marginTop="100dp"
-        android:text="Browse Images" />
+        android:text="@string/browse_images" />
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.circleapp.EventDisplay;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -159,7 +160,7 @@ public class CreateEventActivity extends AppCompatActivity {
         int currYear = c.get(Calendar.YEAR);
         int currMonth = c.get(Calendar.MONTH);
         int currDay = c.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
+        @SuppressLint("DefaultLocale") DatePickerDialog dialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) ->
                 datePicker.setText(String.format("%s/%02d/%02d", year, month + 1, dayOfMonth)), currYear, currMonth, currDay);
         dialog.show();
     }
@@ -168,7 +169,7 @@ public class CreateEventActivity extends AppCompatActivity {
      * This method is used to choose and display the time the user wants for their event.
      */
     private void openTimeDialog() {
-        TimePickerDialog dialog = new TimePickerDialog(this, (view, hourOfDay, minute) ->
+        @SuppressLint("DefaultLocale") TimePickerDialog dialog = new TimePickerDialog(this, (view, hourOfDay, minute) ->
                 timePicker.setText(String.format("%02d:%02d", hourOfDay, minute)), 12, 00, true);
         dialog.show();
     }

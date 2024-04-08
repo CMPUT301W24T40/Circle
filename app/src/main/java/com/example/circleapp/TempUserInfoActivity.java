@@ -1,30 +1,19 @@
 package com.example.circleapp;
 
-import static com.example.circleapp.Profile.MakeProfileActivity.PICK_IMAGE;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.Firebase.ImageManager;
-
-import java.util.Objects;
 
 /**
  * This activity allows the user to input temporary user information.
@@ -93,9 +82,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
             user.setLocationLatitude(NULL_DOUBLE);
             user.setLocationLongitude(NULL_DOUBLE);
 
-            if (selectedImageUri != null) {
-                imageManager.uploadProfilePictureImage(selectedImageUri);
-            }
+            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
 
             firebaseManager.addNewUser(user);
 

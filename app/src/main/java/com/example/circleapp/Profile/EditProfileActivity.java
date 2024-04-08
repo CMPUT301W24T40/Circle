@@ -87,9 +87,7 @@ public class EditProfileActivity extends AppCompatActivity {
             int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
             profilePic.setImageResource(defaultImageResource);
         }
-        else {
-            Glide.with(this).load(user.getProfilePic()).into(profilePic);
-        }
+        else { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
 
         imageManager = new ImageManager(this, profilePic);
 
@@ -142,9 +140,7 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setHasProfile(true);
             ProfileFragment.ProfileMade = true;
 
-            if (selectedImageUri != null) {
-                imageManager.uploadProfilePictureImage(selectedImageUri);
-            }
+            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
 
             firebaseManager.editUser(user, null);
 
