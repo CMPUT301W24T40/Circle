@@ -8,10 +8,13 @@
       <entry key="EventDetailsActivityTest">
         <State />
       </entry>
+      <entry key="GenerateQRActivityTest">
+        <State />
+      </entry>
       <entry key="GuestlistActivityTest">
         <State />
       </entry>
-      <entry key="MakeProfileActivityTest">
+      <entry key="ProfileFragmentTest">
         <State />
       </entry>
       <entry key="app">
