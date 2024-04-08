@@ -36,7 +36,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     final double NULL_DOUBLE = -999999999;
     Uri selectedImageUri;
     Attendee user;
-    private static final int PICK_IMAGE = 1;
+    public static final int PICK_IMAGE = 1;
 
     /**
      * When this Activity is created, a user can add their details to make a profile on the app.
@@ -115,8 +115,9 @@ public class MakeProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.settoken(token);
-                        user.setHasProfile(true);
                     });
+
+            user.setHasProfile(true);
 
             if (selectedImageUri != null) {
                 imageManager.uploadProfilePictureImage(selectedImageUri);
@@ -145,7 +146,7 @@ public class MakeProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
+            selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
             if (user != null) {
                 user.setprofilePic(String.valueOf(selectedImageUri));
             }
