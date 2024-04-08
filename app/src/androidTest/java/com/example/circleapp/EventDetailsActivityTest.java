@@ -37,7 +37,7 @@ public class EventDetailsActivityTest {
      */
     @Test
     public void testUIVisibility() {
-        // Check for the visibility of various UI components
+        // Check for the visibility
         Espresso.onView(ViewMatchers.withId(R.id.event_details_name)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
         Espresso.onView(ViewMatchers.withId(R.id.event_details_location)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
         Espresso.onView(ViewMatchers.withId(R.id.event_details_date)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
