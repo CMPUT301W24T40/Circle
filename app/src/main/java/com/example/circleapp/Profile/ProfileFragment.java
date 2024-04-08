@@ -31,6 +31,7 @@ public class ProfileFragment extends Fragment {
 
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
             if (exists) {
+                ProfileMade = true;
                 navigateToUserProfileFragment();
             } else {
                 if (isAdded() && getActivity() != null) {

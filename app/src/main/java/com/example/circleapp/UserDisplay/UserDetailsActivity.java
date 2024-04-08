@@ -57,7 +57,15 @@ public class UserDetailsActivity extends AppCompatActivity {
                 email.setText(user.getEmail());
                 homepage.setText(user.getHomepage());
 
-                if (user.getProfilePic() != null) { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
+                if (user.getProfilePic() != null) {
+                    if (!user.getProfilePic().toString().equals("null")) {
+                        Glide.with(this).load(user.getProfilePic()).into(profilePic);
+                    } else {
+                        char firstLetter = user.getFirstName().toLowerCase().charAt(0);
+                        int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
+                        profilePic.setImageResource(defaultImageResource);
+                    }
+                }
                 else {
                     char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                     int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
