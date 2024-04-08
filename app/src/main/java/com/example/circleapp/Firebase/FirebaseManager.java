@@ -495,6 +495,7 @@ public class FirebaseManager {
                     }
                 } else {
                     Log.d("Firestore", "No documents found with the provided check-in ID");
+                    callback.onCallback(null);
                 }
             } else {
                 Log.d("Firestore", "Error getting documents: ", task.getException());

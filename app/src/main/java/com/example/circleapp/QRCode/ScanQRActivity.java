@@ -112,11 +112,12 @@ public class ScanQRActivity extends AppCompatActivity {
     private void handleScanResult(IntentResult result) {
         String[] parts = result.getContents().split("~");
         String qrType = parts[0];
-        String eventID = parts[1];
 
         if (CHECK_IN.equals(qrType)) {
+            String eventID = parts.length > 1 ? parts[1] : "";
             handleCheckInScan(eventID);
         } else if (DETAILS.equals(qrType)) {
+            String eventID = parts.length > 1 ? parts[1] : "";
             handleDetailsScan(eventID);
         } else if (ADMIN.equals(qrType)) {
             handleAdminScan();
