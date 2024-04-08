@@ -1,5 +1,7 @@
 package com.example.circleapp;
 
+import static com.example.circleapp.Profile.MakeProfileActivity.PICK_IMAGE;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.Firebase.ImageManager;
 
 import java.util.Objects;
 
@@ -30,7 +34,10 @@ public class TempUserInfoActivity extends AppCompatActivity {
     Button confirmButton;
     ImageView profilePic;
     Uri selectedImageUri;
+    final double NULL_DOUBLE = -999999999;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
+    ImageManager imageManager;
+    Attendee user;
 
     /**
      * When this Activity is created,
@@ -49,7 +56,8 @@ public class TempUserInfoActivity extends AppCompatActivity {
         confirmButton = findViewById(R.id.confirm_edit_button);
         profilePic = findViewById(R.id.edit_pfp);
 
-        selectedImageUri = null;
+        imageManager = new ImageManager(this, profilePic);
+
         profilePic.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(TempUserInfoActivity.this);
             builder.setTitle("Profile Picture Options");
@@ -57,7 +65,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        selectImage();
+                        imageManager.selectImage();
                         break;
                     case 1:
                         break;
@@ -79,8 +87,14 @@ public class TempUserInfoActivity extends AppCompatActivity {
                 return;
             }
 
-            Attendee user = new Attendee(ID, firstName, null, null, null, null, selectedImageUri);
+            user = new Attendee(ID, firstName, null, null, null, null, selectedImageUri);
             user.setHasProfile(false);
+            user.setLocationLatitude(NULL_DOUBLE);
+            user.setLocationLongitude(NULL_DOUBLE);
+
+            if (selectedImageUri != null) {
+                imageManager.uploadProfilePictureImage(selectedImageUri);
+            }
 
             firebaseManager.addNewUser(user);
 
@@ -90,27 +104,20 @@ public class TempUserInfoActivity extends AppCompatActivity {
     }
 
     /**
-     * Method to launch an intent to select an image from the device's gallery.
+     * Handles the result of an activity launched for a result.
+     *
+     * @param requestCode The request code passed to startActivityForResult().
+     * @param resultCode  The result code returned by the child activity.
+     * @param data        The data returned by the child activity.
      */
-    public void selectImage(){
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        imagePickResultLauncher.launch(intent);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+            this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
+            if (user != null) {
+                user.setprofilePic(String.valueOf(selectedImageUri));
+            }
+        }
     }
-
-    /**
-     * Activity result launcher for handling image selection result.
-     */
-    ActivityResultLauncher<Intent> imagePickResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && Objects.requireNonNull(result.getData()).getData() != null) {
-                    selectedImageUri = result.getData().getData();
-                    Glide.with(this).load(selectedImageUri).apply(RequestOptions.circleCropTransform()).into(profilePic);
-                } else {
-                    Toast.makeText(
-                            TempUserInfoActivity.this,
-                            "Image Not Selected",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
 }

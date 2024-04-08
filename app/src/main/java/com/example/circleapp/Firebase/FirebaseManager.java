@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.Profile.ProfileExistenceCallback;
 import com.example.circleapp.UserDisplay.CheckedInAttendeesCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -191,7 +192,7 @@ public class FirebaseManager {
      * @param callback The callback to execute with the boolean representing if the
      *                 profile exists or not.
      */
-    public void checkProfileExists(String ID, UserDocumentCallback callback) {
+    public void checkProfileExists(String ID, ProfileExistenceCallback callback) {
         DocumentReference userDocRef = usersRef.document(ID);
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -199,7 +200,9 @@ public class FirebaseManager {
                 if (document.exists()) {
                     String tempUserField = Objects.requireNonNull(document.get("hasProfile")).toString();
                     boolean tempUser = Boolean.parseBoolean(tempUserField);
-                    callback.onCallback(tempUser);
+                    callback.onProfileExistenceChecked(tempUser);
+                } else {
+                    callback.onProfileExistenceChecked(false);
                 }
             }
         });
