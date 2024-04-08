@@ -35,6 +35,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
     ImageView profilePic;
     Uri selectedImageUri;
     final double NULL_DOUBLE = -999999999;
+    private static final int PICK_PROFILE_IMAGE = 123;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
@@ -65,7 +66,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectImage();
+                        imageManager.selectProfilePicImage();
                         break;
                     case 1:
                         break;
@@ -113,10 +114,15 @@ public class TempUserInfoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
             this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
             if (user != null) {
                 user.setprofilePic(String.valueOf(selectedImageUri));
+
+                getBaseContext().getContentResolver().takePersistableUriPermission(
+                        selectedImageUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                );
             }
         }
     }

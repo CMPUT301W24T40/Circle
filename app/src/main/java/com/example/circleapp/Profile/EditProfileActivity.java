@@ -40,7 +40,7 @@ public class EditProfileActivity extends AppCompatActivity {
     Attendee user;
     Uri selectedImageUri;
     final double NULL_DOUBLE = -999999999;
-    private static final int PICK_IMAGE = 1;
+    private static final int PICK_PROFILE_IMAGE = 123;
 
     /**
      * User can input changes to their profile details upon this Activity being created.
@@ -100,7 +100,7 @@ public class EditProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectImage();
+                        imageManager.selectProfilePicImage();
                         break;
                     case 1:
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
@@ -140,6 +140,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     });
 
             user.setHasProfile(true);
+            ProfileFragment.ProfileMade = true;
 
             if (selectedImageUri != null) {
                 imageManager.uploadProfilePictureImage(selectedImageUri);
@@ -167,9 +168,14 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
             selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
             user.setprofilePic(String.valueOf(selectedImageUri));
+
+            getBaseContext().getContentResolver().takePersistableUriPermission(
+                    selectedImageUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+            );
         }
      }
 }
