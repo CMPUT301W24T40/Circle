@@ -65,6 +65,11 @@ public class MakeProfileActivity extends AppCompatActivity {
 
         imageManager = new ImageManager(this, profilePic);
 
+        String ID = firebaseManager.getPhoneID();
+        user = new Attendee(ID, null, null, null, null, null, null);
+        user.setLocationLatitude(NULL_DOUBLE);
+        user.setLocationLongitude(NULL_DOUBLE);
+
         profilePic.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(MakeProfileActivity.this);
             builder.setTitle("Profile Picture Options");
@@ -87,7 +92,6 @@ public class MakeProfileActivity extends AppCompatActivity {
             String phoneNumber = phoneNumberEditText.getText().toString();
             String email = emailEditText.getText().toString();
             String homepage = homepageEditText.getText().toString();
-            String ID = firebaseManager.getPhoneID();
 
             if (firstName.isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MakeProfileActivity.this);
@@ -111,7 +115,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.settoken(token);
-                        user.sethasProfile(true);
+                        user.setHasProfile(true);
                     });
 
             if (selectedImageUri != null) {
@@ -142,7 +146,9 @@ public class MakeProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
             this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
-            user.setprofilePic(String.valueOf(selectedImageUri));
+            if (user != null) {
+                user.setprofilePic(String.valueOf(selectedImageUri));
+            }
         }
     }
 }

@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.SetOptions;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -320,7 +319,7 @@ public class FirebaseManager {
                 data.put("phoneNumber", user.getPhoneNumber());
                 data.put("profilePic", String.valueOf(user.getProfilePic()));
                 data.put("homepage", String.valueOf(user.getHomepage()));
-                data.put("hasProfile", String.valueOf(user.hasProfile()));
+                data.put("hasProfile", user.getHasProfile());
                 data.put("token", user.getToken());
                 data.put("locationLatitude", user.getLocationLatitude());
                 data.put("locationLongitude", user.getLocationLongitude());
@@ -351,7 +350,7 @@ public class FirebaseManager {
                     updates.put("phoneNumber", user.getPhoneNumber());
                     updates.put("profilePic", String.valueOf(user.getProfilePic()));
                     updates.put("homepage", String.valueOf(user.getHomepage()));
-                    updates.put("hasProfile", String.valueOf(user.hasProfile()));
+                    updates.put("hasProfile", user.getHasProfile());
                     updates.put("token", user.getToken());
                     if ((user.getLocationLatitude() == NULL_DOUBLE)
                             && (user.getLocationLongitude() == NULL_DOUBLE)) {
@@ -616,7 +615,7 @@ public class FirebaseManager {
                         attendee.setLocationLatitude(NULL_DOUBLE);
                         attendee.setLocationLongitude(NULL_DOUBLE);
                     }
-                    editUser(attendee, () -> userDocRef.get().addOnSuccessListener(updatedDocument -> checkedInUsersRef.document(phoneID).set(updatedDocument.getData())
+                    editUser(attendee, () -> userDocRef.get().addOnSuccessListener(updatedDocument -> checkedInUsersRef.document(phoneID).set(Objects.requireNonNull(updatedDocument.getData()))
                             .addOnSuccessListener(aVoid -> performCheckIn(eventDocRef, userEventsRef, checkInsRef, location))));
                 }
             }

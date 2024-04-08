@@ -160,7 +160,7 @@ public class Attendee implements Parcelable {
      *
      * @return True if user doesn't have a profile, false otherwise
      */
-    public boolean hasProfile() {return hasProfile; }
+    public boolean getHasProfile() {return hasProfile; }
 
     /**
      * Gets the token of the attendee.
@@ -256,7 +256,7 @@ public class Attendee implements Parcelable {
      *
      * @param hasProfile True if user doesn't have a profile, false otherwise
      */
-    public void sethasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
+    public void setHasProfile(boolean hasProfile) { this.hasProfile = hasProfile; }
 
     /**
      * Sets the token of the attendee.
