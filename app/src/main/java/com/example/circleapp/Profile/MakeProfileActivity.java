@@ -102,7 +102,11 @@ public class MakeProfileActivity extends AppCompatActivity {
                 return;
             }
 
-            user = new Attendee(ID, firstName, lastName, email, phoneNumber, homepage, null);
+            user.setfirstName(firstName);
+            user.setlastName(lastName);
+            user.setphoneNumber(phoneNumber);
+            user.setemail(email);
+            user.sethomepage(homepage);
             user.setLocationLatitude(NULL_DOUBLE);
             user.setLocationLongitude(NULL_DOUBLE);
 
@@ -118,6 +122,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                     });
 
             user.setHasProfile(true);
+            ProfileFragment.ProfileMade = true;
 
             if (selectedImageUri != null) {
                 imageManager.uploadProfilePictureImage(selectedImageUri);

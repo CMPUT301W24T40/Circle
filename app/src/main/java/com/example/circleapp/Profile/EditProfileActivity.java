@@ -137,8 +137,9 @@ public class EditProfileActivity extends AppCompatActivity {
                         String token = task.getResult();
                         Log.d("my token", token);
                         user.settoken(token);
-                        user.setHasProfile(true);
                     });
+
+            user.setHasProfile(true);
 
             if (selectedImageUri != null) {
                 imageManager.uploadProfilePictureImage(selectedImageUri);

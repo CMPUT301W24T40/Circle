@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,6 +82,7 @@ public class StartupProfileFragment extends Fragment {
 
         makeProfile.setOnClickListener(v -> {
             Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
+            intent.putExtra("user", ourUser);
             launcher.launch(intent);
         });
 
