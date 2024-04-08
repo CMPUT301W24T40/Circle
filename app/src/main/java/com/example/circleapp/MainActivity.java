@@ -1,26 +1,21 @@
 package com.example.circleapp;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.Manifest;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.splashscreen.SplashScreen;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.EventDisplay.BrowseEventsFragment;
 import com.example.circleapp.EventDisplay.YourEventsFragment;
 import com.example.circleapp.Firebase.FirebaseManager;
@@ -59,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
         askNotificationPermission();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
