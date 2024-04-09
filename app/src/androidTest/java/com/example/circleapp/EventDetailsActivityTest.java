@@ -9,7 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.EventDisplay.EventDetailsActivity;
+import com.example.circleapp.EventDisplay.CreatedEventDetailsActivity;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class EventDetailsActivityTest {
         mockEvent.setEventPosterURL("http://example.com/poster.jpg");
 
         // Create an intent that includes mock event
-        Intent intent = new Intent(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext(), EventDetailsActivity.class);
+        Intent intent = new Intent(androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getTargetContext(), CreatedEventDetailsActivity.class);
         intent.putExtra("event", mockEvent);
 
         ActivityScenario.launch(intent);

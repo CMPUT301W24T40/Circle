@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.EventDisplay.CreatedEventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 import com.example.circleapp.SendNotificationActivity;
@@ -40,7 +41,7 @@ public class RegisteredUsersFragment extends Fragment {
      * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here.
      * @return                   Return the View for the fragment's UI, or null.
-     * @see com.example.circleapp.EventDisplay.EventDetailsActivity
+     * @see CreatedEventDetailsActivity
      * @see AttendeeAdapter
      */
     @Nullable

@@ -12,8 +12,6 @@ import androidx.annotation.Nullable;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
-import com.example.circleapp.Profile.ProfileExistenceCallback;
-import com.example.circleapp.UserDisplay.CheckedInAttendeesCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -194,7 +192,7 @@ public class FirebaseManager {
      * @param callback The callback to execute with the boolean representing if the
      *                 profile exists or not.
      */
-    public void checkProfileExists(String ID, ProfileExistenceCallback callback) {
+    public void checkProfileExists(String ID, UserDocumentCallback callback) {
         DocumentReference userDocRef = usersRef.document(ID);
         userDocRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -202,9 +200,7 @@ public class FirebaseManager {
                 if (document.exists()) {
                     String tempUserField = Objects.requireNonNull(document.get("hasProfile")).toString();
                     boolean tempUser = Boolean.parseBoolean(tempUserField);
-                    callback.onProfileExistenceChecked(tempUser);
-                } else {
-                    callback.onProfileExistenceChecked(false);
+                    callback.onCallback(tempUser);
                 }
             }
         });
@@ -267,7 +263,7 @@ public class FirebaseManager {
      *
      * @param eventID  The ID of the event we want to find the checked-in users for
      */
-    public void getCheckedInAttendees(String eventID, CheckedInAttendeesCallback callback) {
+    public void getCheckedInAttendees(String eventID, AttendeesCallback callback) {
         ArrayList<Attendee> checkedInAttendeesList = new ArrayList<>();
 
         eventsRef.document(eventID).collection("checkedInUsers").get().addOnCompleteListener(task -> {
@@ -276,7 +272,7 @@ public class FirebaseManager {
                     Attendee attendee = document.toObject(Attendee.class);
                     checkedInAttendeesList.add(attendee);
                 }
-                callback.onAttendeesReceived(checkedInAttendeesList);
+                callback.onCallback(checkedInAttendeesList);
             }
         });
     }
@@ -564,7 +560,8 @@ public class FirebaseManager {
             }
         });
     }
-/**
+
+    /**
      * Checks if a user is registered for a specific event.
      *
      * @param userID The ID of the user to check registration for.

@@ -143,6 +143,7 @@ public class UserProfileFragment extends Fragment {
                 FragmentManager fragmentManager = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
+                fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             });
         }

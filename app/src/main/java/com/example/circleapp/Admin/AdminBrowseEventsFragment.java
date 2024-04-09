@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.EventDisplay.CreatedEventDetailsActivity;
 import com.example.circleapp.EventDisplay.EventAdapter;
-import com.example.circleapp.EventDisplay.EventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.R;
 
@@ -42,7 +42,7 @@ public class AdminBrowseEventsFragment extends Fragment {
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
      *                           saved state as given here
      * @return                   The View for the fragment's UI, or null
-     * @see EventDetailsActivity
+     * @see CreatedEventDetailsActivity
      * @see EventAdapter
      * @see FirebaseManager
      */
@@ -89,7 +89,7 @@ public class AdminBrowseEventsFragment extends Fragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Select one of the following options:");
         builder.setPositiveButton("View event details", (dialog, which) -> {
-            Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+            Intent intent = new Intent(getContext(), CreatedEventDetailsActivity.class);
             intent.putExtra("event", event);
             startActivity(intent);
         });

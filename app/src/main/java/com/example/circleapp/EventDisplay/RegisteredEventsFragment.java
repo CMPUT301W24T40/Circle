@@ -33,7 +33,7 @@ public class RegisteredEventsFragment extends Fragment {
      * @param container          If non-null, this is the parent view that the fragment's UI should be attached to. The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as given here
      * @return                   Return the View for the fragment's UI, or null
-     * @see EventDetailsActivity
+     * @see RegisteredEventDetailsActivity
      * @see EventAdapter
      * @see FirebaseManager
      */
@@ -82,7 +82,7 @@ public class RegisteredEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), AttendingEventsDetailsActivity.class);
+        Intent intent = new Intent(getContext(), RegisteredEventDetailsActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);
     }

@@ -50,6 +50,10 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        firebaseManager.isAdmin(exists -> {
+            if (exists) { isAdmin = true; }
+        });
+
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
             if (exists) {
                 ProfileMade = true;
