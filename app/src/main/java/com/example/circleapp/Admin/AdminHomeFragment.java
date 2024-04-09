@@ -1,11 +1,13 @@
 package com.example.circleapp.Admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -54,6 +56,21 @@ public class AdminHomeFragment extends Fragment {
             ((MainActivity) requireActivity()).setNavBarVisibility(true);
             replaceFragment(new UserProfileFragment());
         });
+
+        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            /**
+             * Called when the back button is pressed. This method is used to navigate back to the
+             * MainActivity when the back button is pressed.
+             */
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(requireActivity(), MainActivity.class);
+                startActivity(intent);
+            }
+        };
+
+        // Add the callback to the OnBackPressedDispatcher
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
         return view;
     }
