@@ -84,5 +84,6 @@
     <string name="admin_view">Admin View</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="image_type">Image Type</string>
+    <string name="user_view">User View</string>
 
 </resources>

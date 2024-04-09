@@ -16,9 +16,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.example.circleapp.EventDisplay.BrowseEventsDetailsActivity;
+import com.example.circleapp.EventDisplay.BrowseEventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.MainActivity;
+import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -148,7 +149,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
     private void handleDetailsScan(String eventID) {
         manager.getEvent(eventID, event -> {
-            Intent intent = new Intent(this, BrowseEventsDetailsActivity.class);
+            Intent intent = new Intent(this, BrowseEventDetailsActivity.class);
             intent.putExtra("event", event);
             startActivity(intent);
             finish();
@@ -190,6 +191,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
                 manager.isAdmin(exists -> {
                     if (exists) {
+                        ProfileFragment.isAdmin = true;
                         Intent intent = new Intent(ScanQRActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

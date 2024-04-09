@@ -37,7 +37,7 @@ import java.util.Locale;
 /**
  * This class is used to display details of events the user has registered for or created.
  */
-public class EventDetailsActivity extends AppCompatActivity {
+public class CreatedEventDetailsActivity extends AppCompatActivity {
     Event event;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     Button generateQRButton;
@@ -58,17 +58,16 @@ public class EventDetailsActivity extends AppCompatActivity {
     public static int previousCount;
 
     /**
-     * When this Activity is created, a user can view the details of the event they clicked on
-     * (clicked on from either CreatedEventsFragment or RegisteredEventsFragment). Within this page, there
-     * will be a button to generate a QR code that the user can send to other users to share the event
-     * details. There will also be a list of announcements for the event and a back button that will
-     * send the user back to the fragment this activity was launched from.
+     * When this Activity is created, a user can view the details of the event they
+     * clicked on from CreatedEventsFragment . Within this page, there will be a button to generate
+     * a QR code that the user can send to other users to share the event details. There will also be
+     * a list of announcements for the event and a back button that will send the user back to the
+     * CreatedEventsFragment.
      *
      * @param savedInstanceState If the activity is being re-initialized after previously being shut
      *                           down then this Bundle contains the data it most recently supplied in
      *                           onSaveInstanceState(Bundle)
      * @see CreatedEventsFragment
-     * @see RegisteredEventsFragment
      * @see GenerateQRActivity
      * @see AnnouncementAdapter
      */
@@ -76,7 +75,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_details);
+        setContentView(R.layout.activity_created_event_details);
         event = getIntent().getParcelableExtra("event");
         assert event != null;
         String eventId = event.getID();
@@ -97,7 +96,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             announcementsList.clear();
             announcementsList.addAll(announcements);
 
-            announcementAdapter = new AnnouncementAdapter(EventDetailsActivity.this, announcementsList);
+            announcementAdapter = new AnnouncementAdapter(CreatedEventDetailsActivity.this, announcementsList);
             listView.setAdapter(announcementAdapter);
 
             if (announcementsList.isEmpty()) {
@@ -136,7 +135,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         else { Glide.with(this).load(R.drawable.no_poster).into(eventPosterImageView); }
 
         eventPosterImageView.setOnClickListener(v -> {
-            Intent intent = new Intent(EventDetailsActivity.this, FullScreenImageActivity.class);
+            Intent intent = new Intent(CreatedEventDetailsActivity.this, FullScreenImageActivity.class);
             intent.putExtra("image_url", event.getEventPosterURL());
             startActivity(intent);
         });
@@ -244,14 +243,14 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
 
                         announcementAdapter.notifyDataSetChanged();
-                        Toast.makeText(EventDetailsActivity.this, "Announcement updated successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatedEventDetailsActivity.this, "Announcement updated successfully", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(EventDetailsActivity.this, "Failed to update announcement", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatedEventDetailsActivity.this, "Failed to update announcement", Toast.LENGTH_SHORT).show();
                     }
                     dialog.dismiss();
                 });
             } else {
-                Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreatedEventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -268,8 +267,8 @@ public class EventDetailsActivity extends AppCompatActivity {
         firebaseManager.deleteAnnouncement(event.getID(), announcement.getAnnouncementID(), () -> {
             announcementsList.remove(announcement);
             announcementAdapter.notifyDataSetChanged();
-            Toast.makeText(EventDetailsActivity.this, "Announcement deleted successfully", Toast.LENGTH_SHORT).show();
-        }, errorMessage -> Toast.makeText(EventDetailsActivity.this, "Failed to delete announcement: " + errorMessage, Toast.LENGTH_SHORT).show());
+            Toast.makeText(CreatedEventDetailsActivity.this, "Announcement deleted successfully", Toast.LENGTH_SHORT).show();
+        }, errorMessage -> Toast.makeText(CreatedEventDetailsActivity.this, "Failed to delete announcement: " + errorMessage, Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -300,12 +299,12 @@ public class EventDetailsActivity extends AppCompatActivity {
                         announcementsList.add(announcement);
                         announcementAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(EventDetailsActivity.this, "Failed to add announcement", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreatedEventDetailsActivity.this, "Failed to add announcement", Toast.LENGTH_SHORT).show();
                     }
                     dialog.dismiss();
                 });
             } else {
-                Toast.makeText(EventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CreatedEventDetailsActivity.this, "Please enter an announcement", Toast.LENGTH_SHORT).show();
             }
             for (Attendee attendee : attendees) {
                 assert attendee != null;

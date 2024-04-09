@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.circleapp.MainActivity;
+import com.example.circleapp.Profile.UserProfileFragment;
 import com.example.circleapp.R;
 
 /**
@@ -19,6 +21,7 @@ public class AdminHomeFragment extends Fragment {
     Button browseUsers;
     Button browseEvents;
     Button browseImages;
+    Button userView;
 
     /**
      * Called to have the fragment instantiate its user interface view. The fragment simply displays
@@ -41,12 +44,16 @@ public class AdminHomeFragment extends Fragment {
         browseUsers = view.findViewById(R.id.browse_users_button);
         browseEvents = view.findViewById(R.id.browse_events_button);
         browseImages = view.findViewById(R.id.browse_images_button);
+        userView = view.findViewById(R.id.user_view_button);
 
         browseUsers.setOnClickListener(v -> replaceFragment(new AdminBrowseUsersFragment()));
-
         browseEvents.setOnClickListener(v -> replaceFragment(new AdminBrowseEventsFragment()));
-
         browseImages.setOnClickListener(v -> replaceFragment(new AdminBrowseImagesFragment()));
+
+        userView.setOnClickListener(v -> {
+            ((MainActivity) requireActivity()).setNavBarVisibility(true);
+            replaceFragment(new UserProfileFragment());
+        });
 
         return view;
     }

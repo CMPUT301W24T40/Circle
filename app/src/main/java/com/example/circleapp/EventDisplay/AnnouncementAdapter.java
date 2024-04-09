@@ -25,8 +25,8 @@ public class AnnouncementAdapter extends ArrayAdapter<Announcement> {
      *
      * @param context The context
      * @param announcements  The list of announcements
-     * @see BrowseEventsDetailsActivity
-     * @see EventDetailsActivity
+     * @see BrowseEventDetailsActivity
+     * @see CreatedEventDetailsActivity
      */
     public AnnouncementAdapter(Context context, ArrayList<Announcement> announcements){super(context, 0, announcements);}
 

@@ -41,7 +41,7 @@ public class BrowseEventsFragment extends Fragment {
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
      *                           saved state as given here
      * @return                   The View for the fragment's UI, or null
-     * @see EventDetailsActivity
+     * @see BrowseEventDetailsActivity
      * @see CreateEventActivity
      * @see EventAdapter
      * @see FirebaseManager
@@ -100,7 +100,7 @@ public class BrowseEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), BrowseEventsDetailsActivity.class);
+        Intent intent = new Intent(getContext(), BrowseEventDetailsActivity.class);
         intent.putExtra("event", event);
         startActivity(intent);
     }

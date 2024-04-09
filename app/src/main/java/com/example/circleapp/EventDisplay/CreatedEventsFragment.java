@@ -38,7 +38,7 @@ public class CreatedEventsFragment extends Fragment {
      * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous
      *                           saved state as given here.
      * @return                   Return the View for the fragment's UI, or null
-     * @see EventDetailsActivity
+     * @see CreatedEventDetailsActivity
      * @see EventAdapter
      * @see FirebaseManager
      */
@@ -77,7 +77,7 @@ public class CreatedEventsFragment extends Fragment {
      * @param event The clicked event
      */
     private void eventClicked(Event event) {
-        Intent intent = new Intent(getContext(), EventDetailsActivity.class);
+        Intent intent = new Intent(getContext(), CreatedEventDetailsActivity.class);
         intent.putExtra("source", "CreatedEventsFragment");
         intent.putExtra("event", event);
         startActivity(intent);
