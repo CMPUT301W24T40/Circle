@@ -157,6 +157,9 @@ public class UserProfileFragment extends Fragment {
         loadProfileImage();
     }
 
+    /**
+     * Loads the custom profile image of the user, default PFP if no custom image is chosen.
+     */
     private void loadProfileImage() {
         if (isAdded() && getActivity() != null) {
             String pfpString = sharedPreferences.getString("user_profile_pic", null);

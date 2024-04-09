@@ -33,7 +33,8 @@ public class UserDetailsActivity extends AppCompatActivity {
      *                           down then this Bundle contains the data it most recently supplied in
      *                           onSaveInstanceState(Bundle)
      *
-     * @see GuestlistActivity
+     * @see RegisteredUsersFragment
+     * @see CheckedInUsersFragment
      * @see com.example.circleapp.Admin.AdminBrowseUsersFragment
      */
     @Override
