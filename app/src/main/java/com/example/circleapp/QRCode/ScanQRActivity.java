@@ -74,6 +74,9 @@ public class ScanQRActivity extends AppCompatActivity {
         integrator.initiateScan();
     }
 
+    /**
+     * Sets up the onBackPressed callback to finish the activity when back button is pressed.
+     */
     private void setupOnBackPressedCallback() {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -110,6 +113,11 @@ public class ScanQRActivity extends AppCompatActivity {
         handleScanResult(result);
     }
 
+    /**
+     * Handles the result of the QR code scan based on the type of QR code.
+     *
+     * @param result The result of the QR code scan.
+     */
     private void handleScanResult(IntentResult result) {
         String[] parts = result.getContents().split("~");
         String qrType = parts[0];
@@ -126,6 +134,11 @@ public class ScanQRActivity extends AppCompatActivity {
         else { handleCheckInIDScan(result.getContents()); }
     }
 
+    /**
+     * Handles scanning result of a check-in code.
+     *
+     * @param eventID The ID of the event.
+     */
     private void handleCheckInScan(String eventID) {
         manager.getEvent(eventID, event -> {
             if (event == null) {
@@ -147,6 +160,11 @@ public class ScanQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles scanning result of a event details code.
+     *
+     * @param eventID The ID of the event.
+     */
     private void handleDetailsScan(String eventID) {
         manager.getEvent(eventID, event -> {
             Intent intent = new Intent(this, BrowseEventDetailsActivity.class);
@@ -156,6 +174,11 @@ public class ScanQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles scanning result of a check-in ID.
+     *
+     * @param checkInID The check-in ID.
+     */
     private void handleCheckInIDScan(String checkInID) {
         manager.getEventByCheckInID(checkInID, event -> {
             if (event == null) {
@@ -177,6 +200,9 @@ public class ScanQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles scanning result of an admin code.
+     */
     private void handleAdminScan() {
         runOnUiThread(() -> {
             View pwordView = getLayoutInflater().inflate(R.layout.admin_password_entry, null);
@@ -208,12 +234,20 @@ public class ScanQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Starts TempUserInfoActivity.
+     */
     private void startTempUserInfoActivity() {
         Intent intent = new Intent(ScanQRActivity.this, TempUserInfoActivity.class);
         startActivity(intent);
         showToastAndFinish("User does not exist");
     }
 
+    /**
+     * Retrieves the current location.
+     *
+     * @param eventID The ID of the event.
+     */
     private void getCurrentLocation(String eventID) {
         FusedLocationProviderClient fusedLocationProviderClient;
         if (ActivityCompat.checkSelfPermission(ScanQRActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
@@ -234,10 +268,20 @@ public class ScanQRActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Checks in the event when location is unavailable.
+     *
+     * @param eventID The ID of the event.
+     */
     private void checkInEventWithUnavailableLocation(String eventID) {
         manager.checkInEvent(eventID, null);
     }
 
+    /**
+     * Displays a toast message and finishes the activity.
+     *
+     * @param message The message to be displayed in the toast.
+     */
     private void showToastAndFinish(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
         finish();
