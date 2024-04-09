@@ -52,7 +52,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         event = getIntent().getParcelableExtra("event");
         firebaseManager.getCheckedInAttendees(Objects.requireNonNull(event).getID(), attendees -> {
             checkedInAttendees = attendees;
-            Log.d("mom_attendees", checkedInAttendees.toString());
+            Log.d("Checked-In Attendees", checkedInAttendees.toString());
 
             if (checkedInAttendees.isEmpty()) {
                 Toast.makeText(MapViewActivity.this, "No attendees have checked in yet!", Toast.LENGTH_LONG).show();
@@ -80,9 +80,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
      */
     private void populateMap() {
         for (Attendee attendee : checkedInAttendees) {
-            Log.d("oo", attendee.getFirstName());
             if (attendee.getLocationLatitude() != null && attendee.getLocationLongitude() != null) {
-                Log.d("valid", attendee.getFirstName());
                 LatLng location = new LatLng(attendee.getLocationLatitude(), attendee.getLocationLongitude());
                 attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
                 attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
