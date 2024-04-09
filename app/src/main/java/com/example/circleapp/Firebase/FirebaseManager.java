@@ -372,7 +372,13 @@ public class FirebaseManager {
                     if (onComplete == null) {
                         userDocRef.update(updates)
                                 .addOnSuccessListener(aVoid -> Log.d("Firestore", "Document successfully updated!"));
+
+                        // Makes it so that location fields will not be updated
+                        updates.remove("locationLatitude");
+                        updates.remove("locationLongitude");
+
                         updateRegisteredUser(updates);
+                        updateCheckedInUser(updates);
                     } else {
                         userDocRef.update(updates)
                                 .addOnSuccessListener(aVoid -> {
@@ -401,6 +407,31 @@ public class FirebaseManager {
                     for (DocumentSnapshot document : task.getResult()) {
                         if (document.getId().equals(phoneID)) {
                             DocumentReference userDocRef = registeredUsersCollection.document(phoneID);
+
+                            userDocRef.update(updates);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * When a user edits their profile, this function is used to
+     * update their information for the events they're checked into.
+     *
+     * @param updates The updated information passed by editUser()
+     */
+    public void updateCheckedInUser(Map<String, Object> updates) {
+        getCheckedInEvents(eventsList -> {
+            for (Event event : eventsList) {
+                DocumentReference eventDocRef = eventsRef.document(event.getID());
+                CollectionReference checkedInUsersCollection = eventDocRef.collection("checkedInUsers");
+
+                checkedInUsersCollection.get().addOnCompleteListener(task -> {
+                    for (DocumentSnapshot document : task.getResult()) {
+                        if (document.getId().equals(phoneID)) {
+                            DocumentReference userDocRef = checkedInUsersCollection.document(phoneID);
 
                             userDocRef.update(updates);
                         }
@@ -458,6 +489,23 @@ public class FirebaseManager {
         ArrayList<Event> eventsList = new ArrayList<>();
 
         usersRef.document(phoneID).collection("registeredEvents").get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot document : task.getResult()) {
+                Event event = document.toObject(Event.class);
+                eventsList.add(event);
+            }
+            callback.onCallback(eventsList);
+        });
+    }
+
+    /**
+     * Retrieves checked-in events for the current user from Firestore.
+     *
+     * @param callback The callback to execute with the events list
+     */
+    public void getCheckedInEvents(EventsCallback callback) {
+        ArrayList<Event> eventsList = new ArrayList<>();
+
+        usersRef.document(phoneID).collection("checkedInEvents").get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
                 Event event = document.toObject(Event.class);
                 eventsList.add(event);
