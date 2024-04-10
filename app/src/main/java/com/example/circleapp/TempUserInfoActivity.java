@@ -1,5 +1,6 @@
 package com.example.circleapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,9 +23,10 @@ public class TempUserInfoActivity extends AppCompatActivity {
     EditText firstNameEditText;
     Button confirmButton;
     ImageView profilePic;
+    @Nullable
     Uri selectedImageUri;
     final double NULL_DOUBLE = -999999999;
-    private static final int PICK_PROFILE_IMAGE = 123;
+    private static final int IMAGE_PICK = 1;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
@@ -55,7 +57,7 @@ public class TempUserInfoActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectProfilePicImage();
+                        imageManager.selectImage();
                         break;
                     case 1:
                         break;
@@ -76,17 +78,31 @@ public class TempUserInfoActivity extends AppCompatActivity {
                 dialog.show();
                 return;
             }
+            imageManager.uploadProfilePictureImage(selectedImageUri, new ImageManager.OnImageUploadListener() {
+                @Override
+                public void onUploadSuccess(String downloadUrl) {
+                    user = new Attendee(ID, firstName, null, null, null, null, downloadUrl);
+                    user.setHasProfile(false);
+                    user.setLocationLatitude(NULL_DOUBLE);
+                    user.setLocationLongitude(NULL_DOUBLE);
 
-            user = new Attendee(ID, firstName, null, null, null, null, selectedImageUri);
-            user.setHasProfile(false);
-            user.setLocationLatitude(NULL_DOUBLE);
-            user.setLocationLongitude(NULL_DOUBLE);
+                    firebaseManager.addNewUser(user);
 
-            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
+                    finish();
+                }
 
-            firebaseManager.addNewUser(user);
+                @Override
+                public void onUploadFailure() {
+                    user = new Attendee(ID, firstName, null, null, null, null, null);
+                    user.setHasProfile(false);
+                    user.setLocationLatitude(NULL_DOUBLE);
+                    user.setLocationLongitude(NULL_DOUBLE);
 
-            finish();
+                    firebaseManager.addNewUser(user);
+
+                    finish();
+                }
+            });
         });
 
     }
@@ -101,16 +117,8 @@ public class TempUserInfoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
-            this.selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
-            if (user != null) {
-                user.setprofilePic(String.valueOf(selectedImageUri));
-
-                getBaseContext().getContentResolver().takePersistableUriPermission(
-                        selectedImageUri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION
-                );
-            }
+        if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
+            selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

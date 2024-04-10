@@ -38,9 +38,10 @@ public class EditProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     Attendee user;
+    @Nullable
     Uri selectedImageUri;
     final double NULL_DOUBLE = -999999999;
-    private static final int PICK_PROFILE_IMAGE = 123;
+    private static final int IMAGE_PICK = 1;
 
     /**
      * User can input changes to their profile details upon this Activity being created.
@@ -59,14 +60,13 @@ public class EditProfileActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
         setContentView(R.layout.activity_make_profile);
 
-        String pfpString = sharedPreferences.getString("user_profile_pic", null);
         user = new Attendee(firebaseManager.getPhoneID(),
                 sharedPreferences.getString("user_first_name", null),
                 sharedPreferences.getString("user_last_name", null),
                 sharedPreferences.getString("user_email", null),
                 sharedPreferences.getString("user_phone_number", null),
                 sharedPreferences.getString("user_homepage", null),
-                (pfpString != null) ? Uri.parse(sharedPreferences.getString("user_profile_pic", null)) : null);
+                sharedPreferences.getString("user_profile_pic", null));
 
         firstNameEditText = findViewById(R.id.fname_edit);
         lastNameEditText = findViewById(R.id.lname_edit);
@@ -86,8 +86,12 @@ public class EditProfileActivity extends AppCompatActivity {
             char firstLetter = user.getFirstName().toLowerCase().charAt(0);
             int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
             profilePic.setImageResource(defaultImageResource);
+            selectedImageUri = null;
         }
-        else { Glide.with(this).load(user.getProfilePic()).into(profilePic); }
+        else {
+            Glide.with(this).load(user.getProfilePic()).into(profilePic);
+            selectedImageUri = Uri.parse(user.getProfilePic());
+        }
 
         imageManager = new ImageManager(this, profilePic);
 
@@ -98,12 +102,13 @@ public class EditProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectProfilePicImage();
+                        imageManager.selectImage();
                         break;
                     case 1:
                         char firstLetter = user.getFirstName().toLowerCase().charAt(0);
                         int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", this.getPackageName());
                         profilePic.setImageResource(defaultImageResource);
+                        selectedImageUri = null;
                         user.setprofilePic(null);
                     case 2:
                         break;
@@ -140,17 +145,66 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setHasProfile(true);
             ProfileFragment.ProfileMade = true;
 
-            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
+//            if (selectedImageUri == null) {
+//                imageManager.uploadProfilePictureImage(null, new ImageManager.OnImageUploadListener() {
+//                    @Override
+//                    public void onUploadSuccess(String downloadUrl) {
+//                        // empty since this method wouldn't be used if imageUri is null
+//                    }
+//
+//                    @Override
+//                    public void onUploadFailure() {
+//                        firebaseManager.editUser(user, null);
+//
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable("user", user);
+//                        Intent intent = new Intent();
+//                        intent.putExtras(bundle);
+//
+//                        setResult(Activity.RESULT_OK, intent);
+//                        finish();
+//                    }
+//                });
+            if (selectedImageUri != Uri.parse(String.valueOf(user.getProfilePic()))) {
+                imageManager.uploadProfilePictureImage(selectedImageUri, new ImageManager.OnImageUploadListener() {
+                    @Override
+                    public void onUploadSuccess(String downloadUrl) {
+                        user.setprofilePic(downloadUrl);
+                        firebaseManager.editUser(user, null);
 
-            firebaseManager.editUser(user, null);
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("user", user);
+                        Intent intent = new Intent();
+                        intent.putExtras(bundle);
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("user", user);
-            Intent intent = new Intent();
-            intent.putExtras(bundle);
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
 
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+                    @Override
+                    public void onUploadFailure() {
+                        firebaseManager.editUser(user, null);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable("user", user);
+                        Intent intent = new Intent();
+                        intent.putExtras(bundle);
+
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+                });
+            } else {
+                firebaseManager.editUser(user, null);
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("user", user);
+                Intent intent = new Intent();
+                intent.putExtras(bundle);
+
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            }
         });
     }
 
@@ -164,14 +218,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
             selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
-            user.setprofilePic(String.valueOf(selectedImageUri));
-
-            getBaseContext().getContentResolver().takePersistableUriPermission(
-                    selectedImageUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-            );
         }
      }
 }

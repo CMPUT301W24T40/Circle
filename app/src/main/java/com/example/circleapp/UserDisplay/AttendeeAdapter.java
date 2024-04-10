@@ -53,17 +53,9 @@ public class AttendeeAdapter extends ArrayAdapter<Attendee> {
             attendeeFirstName.setText(attendee.getFirstName());
             attendeeLastName.setText(attendee.getLastName());
 
-            if (attendee.getProfilePic() != null) {
-                if (!attendee.getProfilePic().toString().equals("null")) {
-                    Glide.with(getContext()).load(attendee.getProfilePic()).into(profilePicture);
-                }
-                else {
-                    char firstLetter = attendee.getFirstName().toLowerCase().charAt(0);
-                    int defaultImageResource = getContext().getResources().getIdentifier(firstLetter + "", "drawable", getContext().getPackageName());
-                    profilePicture.setImageResource(defaultImageResource);
-                }
-            }
-            else {
+            if (attendee.getProfilePic() != null && !attendee.getProfilePic().isEmpty()) {
+                Glide.with(getContext()).load(attendee.getProfilePic()).into(profilePicture);
+            } else {
                 char firstLetter = attendee.getFirstName().toLowerCase().charAt(0);
                 int defaultImageResource = getContext().getResources().getIdentifier(firstLetter + "", "drawable", getContext().getPackageName());
                 profilePicture.setImageResource(defaultImageResource);

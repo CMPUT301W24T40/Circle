@@ -86,6 +86,7 @@ public class UserProfileFragment extends Fragment {
         phoneNumber.setText(sharedPreferences.getString("user_phone_number", null));
         email.setText(sharedPreferences.getString("user_email", null));
         homepage.setText(sharedPreferences.getString("user_homepage", null));
+
         loadProfileImage();
 
         launcher = registerForActivityResult(
@@ -112,16 +113,15 @@ public class UserProfileFragment extends Fragment {
                         phoneNumber.setText(ourUser.getPhoneNumber());
                         homepage.setText(ourUser.getHomepage());
 
-                        Uri userPFP = ourUser.getProfilePic();
-                        if (userPFP != null) {
-                            Glide.with(UserProfileFragment.this).load(userPFP).into(profilePic);
-                            editor.putString("user_profile_pic", userPFP.toString());
-                        }
-                        else {
+                        @Nullable String userProfilePic = ourUser.getProfilePic();
+                        if (userProfilePic != null) {
+                            Glide.with(UserProfileFragment.this).load(userProfilePic).into(profilePic);
+                            editor.putString("user_profile_pic", userProfilePic);
+                        } else {
                             char firstLetter = ourUser.getFirstName().toLowerCase().charAt(0);
                             int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
                             profilePic.setImageResource(defaultImageResource);
-                            editor.putString("user_profile_pic", null);
+                            editor.remove("user_profile_pic");
                         }
                         editor.commit();
                     }
@@ -151,26 +151,19 @@ public class UserProfileFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadProfileImage();
-    }
-
     /**
      * Loads the custom profile image of the user, default PFP if no custom image is chosen.
      */
     private void loadProfileImage() {
-        if (isAdded() && getActivity() != null) {
-            String pfpString = sharedPreferences.getString("user_profile_pic", null);
-            if (pfpString != null) {
-                Glide.with(UserProfileFragment.this).load(Uri.parse(pfpString)).into(profilePic);
-            } else {
-                String userFirstName = sharedPreferences.getString("user_first_name", null);
-                char firstLetter = Objects.requireNonNull(userFirstName).toLowerCase().charAt(0);
-                int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
-                profilePic.setImageResource(defaultImageResource);
-            }
+        @Nullable String userProfilePic = sharedPreferences.getString("user_profile_pic", null);
+        if (userProfilePic != null) {
+            Glide.with(UserProfileFragment.this).load(userProfilePic).into(profilePic);
+        } else {
+            String userFirstName = sharedPreferences.getString("user_first_name", null);
+            char firstLetter = Objects.requireNonNull(userFirstName).toLowerCase().charAt(0);
+            int defaultImageResource = getResources().getIdentifier(firstLetter + "", "drawable", requireContext().getPackageName());
+            profilePic.setImageResource(defaultImageResource);
         }
     }
+
 }

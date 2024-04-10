@@ -34,10 +34,10 @@ public class MakeProfileActivity extends AppCompatActivity {
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
     ImageManager imageManager;
     final double NULL_DOUBLE = -999999999;
-    private static final int PICK_PROFILE_IMAGE = 123;
+    private static final int IMAGE_PICK = 1;
+    @Nullable
     Uri selectedImageUri;
     Attendee user;
-    public static final int PICK_IMAGE = 1;
 
     /**
      * When this Activity is created, a user can add their details to make a profile on the app.
@@ -65,6 +65,7 @@ public class MakeProfileActivity extends AppCompatActivity {
         profilePic = findViewById(R.id.edit_pfp);
 
         imageManager = new ImageManager(this, profilePic);
+        selectedImageUri = null;
 
         String ID = firebaseManager.getPhoneID();
         user = new Attendee(ID, null, null, null, null, null, null);
@@ -78,7 +79,7 @@ public class MakeProfileActivity extends AppCompatActivity {
             builder.setItems(options, (dialog, which) -> {
                 switch (which) {
                     case 0:
-                        imageManager.selectProfilePicImage();
+                        imageManager.selectImage();
                         break;
                     case 1:
                         break;
@@ -124,18 +125,34 @@ public class MakeProfileActivity extends AppCompatActivity {
 
             user.setHasProfile(true);
             ProfileFragment.ProfileMade = true;
+            imageManager.uploadProfilePictureImage(selectedImageUri, new ImageManager.OnImageUploadListener() {
+                @Override
+                public void onUploadSuccess(String downloadUrl) {
+                    user.setprofilePic(downloadUrl);
+                    firebaseManager.editUser(user, null);
 
-            if (selectedImageUri != null) { imageManager.uploadProfilePictureImage(selectedImageUri); }
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", user);
+                    Intent intent = new Intent();
+                    intent.putExtras(bundle);
 
-            firebaseManager.addNewUser(user);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                }
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("user", user);
-            Intent intent = new Intent();
-            intent.putExtras(bundle);
+                @Override
+                public void onUploadFailure() {
+                    firebaseManager.editUser(user, null);
 
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("user", user);
+                    Intent intent = new Intent();
+                    intent.putExtras(bundle);
+
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                }
+            });
         });
     }
 
@@ -149,16 +166,8 @@ public class MakeProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_PROFILE_IMAGE && resultCode == RESULT_OK) {
+        if (requestCode == IMAGE_PICK && resultCode == RESULT_OK) {
             selectedImageUri = imageManager.onActivityResult(requestCode, resultCode, data);
-            if (user != null) {
-                user.setprofilePic(String.valueOf(selectedImageUri));
-            }
-
-            getBaseContext().getContentResolver().takePersistableUriPermission(
-                    selectedImageUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-            );
         }
     }
 }

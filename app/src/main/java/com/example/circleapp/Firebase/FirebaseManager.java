@@ -318,7 +318,7 @@ public class FirebaseManager {
                 data.put("lastName", user.getLastName());
                 data.put("email", user.getEmail());
                 data.put("phoneNumber", user.getPhoneNumber());
-                data.put("profilePic", String.valueOf(user.getProfilePic()));
+                data.put("profilePic", user.getProfilePic());
                 data.put("homepage", String.valueOf(user.getHomepage()));
                 data.put("hasProfile", user.getHasProfile());
                 data.put("token", user.getToken());
@@ -356,7 +356,7 @@ public class FirebaseManager {
                     updates.put("lastName", user.getLastName());
                     updates.put("email", user.getEmail());
                     updates.put("phoneNumber", user.getPhoneNumber());
-                    updates.put("profilePic", String.valueOf(user.getProfilePic()));
+                    updates.put("profilePic", user.getProfilePic());
                     updates.put("homepage", String.valueOf(user.getHomepage()));
                     updates.put("hasProfile", user.getHasProfile());
                     updates.put("token", user.getToken());
