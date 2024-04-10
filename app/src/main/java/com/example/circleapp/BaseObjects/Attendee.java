@@ -16,7 +16,7 @@ public class Attendee implements Parcelable {
     private String lastName;
     private String email;
     private String phoneNumber;
-    private Uri profilePic;
+    private String profilePic;
     private String homepage;
     private boolean hasProfile;
     private String token;
@@ -37,7 +37,7 @@ public class Attendee implements Parcelable {
      * @param homepage    Homepage URL of the attendee
      * @param profilePic  URI to the profile picture of the attendee
      */
-    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber, String homepage, Uri profilePic) {
+    public Attendee(String ID, String firstName, String lastName, String email, String phoneNumber, String homepage, String profilePic) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,14 +64,7 @@ public class Attendee implements Parcelable {
         email = in.readString();
         homepage = in.readString();
         phoneNumber = in.readString();
-
-        String uriString = in.readString();
-        if (uriString != null) {
-            profilePic = Uri.parse(uriString);
-        } else {
-            profilePic = null;
-        }
-
+        profilePic = in.readString();
         locationLatitude = in.readDouble();
         locationLongitude = in.readDouble();
         checkInCount = in.readInt();
@@ -145,7 +138,7 @@ public class Attendee implements Parcelable {
      *
      * @return The URI to the profile picture
      */
-    public Uri getProfilePic() {
+    public @Nullable String getProfilePic() {
         return profilePic;
     }
 
@@ -236,10 +229,7 @@ public class Attendee implements Parcelable {
      *
      * @param profilePic The new URI to the profile picture
      */
-    public void setprofilePic(String profilePic) {
-        if (profilePic != null) { this.profilePic = Uri.parse(profilePic); }
-        else { this.profilePic = null; }
-    }
+    public void setprofilePic(@Nullable String profilePic) {this.profilePic = profilePic;}
 
     /**
      * Sets the homepage of the attendee.
@@ -317,7 +307,7 @@ public class Attendee implements Parcelable {
         dest.writeString(email);
         dest.writeString(homepage);
         dest.writeString(phoneNumber);
-        dest.writeString(profilePic != null ? profilePic.toString() : null);
+        dest.writeString(profilePic);
         dest.writeDouble(locationLatitude);
         dest.writeDouble(locationLongitude);
         dest.writeInt(checkInCount);

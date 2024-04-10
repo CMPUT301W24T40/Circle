@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -75,7 +76,7 @@ public class CreateEventActivity extends AppCompatActivity {
         timePicker.setOnClickListener(v -> openTimeDialog());
 
         imageManager = new ImageManager(this, eventPoster);
-        eventPoster.setOnClickListener(v -> imageManager.selectPosterImage());
+        eventPoster.setOnClickListener(v -> imageManager.selectImage());
 
         confirmButton.setOnClickListener(v -> {
             String eventName = eventNameEditText.getText().toString();
@@ -111,6 +112,8 @@ public class CreateEventActivity extends AppCompatActivity {
                 imageManager.uploadPosterImage(downloadURL -> {
                     event.setEventPosterURL(downloadURL);
                     firebaseManager.createEvent(event);
+
+                    Log.d("eventURL", downloadURL);
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("event", event);

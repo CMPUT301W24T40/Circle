@@ -14,13 +14,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+import javax.annotation.Nullable;
 
 /**
  * This class is used to manage images with Firebase Cloud Storage.
  */
 public class ImageManager {
-    private static final int PICK_POSTER_IMAGE = 1;
-    private static final int PICK_PROFILE_IMAGE = 123;
+    private static final int IMAGE_PICK = 1;
     private final Activity activity;
     private final ImageView imageView;
     private Uri imageUri;
@@ -143,21 +145,11 @@ public class ImageManager {
     /**
      * Initiates image selection process for an event poster.
      */
-    public void selectPosterImage() {
+    public void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_POSTER_IMAGE);
-    }
-
-    /**
-     * Initiates image selection process for a user PFP.
-     */
-    public void selectProfilePicImage() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        activity.startActivityForResult(intent, PICK_PROFILE_IMAGE);
+        activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_PICK);
     }
 
     /**
@@ -182,16 +174,30 @@ public class ImageManager {
      *
      * @param imageUri uri of image to be uploaded
      */
-    public void uploadProfilePictureImage(Uri imageUri) {
+    public void uploadProfilePictureImage(@Nullable Uri imageUri , OnImageUploadListener listener) {
         if (imageUri != null) {
             StorageReference profilePicRef = storageRef.child("profile_pictures/" + System.currentTimeMillis() + ".jpg");
             profilePicRef.putFile(imageUri)
                     .addOnSuccessListener(taskSnapshot -> profilePicRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         String downloadUrl = uri.toString();
                         Log.d("ImageManager", "Image uploaded, download URL: " + downloadUrl);
+                        listener.onUploadSuccess(downloadUrl);
                     }))
-                    .addOnFailureListener(exception -> Log.e("ImageManager", "Image Upload Failed", exception));
+                    .addOnFailureListener(exception -> {
+                        Log.e("ImageManager", "Image Upload Failed", exception);
+                        listener.onUploadFailure();
+                    });
+        } else {
+            listener.onUploadFailure();
         }
+    }
+
+    /**
+     * Listener interface for receiving callbacks after uploading an image.
+     */
+    public interface OnImageUploadListener {
+        void onUploadSuccess(String downloadUrl);
+        void onUploadFailure();
     }
 
     /**
@@ -202,20 +208,9 @@ public class ImageManager {
      * @param data The intent data.
      */
     public Uri onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_POSTER_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == IMAGE_PICK && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imageUri = data.getData();
             Objects.requireNonNull(imageView).setImageURI(imageUri);
-            return imageUri;
-        }
-        else if (requestCode == PICK_PROFILE_IMAGE && resultCode == Activity.RESULT_OK && data != null && data.getData() != null){
-            imageUri = data.getData();
-            Objects.requireNonNull(imageView).setImageURI(imageUri);
-
-            activity.getBaseContext().getContentResolver().takePersistableUriPermission(
-                    imageUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-            );
-
             return imageUri;
         } else {
             Toast.makeText(activity.getBaseContext(), "Image Not Selected", Toast.LENGTH_SHORT).show();

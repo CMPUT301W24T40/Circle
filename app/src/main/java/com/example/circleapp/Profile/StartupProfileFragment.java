@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.bumptech.glide.Glide;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.R;
 
@@ -72,17 +73,21 @@ public class StartupProfileFragment extends Fragment {
                         editor.putString("user_phone_number", ourUser.getPhoneNumber());
                         editor.putString("user_email", ourUser.getEmail());
                         editor.putString("user_homepage", ourUser.getHomepage());
-                        editor.apply();
+                        editor.putString("user_profile_pic", ourUser.getProfilePic());
 
-                        Uri userPFP = ourUser.getProfilePic();
-                        if (userPFP != null) { editor.putString("user_profile_pic", userPFP.toString()); }
-                        else { editor.putString("user_profile_pic", null); }
-                        editor.commit();
+                        @Nullable String userProfilePic = ourUser.getProfilePic();
+                        if (userProfilePic != null) {
+                            editor.putString("user_profile_pic", userProfilePic);
+                        } else {
+                            editor.remove("user_profile_pic");
+                        }
+
+                        editor.apply();
 
                         requireActivity().getSupportFragmentManager().popBackStack();
                     }
-                }
-        );
+
+                });
 
         makeProfile.setOnClickListener(v -> {
             Intent intent = new Intent(view.getContext(), MakeProfileActivity.class);
