@@ -1,5 +1,8 @@
 com.example.circleapp
+com.example.circleapp.Admin
 com.example.circleapp.BaseObjects
 com.example.circleapp.EventDisplay
+com.example.circleapp.Firebase
 com.example.circleapp.Profile
 com.example.circleapp.QRCode
+com.example.circleapp.UserDisplay
