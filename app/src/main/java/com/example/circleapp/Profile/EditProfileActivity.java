@@ -145,26 +145,6 @@ public class EditProfileActivity extends AppCompatActivity {
             user.setHasProfile(true);
             ProfileFragment.ProfileMade = true;
 
-//            if (selectedImageUri == null) {
-//                imageManager.uploadProfilePictureImage(null, new ImageManager.OnImageUploadListener() {
-//                    @Override
-//                    public void onUploadSuccess(String downloadUrl) {
-//                        // empty since this method wouldn't be used if imageUri is null
-//                    }
-//
-//                    @Override
-//                    public void onUploadFailure() {
-//                        firebaseManager.editUser(user, null);
-//
-//                        Bundle bundle = new Bundle();
-//                        bundle.putParcelable("user", user);
-//                        Intent intent = new Intent();
-//                        intent.putExtras(bundle);
-//
-//                        setResult(Activity.RESULT_OK, intent);
-//                        finish();
-//                    }
-//                });
             if (selectedImageUri != Uri.parse(String.valueOf(user.getProfilePic()))) {
                 imageManager.uploadProfilePictureImage(selectedImageUri, new ImageManager.OnImageUploadListener() {
                     @Override

@@ -113,8 +113,6 @@ public class CreateEventActivity extends AppCompatActivity {
                     event.setEventPosterURL(downloadURL);
                     firebaseManager.createEvent(event);
 
-                    Log.d("eventURL", downloadURL);
-
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("event", event);
                     Intent intent = new Intent();

@@ -129,7 +129,7 @@ public class MakeProfileActivity extends AppCompatActivity {
                 @Override
                 public void onUploadSuccess(String downloadUrl) {
                     user.setprofilePic(downloadUrl);
-                    firebaseManager.editUser(user, null);
+                    firebaseManager.addNewUser(user);
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("user", user);
@@ -142,7 +142,7 @@ public class MakeProfileActivity extends AppCompatActivity {
 
                 @Override
                 public void onUploadFailure() {
-                    firebaseManager.editUser(user, null);
+                    firebaseManager.addNewUser(user);
 
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("user", user);
