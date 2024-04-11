@@ -169,8 +169,9 @@
         android:id="@+id/admin_view_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_below="@id/edit_profile_button"
+        android:layout_below="@id/homepage"
+        android:layout_toRightOf="@id/edit_profile_button"
+        android:layout_marginStart="130dp"
         android:layout_marginTop="50dp"
         android:text="@string/admin_view"
         android:visibility="invisible" />

@@ -218,6 +218,7 @@ public class ScanQRActivity extends AppCompatActivity {
                 manager.isAdmin(exists -> {
                     if (exists) {
                         ProfileFragment.isAdmin = true;
+                        showToastAndFinish("Go to the profile tab to check out your new powers!");
                         Intent intent = new Intent(ScanQRActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
