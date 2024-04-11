@@ -26,7 +26,6 @@ import java.util.Objects;
  * This class displays a map view with markers representing checked-in attendees of an event.
  */
 public class MapViewActivity extends AppCompatActivity implements OnMapReadyCallback {
-    Button backButton;
     GoogleMap attendeeMap;
     Event event;
     FirebaseManager firebaseManager;
@@ -59,9 +58,6 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             }
             else if (attendeeMap != null) { populateMap(); }
         });
-
-        backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> finish());
     }
 
     /**
@@ -72,6 +68,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         attendeeMap = googleMap;
+        attendeeMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         if (checkedInAttendees != null && !checkedInAttendees.isEmpty()) { populateMap(); }
     }
 
@@ -83,7 +80,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             if (attendee.getLocationLatitude() != null && attendee.getLocationLongitude() != null) {
                 LatLng location = new LatLng(attendee.getLocationLatitude(), attendee.getLocationLongitude());
                 attendeeMap.addMarker(new MarkerOptions().position(location).title(attendee.getFirstName()));
-                attendeeMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+                attendeeMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location,17));
             }
         }
     }
