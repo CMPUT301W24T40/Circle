@@ -19,7 +19,6 @@ import androidx.core.app.ActivityCompat;
 import com.example.circleapp.EventDisplay.BrowseEventDetailsActivity;
 import com.example.circleapp.Firebase.FirebaseManager;
 import com.example.circleapp.MainActivity;
-import com.example.circleapp.Profile.ProfileFragment;
 import com.example.circleapp.R;
 import com.example.circleapp.TempUserInfoActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -217,8 +216,7 @@ public class ScanQRActivity extends AppCompatActivity {
 
                 manager.isAdmin(exists -> {
                     if (exists) {
-                        ProfileFragment.isAdmin = true;
-                        showToastAndFinish("Go to the profile tab to check out your new powers!");
+                        showToastAndFinish("Go to the 'Your Events' tab to check out your new powers!");
                         Intent intent = new Intent(ScanQRActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

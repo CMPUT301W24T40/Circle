@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,7 +27,7 @@ import com.example.circleapp.databinding.ActivityMainBinding;
  * The main activity of the application.
  */
 public class MainActivity extends AppCompatActivity {
-
+    public static boolean isAdmin;
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {}
@@ -61,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         firebaseManager.setPhoneID(this);
+
+        firebaseManager.isAdmin(exists -> {
+            if (exists) {
+                Log.d("Blah", "blah");
+                isAdmin = true; }
+        });
 
         replaceFragment(new BrowseEventsFragment());
 

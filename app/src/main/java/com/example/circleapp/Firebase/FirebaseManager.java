@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import com.example.circleapp.BaseObjects.Announcement;
 import com.example.circleapp.BaseObjects.Attendee;
 import com.example.circleapp.BaseObjects.Event;
+import com.example.circleapp.MainActivity;
+import com.example.circleapp.Profile.ProfileFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -868,6 +870,7 @@ public class FirebaseManager {
      * Adds a new admin to the system.
      */
     public void addNewAdmin() {
+        MainActivity.isAdmin = true;
         HashMap<String, String> data = new HashMap<>();
         data.put("ID", phoneID);
 
@@ -914,6 +917,8 @@ public class FirebaseManager {
      * @param ID The ID of the user to be deleted.
      */
     public void deleteUser(String ID) {
+        if (ID.equals(phoneID)) { ProfileFragment.ProfileMade = false; }
+
         DocumentReference userDocRef = usersRef.document(ID);
         CollectionReference registeredEventsCollection = userDocRef.collection("registeredEvents");
         CollectionReference createdEventsCollection = userDocRef.collection("createdEvents");
