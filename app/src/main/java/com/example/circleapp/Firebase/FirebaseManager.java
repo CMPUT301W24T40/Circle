@@ -884,7 +884,7 @@ public class FirebaseManager {
 
         eventsRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
-                String posterURL = (Objects.requireNonNull(document.getString("eventPosterURL")).startsWith("https")) ? document.getString("eventPosterURL") : null;
+                String posterURL = (document.getString("eventPosterURL"));
                 if (posterURL != null) { urlList.add(posterURL); }
             }
             callback.onCallback(urlList);
@@ -901,7 +901,7 @@ public class FirebaseManager {
 
         usersRef.get().addOnCompleteListener(task -> {
             for (DocumentSnapshot document : task.getResult()) {
-                String pfpURL = (Objects.requireNonNull(document.getString("profilePic")).startsWith("https")) ? document.getString("profilePic") : null;
+                String pfpURL = document.getString("profilePic");
                 if (pfpURL != null) { urlList.add(pfpURL); }
             }
             callback.onCallback(urlList);
