@@ -16,10 +16,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.example.circleapp.Admin.AdminHomeFragment;
 import com.example.circleapp.Firebase.FirebaseManager;
+import com.example.circleapp.MainActivity;
 import com.example.circleapp.QRCode.ScanQRActivity;
 import com.example.circleapp.R;
 import com.google.android.material.tabs.TabLayout;
@@ -62,6 +66,7 @@ public class YourEventsFragment extends Fragment implements ActivityCompat.OnReq
         ViewPager2 viewPager = rootView.findViewById(R.id.view_pager);
         TabLayout tabLayout = rootView.findViewById(R.id.tab_layout);
         Button scanButton = rootView.findViewById(R.id.scan_button);
+        Button adminView = rootView.findViewById(R.id.admin_view_button);
 
         viewPager.setAdapter(new EventsPagerAdapter(this));
         new TabLayoutMediator(tabLayout, viewPager,
@@ -84,6 +89,19 @@ public class YourEventsFragment extends Fragment implements ActivityCompat.OnReq
             Intent intent = new Intent(rootView.getContext(), ScanQRActivity.class);
             startActivity(intent);
         });
+
+        if (MainActivity.isAdmin) {
+            adminView.setVisibility(View.VISIBLE);
+            adminView.setOnClickListener(v -> {
+                ((MainActivity) requireActivity()).setNavBarVisibility(false);
+
+                FragmentManager fragmentManager = getParentFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            });
+        }
 
         return rootView;
     }

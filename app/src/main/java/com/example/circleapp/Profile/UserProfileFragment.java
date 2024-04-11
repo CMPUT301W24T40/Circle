@@ -5,16 +5,12 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +37,6 @@ public class UserProfileFragment extends Fragment {
     TextView phoneNumber;
     TextView homepage;
     Button editProfile;
-    Button adminView;
     ImageView profilePic;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -133,20 +128,6 @@ public class UserProfileFragment extends Fragment {
             intent.putExtra("user", ourUser);
             launcher.launch(intent);
         });
-
-        if (ProfileFragment.isAdmin) {
-            adminView = view.findViewById(R.id.admin_view_button);
-            adminView.setVisibility(View.VISIBLE);
-            adminView.setOnClickListener(v -> {
-                ((MainActivity) requireActivity()).setNavBarVisibility(false);
-
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, new AdminHomeFragment());
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            });
-        }
 
         return view;
     }

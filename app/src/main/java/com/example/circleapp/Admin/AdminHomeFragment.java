@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.circleapp.EventDisplay.YourEventsFragment;
 import com.example.circleapp.MainActivity;
-import com.example.circleapp.Profile.UserProfileFragment;
 import com.example.circleapp.R;
 
 /**
@@ -54,7 +54,7 @@ public class AdminHomeFragment extends Fragment {
 
         userView.setOnClickListener(v -> {
             ((MainActivity) requireActivity()).setNavBarVisibility(true);
-            replaceFragment(new UserProfileFragment());
+            replaceFragment(new YourEventsFragment());
         });
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {

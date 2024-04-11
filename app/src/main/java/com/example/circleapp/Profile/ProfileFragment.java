@@ -20,7 +20,6 @@ import com.example.circleapp.R;
  */
 public class ProfileFragment extends Fragment {
     public static boolean ProfileMade;
-    public static boolean isAdmin;
     FirebaseManager firebaseManager = FirebaseManager.getInstance();
 
     /**
@@ -49,10 +48,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        firebaseManager.isAdmin(exists -> {
-            if (exists) { isAdmin = true; }
-        });
 
         firebaseManager.checkProfileExists(firebaseManager.getPhoneID(), exists -> {
             if (exists) {
